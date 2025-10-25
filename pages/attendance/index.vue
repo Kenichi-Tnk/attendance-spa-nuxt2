@@ -1,26 +1,27 @@
 &lt;template&gt;
   &lt;div class="container mx-auto px-4 py-8"&gt;
-    &lt;div class="mb-8"&gt;
-      &lt;h1 class="text-3xl font-bold text-gray-900"&gt;勤怠一覧&lt;/h1&gt;
-      &lt;p class="text-gray-600 mt-2"&gt;過去の勤怠記録を確認できます&lt;/p&gt;
-    &lt;/div&gt;
+    &lt;PageHeader
+      title="勤怠一覧"
+      subtitle="過去の勤怠記録を確認できます"
+      icon="fas fa-calendar-alt"
+      :breadcrumbs="breadcrumbs"
+    /&gt;
     
     &lt;!-- フィルター --&gt;
     &lt;div class="bg-white rounded-lg shadow-md p-6 mb-6"&gt;
       &lt;h2 class="text-lg font-semibold text-gray-800 mb-4"&gt;絞り込み&lt;/h2&gt;
       &lt;div class="grid grid-cols-1 md:grid-cols-3 gap-4"&gt;
-        &lt;div&gt;
-          &lt;label class="block text-sm font-medium text-gray-700 mb-2"&gt;年月&lt;/label&gt;
-          &lt;input
-            v-model="selectedMonth"
-            type="month"
-            class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          &gt;
-        &lt;/div&gt;
+        &lt;FormInput
+          v-model="selectedMonth"
+          type="month"
+          label="年月"
+          :required="false"
+        /&gt;
         &lt;div class="flex items-end"&gt;
           &lt;button
             @click="loadAttendanceData"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors"
+            :disabled="isLoading"
+            class="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-4 py-2 rounded-md transition-colors"
           &gt;
             &lt;i class="fas fa-search mr-2"&gt;&lt;/i&gt;
             検索
@@ -30,107 +31,55 @@
     &lt;/div&gt;
     
     &lt;!-- 勤怠記録テーブル --&gt;
-    &lt;div class="bg-white rounded-lg shadow-md overflow-hidden"&gt;
-      &lt;div class="px-6 py-4 border-b border-gray-200"&gt;
-        &lt;h2 class="text-lg font-semibold text-gray-800"&gt;{{ formatMonthYear(selectedMonth) }}の勤怠記録&lt;/h2&gt;
-      &lt;/div&gt;
-      
-      &lt;div class="overflow-x-auto"&gt;
-        &lt;table class="min-w-full divide-y divide-gray-200"&gt;
-          &lt;thead class="bg-gray-50"&gt;
-            &lt;tr&gt;
-              &lt;th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"&gt;
-                日付
-              &lt;/th&gt;
-              &lt;th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"&gt;
-                出勤時刻
-              &lt;/th&gt;
-              &lt;th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"&gt;
-                退勤時刻
-              &lt;/th&gt;
-              &lt;th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"&gt;
-                労働時間
-              &lt;/th&gt;
-              &lt;th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"&gt;
-                ステータス
-              &lt;/th&gt;
-              &lt;th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"&gt;
-                操作
-              &lt;/th&gt;
-            &lt;/tr&gt;
-          &lt;/thead&gt;
-          &lt;tbody class="bg-white divide-y divide-gray-200"&gt;
-            &lt;tr v-for="record in attendanceRecords" :key="record.id" class="hover:bg-gray-50"&gt;
-              &lt;td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"&gt;
-                {{ formatDate(record.date) }}
-                &lt;span class="block text-xs text-gray-500"&gt;{{ getDayOfWeek(record.date) }}&lt;/span&gt;
-              &lt;/td&gt;
-              &lt;td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"&gt;
-                {{ record.clockIn || '−' }}
-              &lt;/td&gt;
-              &lt;td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"&gt;
-                {{ record.clockOut || '−' }}
-              &lt;/td&gt;
-              &lt;td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"&gt;
-                {{ record.workHours || '−' }}
-              &lt;/td&gt;
-              &lt;td class="px-6 py-4 whitespace-nowrap"&gt;
-                &lt;span :class="getStatusClass(record.status)" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"&gt;
-                  {{ getStatusText(record.status) }}
-                &lt;/span&gt;
-              &lt;/td&gt;
-              &lt;td class="px-6 py-4 whitespace-nowrap text-sm font-medium"&gt;
-                &lt;nuxt-link
-                  :to="`/attendance/${record.id}`"
-                  class="text-blue-600 hover:text-blue-900 mr-3"
-                &gt;
-                  詳細
-                &lt;/nuxt-link&gt;
-                &lt;button
-                  v-if="canRequestCorrection(record)"
-                  @click="requestCorrection(record.id)"
-                  class="text-yellow-600 hover:text-yellow-900"
-                &gt;
-                  修正申請
-                &lt;/button&gt;
-              &lt;/td&gt;
-            &lt;/tr&gt;
-          &lt;/tbody&gt;
-        &lt;/table&gt;
-      &lt;/div&gt;
-      
-      &lt;!-- ページネーション --&gt;
-      &lt;div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between"&gt;
-        &lt;div class="text-sm text-gray-700"&gt;
-          {{ attendanceRecords.length }}件の記録を表示中
+    &lt;AttendanceTable
+      :title="`${formatMonthYear(selectedMonth)}の勤怠記録`"
+      :data="attendanceRecords"
+      :columns="tableColumns"
+      :loading="isLoading"
+      :current-page="currentPage"
+      :total-pages="totalPages"
+      :total-items="totalItems"
+      @detail="goToDetail"
+      @page-change="handlePageChange"
+    &gt;
+      &lt;template #cell-date="{ item }"&gt;
+        &lt;div&gt;
+          &lt;div class="text-gray-900"&gt;{{ formatDate(item.date) }}&lt;/div&gt;
+          &lt;div class="text-xs text-gray-500"&gt;{{ getDayOfWeek(item.date) }}&lt;/div&gt;
         &lt;/div&gt;
-        &lt;div class="flex space-x-2"&gt;
-          &lt;button
-            :disabled="currentPage === 1"
-            @click="currentPage--"
-            class="px-3 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50 hover:bg-gray-50"
-          &gt;
-            前へ
-          &lt;/button&gt;
-          &lt;span class="px-3 py-1 text-sm text-gray-700"&gt;
-            {{ currentPage }} / {{ totalPages }}
-          &lt;/span&gt;
-          &lt;button
-            :disabled="currentPage === totalPages"
-            @click="currentPage++"
-            class="px-3 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50 hover:bg-gray-50"
-          &gt;
-            次へ
-          &lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
+      &lt;/template&gt;
+      
+      &lt;template #actions="{ item }"&gt;
+        &lt;nuxt-link
+          :to="`/attendance/${item.id}`"
+          class="text-blue-600 hover:text-blue-900 mr-3"
+        &gt;
+          詳細
+        &lt;/nuxt-link&gt;
+        &lt;button
+          v-if="canRequestCorrection(item)"
+          @click="requestCorrection(item.id)"
+          class="text-yellow-600 hover:text-yellow-900"
+        &gt;
+          修正申請
+        &lt;/button&gt;
+      &lt;/template&gt;
+    &lt;/AttendanceTable&gt;
   &lt;/div&gt;
 &lt;/template&gt;
 
 &lt;script&gt;
+import AttendanceTable from '~/components/AttendanceTable.vue'
+import PageHeader from '~/components/PageHeader.vue'
+import FormInput from '~/components/FormInput.vue'
+
 export default {
   name: 'AttendanceList',
+  components: {
+    AttendanceTable,
+    PageHeader,
+    FormInput
+  },
   middleware: ['auth', 'verified'],
   
   data() {
@@ -138,6 +87,8 @@ export default {
       selectedMonth: new Date().toISOString().slice(0, 7), // YYYY-MM形式
       currentPage: 1,
       totalPages: 1,
+      totalItems: 0,
+      isLoading: false,
       attendanceRecords: [
         {
           id: 1,
@@ -183,6 +134,25 @@ export default {
     }
   },
   
+  computed: {
+    breadcrumbs() {
+      return [
+        { text: 'ダッシュボード', to: '/dashboard' },
+        { text: '勤怠一覧' }
+      ]
+    },
+    
+    tableColumns() {
+      return [
+        { key: 'date', label: '日付', type: 'date' },
+        { key: 'clockIn', label: '出勤時刻', type: 'time' },
+        { key: 'clockOut', label: '退勤時刻', type: 'time' },
+        { key: 'workHours', label: '労働時間', type: 'time' },
+        { key: 'status', label: 'ステータス', type: 'status' }
+      ]
+    }
+  },
+  
   mounted() {
     this.loadAttendanceData()
   },
@@ -190,14 +160,19 @@ export default {
   methods: {
     async loadAttendanceData() {
       try {
+        this.isLoading = true
+        
         // TODO: API呼び出しで勤怠データを取得
         await new Promise(resolve =&gt; setTimeout(resolve, 500))
         
         // モックデータはすでにdata()で設定済み
-        this.totalPages = Math.ceil(this.attendanceRecords.length / 10)
+        this.totalItems = this.attendanceRecords.length
+        this.totalPages = Math.ceil(this.totalItems / 10)
       } catch (error) {
         console.error('勤怠データ取得エラー:', error)
         this.$toast.error('勤怠データの取得に失敗しました')
+      } finally {
+        this.isLoading = false
       }
     },
     
@@ -223,36 +198,23 @@ export default {
       return days[date.getDay()]
     },
     
-    getStatusClass(status) {
-      const classes = {
-        normal: 'bg-green-100 text-green-800',
-        late: 'bg-yellow-100 text-yellow-800',
-        early_leave: 'bg-orange-100 text-orange-800',
-        absent: 'bg-red-100 text-red-800',
-        pending: 'bg-blue-100 text-blue-800'
-      }
-      return classes[status] || 'bg-gray-100 text-gray-800'
-    },
-    
-    getStatusText(status) {
-      const texts = {
-        normal: '正常',
-        late: '遅刻',
-        early_leave: '早退',
-        absent: '欠席',
-        pending: '承認待ち'
-      }
-      return texts[status] || '不明'
-    },
-    
     canRequestCorrection(record) {
       // 修正申請可能な条件をチェック
-      return record.status !== 'pending' && record.clockIn
+      return record.status !== 'pending' &amp;&amp; record.clockIn
+    },
+    
+    goToDetail(item) {
+      this.$router.push(`/attendance/${item.id}`)
     },
     
     requestCorrection(recordId) {
       // 修正申請ページへ遷移
       this.$router.push(`/correction-requests/new?attendance_id=${recordId}`)
+    },
+    
+    handlePageChange(page) {
+      this.currentPage = page
+      this.loadAttendanceData()
     }
   }
 }

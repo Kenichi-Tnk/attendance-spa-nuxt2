@@ -1,51 +1,43 @@
 &lt;template&gt;
   &lt;div class="container mx-auto px-4 py-8"&gt;
-    &lt;div class="mb-8"&gt;
-      &lt;h1 class="text-3xl font-bold text-gray-900"&gt;管理者ダッシュボード&lt;/h1&gt;
-      &lt;p class="text-gray-600 mt-2"&gt;{{ currentUser.name }}さん（管理者）&lt;/p&gt;
-    &lt;/div&gt;
+    &lt;PageHeader
+      title="管理者ダッシュボード"
+      :subtitle="`${currentUser.name}さん（管理者）`"
+      icon="fas fa-tachometer-alt"
+      icon-color="#8B5CF6"
+    /&gt;
     
     &lt;!-- 統計サマリー --&gt;
     &lt;div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8"&gt;
-      &lt;div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500"&gt;
-        &lt;div class="flex items-center"&gt;
-          &lt;i class="fas fa-users text-blue-500 text-2xl mr-4"&gt;&lt;/i&gt;
-          &lt;div&gt;
-            &lt;div class="text-2xl font-bold text-gray-800"&gt;{{ stats.totalStaff }}&lt;/div&gt;
-            &lt;div class="text-sm text-gray-600"&gt;総スタッフ数&lt;/div&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
+      &lt;StatCard
+        :value="stats.totalStaff"
+        label="総スタッフ数"
+        icon="fas fa-users"
+        color="blue"
+      /&gt;
       
-      &lt;div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500"&gt;
-        &lt;div class="flex items-center"&gt;
-          &lt;i class="fas fa-user-check text-green-500 text-2xl mr-4"&gt;&lt;/i&gt;
-          &lt;div&gt;
-            &lt;div class="text-2xl font-bold text-gray-800"&gt;{{ stats.presentToday }}&lt;/div&gt;
-            &lt;div class="text-sm text-gray-600"&gt;本日出勤中&lt;/div&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
+      &lt;StatCard
+        :value="stats.presentToday"
+        label="本日出勤中"
+        icon="fas fa-user-check"
+        color="green"
+      /&gt;
       
-      &lt;div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-500"&gt;
-        &lt;div class="flex items-center"&gt;
-          &lt;i class="fas fa-clock text-yellow-500 text-2xl mr-4"&gt;&lt;/i&gt;
-          &lt;div&gt;
-            &lt;div class="text-2xl font-bold text-gray-800"&gt;{{ stats.pendingRequests }}&lt;/div&gt;
-            &lt;div class="text-sm text-gray-600"&gt;承認待ち申請&lt;/div&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
+      &lt;StatCard
+        :value="stats.pendingRequests"
+        label="承認待ち申請"
+        icon="fas fa-clock"
+        color="yellow"
+        :clickable="true"
+        @click="$router.push('/admin/correction-requests')"
+      /&gt;
       
-      &lt;div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-red-500"&gt;
-        &lt;div class="flex items-center"&gt;
-          &lt;i class="fas fa-exclamation-triangle text-red-500 text-2xl mr-4"&gt;&lt;/i&gt;
-          &lt;div&gt;
-            &lt;div class="text-2xl font-bold text-gray-800"&gt;{{ stats.lateToday }}&lt;/div&gt;
-            &lt;div class="text-sm text-gray-600"&gt;本日遅刻者&lt;/div&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
+      &lt;StatCard
+        :value="stats.lateToday"
+        label="本日遅刻者"
+        icon="fas fa-exclamation-triangle"
+        color="red"
+      /&gt;
     &lt;/div&gt;
     
     &lt;!-- 管理メニュー --&gt;
@@ -134,8 +126,15 @@
 &lt;/template&gt;
 
 &lt;script&gt;
+import PageHeader from '~/components/PageHeader.vue'
+import StatCard from '~/components/StatCard.vue'
+
 export default {
   name: 'AdminDashboard',
+  components: {
+    PageHeader,
+    StatCard
+  },
   middleware: ['auth', 'verified', 'admin'],
   
   data() {
