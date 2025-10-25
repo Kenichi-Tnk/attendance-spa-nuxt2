@@ -1,25 +1,25 @@
-&lt;template&gt;
-  &lt;div class="form-group"&gt;
-    &lt;!-- ラベル --&gt;
-    &lt;label
+<template>
+  <div class="form-group">
+    <!-- ラベル -->
+    <label
       v-if="label"
       :for="inputId"
       :class="labelClasses"
       class="block text-sm font-medium mb-2"
-    &gt;
+    >
       {{ label }}
-      &lt;span v-if="required" class="text-red-500 ml-1"&gt;*&lt;/span&gt;
-    &lt;/label&gt;
+      <span v-if="required" class="text-red-500 ml-1">*</span>
+    </label>
     
-    &lt;!-- 入力フィールド --&gt;
-    &lt;div class="relative"&gt;
-      &lt;!-- プレフィックスアイコン --&gt;
-      &lt;div v-if="prefixIcon" class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"&gt;
-        &lt;i :class="prefixIcon" class="text-gray-400"&gt;&lt;/i&gt;
-      &lt;/div&gt;
+    <!-- 入力フィールド -->
+    <div class="relative">
+      <!-- プレフィックスアイコン -->
+      <div v-if="prefixIcon" class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <i :class="prefixIcon" class="text-gray-400"></i>
+      </div>
       
-      &lt;!-- テキストエリア --&gt;
-      &lt;textarea
+      <!-- テキストエリア -->
+      <textarea
         v-if="type === 'textarea'"
         :id="inputId"
         :value="modelValue"
@@ -33,10 +33,10 @@
         @input="handleInput"
         @blur="handleBlur"
         @focus="handleFocus"
-      &gt;&lt;/textarea&gt;
+      ></textarea>
       
-      &lt;!-- セレクト --&gt;
-      &lt;select
+      <!-- セレクト -->
+      <select
         v-else-if="type === 'select'"
         :id="inputId"
         :value="modelValue"
@@ -47,19 +47,14 @@
         @change="handleInput"
         @blur="handleBlur"
         @focus="handleFocus"
-      &gt;
-        &lt;option v-if="placeholder" value=""&gt;{{ placeholder }}&lt;/option&gt;
-        &lt;option
-          v-for="option in options"
-          :key="getOptionValue(option)"
-          :value="getOptionValue(option)"
-        &gt;
+      >
+        <option v-for="option in options" :key="getOptionValue(option)" :value="getOptionValue(option)">
           {{ getOptionLabel(option) }}
-        &lt;/option&gt;
-      &lt;/select&gt;
+        </option>
+      </select>
       
-      &lt;!-- 通常の入力フィールド --&gt;
-      &lt;input
+      <!-- 通常の入力フィールド -->
+      <input
         v-else
         :id="inputId"
         :type="type"
@@ -76,38 +71,38 @@
         @input="handleInput"
         @blur="handleBlur"
         @focus="handleFocus"
-      &gt;
+      >
       
-      &lt;!-- サフィックスアイコン --&gt;
-      &lt;div v-if="suffixIcon" class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"&gt;
-        &lt;i :class="suffixIcon" class="text-gray-400"&gt;&lt;/i&gt;
-      &lt;/div&gt;
+      <!-- サフィックスアイコン -->
+      <div v-if="suffixIcon" class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+        <i :class="suffixIcon" class="text-gray-400"></i>
+      </div>
       
-      &lt;!-- クリアボタン --&gt;
-      &lt;button
-        v-if="clearable &amp;&amp; modelValue"
+      <!-- クリアボタン -->
+      <button
+        v-if="clearable && modelValue"
         type="button"
         class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
         @click="clearValue"
-      &gt;
-        &lt;i class="fas fa-times text-sm"&gt;&lt;/i&gt;
-      &lt;/button&gt;
-    &lt;/div&gt;
+      >
+        <i class="fas fa-times text-sm"></i>
+      </button>
+    </div>
     
-    &lt;!-- ヘルプテキスト --&gt;
-    &lt;p v-if="helpText" class="mt-2 text-sm text-gray-500"&gt;
+    <!-- ヘルプテキスト -->
+    <p v-if="helpText" class="mt-2 text-sm text-gray-500">
       {{ helpText }}
-    &lt;/p&gt;
+    </p>
     
-    &lt;!-- エラーメッセージ --&gt;
-    &lt;p v-if="error" class="mt-2 text-sm text-red-600"&gt;
-      &lt;i class="fas fa-exclamation-circle mr-1"&gt;&lt;/i&gt;
+    <!-- エラーメッセージ -->
+    <p v-if="error" class="mt-2 text-sm text-red-600">
+      <i class="fas fa-exclamation-circle mr-1"></i>
       {{ error }}
-    &lt;/p&gt;
-  &lt;/div&gt;
-&lt;/template&gt;
+    </p>
+  </div>
+</template>
 
-&lt;script&gt;
+<script>
 export default {
   name: 'FormInput',
   
@@ -122,9 +117,9 @@ export default {
     type: {
       type: String,
       default: 'text',
-      validator: value =&gt; [
+      validator: value => [
         'text', 'email', 'password', 'number', 'tel', 'url', 'search',
-        'date', 'time', 'datetime-local', 'month', 'week',
+        'date', 'datetime-local', 'month', 'week', 'time',
         'textarea', 'select'
       ].includes(value)
     },
@@ -188,7 +183,7 @@ export default {
     // セレクト用
     options: {
       type: Array,
-      default: () =&gt; []
+      default: () => []
     },
     optionValue: {
       type: String,
@@ -252,7 +247,7 @@ export default {
       if (this.disabled) {
         classes.push('bg-gray-50 text-gray-400 cursor-not-allowed')
       } else if (this.readonly) {
-        classes.push('bg-gray-50')
+        classes.push('bg-gray-50 text-gray-700')
       }
       
       if (this.loading) {
@@ -292,4 +287,4 @@ export default {
     }
   }
 }
-&lt;/script&gt;
+</script>

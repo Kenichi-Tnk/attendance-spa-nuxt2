@@ -1,118 +1,112 @@
-&lt;template&gt;
-  &lt;div class="container mx-auto px-4 py-8"&gt;
-    &lt;div class="mb-8"&gt;
-      &lt;nav class="flex items-center space-x-2 text-sm text-gray-500 mb-4"&gt;
-        &lt;nuxt-link to="/attendance" class="hover:text-blue-600"&gt;勤怠一覧&lt;/nuxt-link&gt;
-        &lt;span&gt;/&lt;/span&gt;
-        &lt;span class="text-gray-900"&gt;勤怠詳細&lt;/span&gt;
-      &lt;/nav&gt;
+<template>
+  <div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+      <nav class="flex items-center space-x-2 text-sm text-gray-500 mb-4">
+        <nuxt-link to="/attendance" class="hover:text-blue-600">勤怠一覧</nuxt-link>
+        <span>/</span>
+        <span class="text-gray-900">勤怠詳細</span>
+      </nav>
       
-      &lt;h1 class="text-3xl font-bold text-gray-900"&gt;勤怠詳細&lt;/h1&gt;
-      &lt;p class="text-gray-600 mt-2"&gt;{{ formatFullDate(attendance.date) }}の勤怠記録&lt;/p&gt;
-    &lt;/div&gt;
+      <h1 class="text-3xl font-bold text-gray-900">勤怠詳細</h1>
+      <p class="text-gray-600 mt-2">{{ formatFullDate(attendance.date) }}の勤怠記録</p>
+    </div>
     
-    &lt;div class="grid grid-cols-1 lg:grid-cols-2 gap-8"&gt;
-      &lt;!-- 勤怠情報 --&gt;
-      &lt;div class="bg-white rounded-lg shadow-md p-6"&gt;
-        &lt;h2 class="text-xl font-semibold text-gray-800 mb-6"&gt;勤怠情報&lt;/h2&gt;
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- 勤怠情報 -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-6">勤怠情報</h2>
         
-        &lt;div class="space-y-4"&gt;
-          &lt;div class="flex justify-between py-3 border-b border-gray-100"&gt;
-            &lt;span class="text-gray-600"&gt;日付&lt;/span&gt;
-            &lt;span class="font-semibold"&gt;{{ formatFullDate(attendance.date) }}&lt;/span&gt;
-          &lt;/div&gt;
+        <div class="space-y-4">
+          <div class="flex justify-between py-3 border-b border-gray-100">
+            <span class="text-gray-600">日付</span>
+            <span class="font-semibold">{{ formatFullDate(attendance.date) }}</span>
+          </div>
           
-          &lt;div class="flex justify-between py-3 border-b border-gray-100"&gt;
-            &lt;span class="text-gray-600"&gt;出勤時刻&lt;/span&gt;
-            &lt;span class="font-semibold"&gt;
+          <div class="flex justify-between py-3 border-b border-gray-100">
+            <span class="text-gray-600">出勤時刻</span>
+            <span :class="attendance.clockInLate ? 'text-red-600 font-semibold' : 'font-semibold'">
               {{ attendance.clockIn || '−' }}
-              &lt;span v-if="attendance.clockInLate" class="text-red-500 text-sm ml-2"&gt;(遅刻)&lt;/span&gt;
-            &lt;/span&gt;
-          &lt;/div&gt;
+              <i v-if="attendance.clockInLate" class="fas fa-exclamation-triangle ml-1"></i>
+            </span>
+          </div>
           
-          &lt;div class="flex justify-between py-3 border-b border-gray-100"&gt;
-            &lt;span class="text-gray-600"&gt;退勤時刻&lt;/span&gt;
-            &lt;span class="font-semibold"&gt;
+          <div class="flex justify-between py-3 border-b border-gray-100">
+            <span class="text-gray-600">退勤時刻</span>
+            <span :class="attendance.clockOutEarly ? 'text-orange-600 font-semibold' : 'font-semibold'">
               {{ attendance.clockOut || '−' }}
-              &lt;span v-if="attendance.clockOutEarly" class="text-orange-500 text-sm ml-2"&gt;(早退)&lt;/span&gt;
-            &lt;/span&gt;
-          &lt;/div&gt;
+              <i v-if="attendance.clockOutEarly" class="fas fa-exclamation-triangle ml-1"></i>
+            </span>
+          </div>
           
-          &lt;div class="flex justify-between py-3 border-b border-gray-100"&gt;
-            &lt;span class="text-gray-600"&gt;休憩時間&lt;/span&gt;
-            &lt;span class="font-semibold"&gt;{{ attendance.breakTime || '1:00' }}&lt;/span&gt;
-          &lt;/div&gt;
+          <div class="flex justify-between py-3 border-b border-gray-100">
+            <span class="text-gray-600">休憩時間</span>
+            <span class="font-semibold">{{ attendance.breakTime || '1:00' }}</span>
+          </div>
           
-          &lt;div class="flex justify-between py-3 border-b border-gray-100"&gt;
-            &lt;span class="text-gray-600"&gt;実労働時間&lt;/span&gt;
-            &lt;span class="font-semibold text-lg text-blue-600"&gt;{{ attendance.workHours || '−' }}&lt;/span&gt;
-          &lt;/div&gt;
+          <div class="flex justify-between py-3 border-b border-gray-100">
+            <span class="text-gray-600">実労働時間</span>
+            <span class="font-semibold text-lg text-blue-600">{{ attendance.workHours || '−' }}</span>
+          </div>
           
-          &lt;div class="flex justify-between py-3"&gt;
-            &lt;span class="text-gray-600"&gt;ステータス&lt;/span&gt;
-            &lt;span :class="getStatusClass(attendance.status)" class="inline-flex px-3 py-1 text-sm font-semibold rounded-full"&gt;
+          <div class="flex justify-between py-3">
+            <span class="text-gray-600">ステータス</span>
+            <span :class="getStatusClass(attendance.status)" class="px-3 py-1 rounded-full text-sm font-medium">
               {{ getStatusText(attendance.status) }}
-            &lt;/span&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
+            </span>
+          </div>
+        </div>
         
-        &lt;!-- 操作ボタン --&gt;
-        &lt;div class="mt-6 flex space-x-3"&gt;
-          &lt;button
+        <!-- 操作ボタン -->
+        <div class="mt-6 flex space-x-3">
+          <button
             v-if="canRequestCorrection"
             @click="requestCorrection"
             class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-md transition-colors"
-          &gt;
-            &lt;i class="fas fa-edit mr-2"&gt;&lt;/i&gt;
+          >
+            <i class="fas fa-edit mr-2"></i>
             修正申請
-          &lt;/button&gt;
+          </button>
           
-          &lt;nuxt-link
+          <nuxt-link
             to="/attendance"
             class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md transition-colors"
-          &gt;
-            &lt;i class="fas fa-arrow-left mr-2"&gt;&lt;/i&gt;
+          >
+            <i class="fas fa-arrow-left mr-2"></i>
             一覧に戻る
-          &lt;/nuxt-link&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
+          </nuxt-link>
+        </div>
+      </div>
       
-      &lt;!-- 修正履歴 --&gt;
-      &lt;div class="bg-white rounded-lg shadow-md p-6"&gt;
-        &lt;h2 class="text-xl font-semibold text-gray-800 mb-6"&gt;修正履歴&lt;/h2&gt;
+      <!-- 修正履歴 -->
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-6">修正履歴</h2>
         
-        &lt;div v-if="correctionHistory.length === 0" class="text-center py-8 text-gray-500"&gt;
-          &lt;i class="fas fa-history text-4xl mb-4"&gt;&lt;/i&gt;
-          &lt;p&gt;修正履歴はありません&lt;/p&gt;
-        &lt;/div&gt;
+        <div v-if="correctionHistory.length === 0" class="text-center py-8 text-gray-500">
+          <i class="fas fa-history text-4xl mb-4"></i>
+          <p>修正履歴はありません</p>
+        </div>
         
-        &lt;div v-else class="space-y-4"&gt;
-          &lt;div v-for="history in correctionHistory" :key="history.id" class="border border-gray-200 rounded-lg p-4"&gt;
-            &lt;div class="flex items-center justify-between mb-2"&gt;
-              &lt;span :class="getCorrectionStatusClass(history.status)" class="inline-flex px-2 py-1 text-xs font-semibold rounded-full"&gt;
-                {{ getCorrectionStatusText(history.status) }}
-              &lt;/span&gt;
-              &lt;span class="text-sm text-gray-500"&gt;{{ formatDateTime(history.createdAt) }}&lt;/span&gt;
-            &lt;/div&gt;
-            
-            &lt;div class="text-sm text-gray-700"&gt;
-              &lt;p&gt;&lt;strong&gt;申請内容:&lt;/strong&gt; {{ history.reason }}&lt;/p&gt;
-              &lt;p class="mt-1"&gt;&lt;strong&gt;修正前:&lt;/strong&gt; {{ history.beforeTime }}&lt;/p&gt;
-              &lt;p&gt;&lt;strong&gt;修正後:&lt;/strong&gt; {{ history.afterTime }}&lt;/p&gt;
-              
-              &lt;div v-if="history.adminNote" class="mt-2 p-2 bg-gray-50 rounded"&gt;
-                &lt;p&gt;&lt;strong&gt;管理者コメント:&lt;/strong&gt; {{ history.adminNote }}&lt;/p&gt;
-                &lt;p class="text-xs text-gray-500 mt-1"&gt;承認者: {{ history.approvedBy }}&lt;/p&gt;
-              &lt;/div&gt;
-            &lt;/div&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/template&gt;
+        <div v-else class="space-y-4">
+          <div v-for="correction in correctionHistory" :key="correction.id" class="border-l-4 border-blue-500 pl-4 py-3 bg-gray-50 rounded-r-lg">
+            <div class="flex justify-between items-start mb-2">
+              <h4 class="font-semibold text-gray-800">{{ correction.type }}</h4>
+              <span :class="getCorrectionStatusClass(correction.status)" class="px-2 py-1 rounded text-xs font-medium">
+                {{ getCorrectionStatusText(correction.status) }}
+              </span>
+            </div>
+            <p class="text-sm text-gray-600 mb-2">{{ correction.reason }}</p>
+            <div class="text-xs text-gray-500">
+              <span>申請日時: {{ formatDateTime(correction.requestedAt) }}</span>
+              <span v-if="correction.reviewedAt" class="ml-4">承認日時: {{ formatDateTime(correction.reviewedAt) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
 
-&lt;script&gt;
+<script>
 export default {
   name: 'AttendanceDetail',
   middleware: ['auth', 'verified'],
@@ -133,13 +127,11 @@ export default {
       correctionHistory: [
         {
           id: 1,
+          type: '出勤時刻修正',
+          reason: '電車遅延のため',
           status: 'approved',
-          reason: '電車遅延のため遅刻しました',
-          beforeTime: '09:15',
-          afterTime: '09:00',
-          adminNote: '電車遅延証明書を確認しました。承認いたします。',
-          approvedBy: '管理者',
-          createdAt: '2024-10-25T10:30:00Z'
+          requestedAt: '2024-10-26T09:30:00',
+          reviewedAt: '2024-10-26T14:00:00'
         }
       ]
     }
@@ -161,7 +153,7 @@ export default {
         const id = this.$route.params.id
         
         // TODO: API呼び出しで勤怠詳細を取得
-        await new Promise(resolve =&gt; setTimeout(resolve, 500))
+        await new Promise(resolve => setTimeout(resolve, 500))
         
         // モックデータはすでにdata()で設定済み
       } catch (error) {
@@ -230,4 +222,4 @@ export default {
     }
   }
 }
-&lt;/script&gt;
+</script>

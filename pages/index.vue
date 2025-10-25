@@ -1,10 +1,10 @@
-&lt;template&gt;
-  &lt;div&gt;
-    &lt;p&gt;リダイレクト中...&lt;/p&gt;
-  &lt;/div&gt;
-&lt;/template&gt;
+<template>
+  <div>
+    <p>リダイレクト中...</p>
+  </div>
+</template>
 
-&lt;script&gt;
+<script>
 export default {
   name: 'IndexPage',
   middleware: ['auth', 'verified'],
@@ -18,4 +18,4 @@ export default {
     }
   }
 }
-&lt;/script&gt;
+</script>

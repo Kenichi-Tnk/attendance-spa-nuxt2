@@ -1,124 +1,123 @@
-&lt;template&gt;
-  &lt;div class="container mx-auto px-4 py-8"&gt;
-    &lt;div class="mb-8"&gt;
-      &lt;h1 class="text-3xl font-bold text-gray-900"&gt;勤怠管理ダッシュボード&lt;/h1&gt;
-      &lt;p class="text-gray-600 mt-2"&gt;{{ currentUser.name }}さん、お疲れ様です&lt;/p&gt;
-    &lt;/div&gt;
+<template>
+  <div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">勤怠管理ダッシュボード</h1>
+      <p class="text-gray-600 mt-2">{{ currentUser.name }}さん、お疲れ様です</p>
+    </div>
     
-    &lt;!-- 勤怠打刻セクション --&gt;
-    &lt;div class="bg-white rounded-lg shadow-md p-6 mb-8"&gt;
-      &lt;h2 class="text-xl font-semibold text-gray-800 mb-4"&gt;勤怠打刻&lt;/h2&gt;
-      &lt;div class="grid grid-cols-1 md:grid-cols-2 gap-4"&gt;
-        &lt;div class="text-center"&gt;
-          &lt;button
+    <!-- 勤怠打刻セクション -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">勤怠打刻</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="text-center">
+          <button
             @click="clockIn"
-            :disabled="isWorking || isLoading"
+            :disabled="isLoading || isWorking"
             class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-bold py-4 px-6 rounded-lg text-lg transition-colors"
-          &gt;
-            &lt;i class="fas fa-sign-in-alt mr-2"&gt;&lt;/i&gt;
+          >
+            <i class="fas fa-sign-in-alt mr-2"></i>
             出勤
-          &lt;/button&gt;
-          &lt;p class="text-sm text-gray-500 mt-2"&gt;勤務開始時に押してください&lt;/p&gt;
-        &lt;/div&gt;
+          </button>
+          <p class="text-sm text-gray-500 mt-2">勤務開始時に押してください</p>
+        </div>
         
-        &lt;div class="text-center"&gt;
-          &lt;button
+        <div class="text-center">
+          <button
             @click="clockOut"
-            :disabled="!isWorking || isLoading"
+            :disabled="isLoading || !isWorking"
             class="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white font-bold py-4 px-6 rounded-lg text-lg transition-colors"
-          &gt;
-            &lt;i class="fas fa-sign-out-alt mr-2"&gt;&lt;/i&gt;
+          >
+            <i class="fas fa-sign-out-alt mr-2"></i>
             退勤
-          &lt;/button&gt;
-          &lt;p class="text-sm text-gray-500 mt-2"&gt;勤務終了時に押してください&lt;/p&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
+          </button>
+          <p class="text-sm text-gray-500 mt-2">勤務終了時に押してください</p>
+        </div>
+      </div>
       
-      &lt;!-- 現在の勤務状態 --&gt;
-      &lt;div class="mt-6 p-4 bg-gray-50 rounded-lg"&gt;
-        &lt;div class="flex items-center justify-between"&gt;
-          &lt;div&gt;
-            &lt;span class="text-sm text-gray-600"&gt;現在の状態:&lt;/span&gt;
-            &lt;span :class="isWorking ? 'text-green-600' : 'text-gray-600'" class="ml-2 font-semibold"&gt;
-              {{ isWorking ? '勤務中' : '勤務時間外' }}
-            &lt;/span&gt;
-          &lt;/div&gt;
-          &lt;div v-if="todayStartTime"&gt;
-            &lt;span class="text-sm text-gray-600"&gt;出勤時刻:&lt;/span&gt;
-            &lt;span class="ml-2 font-semibold"&gt;{{ todayStartTime }}&lt;/span&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
+      <!-- 現在の勤務状態 -->
+      <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-sm text-gray-600">現在の状態:</span>
+            <span :class="isWorking ? 'text-green-600 font-semibold' : 'text-gray-600'">
+              {{ isWorking ? '勤務中' : '勤務外' }}
+            </span>
+          </div>
+          <div v-if="todayStartTime" class="text-sm text-gray-600">
+            出勤時刻: <span class="font-semibold">{{ todayStartTime }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
     
-    &lt;!-- クイックアクション --&gt;
-    &lt;div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"&gt;
-      &lt;nuxt-link
+    <!-- クイックアクション -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <nuxt-link
         to="/attendance"
         class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border-l-4 border-blue-500"
-      &gt;
-        &lt;div class="flex items-center"&gt;
-          &lt;i class="fas fa-calendar-alt text-blue-500 text-2xl mr-4"&gt;&lt;/i&gt;
-          &lt;div&gt;
-            &lt;h3 class="text-lg font-semibold text-gray-800"&gt;勤怠一覧&lt;/h3&gt;
-            &lt;p class="text-gray-600 text-sm"&gt;過去の勤怠記録を確認&lt;/p&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/nuxt-link&gt;
+      >
+        <div class="flex items-center">
+          <i class="fas fa-calendar-alt text-blue-500 text-2xl mr-4"></i>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-800">勤怠一覧</h3>
+            <p class="text-gray-600 text-sm">過去の勤怠記録を確認</p>
+          </div>
+        </div>
+      </nuxt-link>
       
-      &lt;nuxt-link
+      <nuxt-link
         to="/correction-requests"
         class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border-l-4 border-yellow-500"
-      &gt;
-        &lt;div class="flex items-center"&gt;
-          &lt;i class="fas fa-edit text-yellow-500 text-2xl mr-4"&gt;&lt;/i&gt;
-          &lt;div&gt;
-            &lt;h3 class="text-lg font-semibold text-gray-800"&gt;修正申請&lt;/h3&gt;
-            &lt;p class="text-gray-600 text-sm"&gt;勤怠の修正を申請&lt;/p&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/nuxt-link&gt;
+      >
+        <div class="flex items-center">
+          <i class="fas fa-edit text-yellow-500 text-2xl mr-4"></i>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-800">修正申請</h3>
+            <p class="text-gray-600 text-sm">勤怠の修正を申請</p>
+          </div>
+        </div>
+      </nuxt-link>
       
-      &lt;nuxt-link
+      <nuxt-link
         to="/my-requests"
         class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border-l-4 border-green-500"
-      &gt;
-        &lt;div class="flex items-center"&gt;
-          &lt;i class="fas fa-list-alt text-green-500 text-2xl mr-4"&gt;&lt;/i&gt;
-          &lt;div&gt;
-            &lt;h3 class="text-lg font-semibold text-gray-800"&gt;申請状況&lt;/h3&gt;
-            &lt;p class="text-gray-600 text-sm"&gt;提出した申請の確認&lt;/p&gt;
-          &lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/nuxt-link&gt;
-    &lt;/div&gt;
+      >
+        <div class="flex items-center">
+          <i class="fas fa-list text-green-500 text-2xl mr-4"></i>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-800">申請状況</h3>
+            <p class="text-gray-600 text-sm">申請の進捗を確認</p>
+          </div>
+        </div>
+      </nuxt-link>
+    </div>
     
-    &lt;!-- 今月の勤怠サマリー --&gt;
-    &lt;div class="bg-white rounded-lg shadow-md p-6"&gt;
-      &lt;h2 class="text-xl font-semibold text-gray-800 mb-4"&gt;今月の勤怠サマリー&lt;/h2&gt;
-      &lt;div class="grid grid-cols-1 md:grid-cols-4 gap-4"&gt;
-        &lt;div class="text-center p-4 bg-blue-50 rounded-lg"&gt;
-          &lt;div class="text-2xl font-bold text-blue-600"&gt;{{ monthlyStats.workDays }}&lt;/div&gt;
-          &lt;div class="text-sm text-gray-600"&gt;出勤日数&lt;/div&gt;
-        &lt;/div&gt;
-        &lt;div class="text-center p-4 bg-green-50 rounded-lg"&gt;
-          &lt;div class="text-2xl font-bold text-green-600"&gt;{{ monthlyStats.totalHours }}&lt;/div&gt;
-          &lt;div class="text-sm text-gray-600"&gt;総労働時間&lt;/div&gt;
-        &lt;/div&gt;
-        &lt;div class="text-center p-4 bg-yellow-50 rounded-lg"&gt;
-          &lt;div class="text-2xl font-bold text-yellow-600"&gt;{{ monthlyStats.averageHours }}&lt;/div&gt;
-          &lt;div class="text-sm text-gray-600"&gt;平均労働時間&lt;/div&gt;
-        &lt;/div&gt;
-        &lt;div class="text-center p-4 bg-red-50 rounded-lg"&gt;
-          &lt;div class="text-2xl font-bold text-red-600"&gt;{{ monthlyStats.pendingRequests }}&lt;/div&gt;
-          &lt;div class="text-sm text-gray-600"&gt;承認待ち申請&lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/template&gt;
+    <!-- 今月の勤怠サマリー -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">今月の勤怠サマリー</h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="text-center p-4 bg-blue-50 rounded-lg">
+          <div class="text-2xl font-bold text-blue-600">{{ monthlyStats.workDays }}</div>
+          <div class="text-sm text-gray-600">出勤日数</div>
+        </div>
+        <div class="text-center p-4 bg-green-50 rounded-lg">
+          <div class="text-2xl font-bold text-green-600">{{ monthlyStats.totalHours }}</div>
+          <div class="text-sm text-gray-600">総労働時間</div>
+        </div>
+        <div class="text-center p-4 bg-yellow-50 rounded-lg">
+          <div class="text-2xl font-bold text-yellow-600">{{ monthlyStats.averageHours }}</div>
+          <div class="text-sm text-gray-600">平均労働時間</div>
+        </div>
+        <div class="text-center p-4 bg-red-50 rounded-lg">
+          <div class="text-2xl font-bold text-red-600">{{ monthlyStats.pendingRequests }}</div>
+          <div class="text-sm text-gray-600">承認待ち申請</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
 
-&lt;script&gt;
+<script>
 export default {
   name: 'Dashboard',
   middleware: ['auth', 'verified'],
@@ -153,7 +152,7 @@ export default {
         this.isLoading = true
         
         // TODO: API呼び出し
-        await new Promise(resolve =&gt; setTimeout(resolve, 500))
+        await new Promise(resolve => setTimeout(resolve, 500))
         
         this.isWorking = true
         this.todayStartTime = new Date().toLocaleTimeString('ja-JP', {
@@ -175,7 +174,7 @@ export default {
         this.isLoading = true
         
         // TODO: API呼び出し
-        await new Promise(resolve =&gt; setTimeout(resolve, 500))
+        await new Promise(resolve => setTimeout(resolve, 500))
         
         this.isWorking = false
         
@@ -191,7 +190,7 @@ export default {
     async loadTodayAttendance() {
       try {
         // TODO: API呼び出しで今日の勤怠状況を取得
-        await new Promise(resolve =&gt; setTimeout(resolve, 300))
+        await new Promise(resolve => setTimeout(resolve, 300))
         
         // モックデータ
         const todayAttendance = {
@@ -207,4 +206,4 @@ export default {
     }
   }
 }
-&lt;/script&gt;
+</script>

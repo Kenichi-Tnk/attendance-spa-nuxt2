@@ -1,57 +1,58 @@
-&lt;template&gt;
-  &lt;div
+<template>
+  <div
     :class="cardClasses"
     class="bg-white rounded-lg shadow-md p-6 transition-all duration-200"
-  &gt;
-    &lt;div class="flex items-center"&gt;
-      &lt;!-- アイコン --&gt;
-      &lt;div v-if="icon" :class="iconClasses" class="flex-shrink-0 p-3 rounded-lg mr-4"&gt;
-        &lt;i :class="icon" class="text-2xl"&gt;&lt;/i&gt;
-      &lt;/div&gt;
+    @click="handleClick"
+  >
+    <div class="flex items-center">
+      <!-- アイコン -->
+      <div v-if="icon" :class="iconClasses" class="flex-shrink-0 p-3 rounded-lg mr-4">
+        <i :class="icon" class="text-2xl"></i>
+      </div>
       
-      &lt;!-- コンテンツ --&gt;
-      &lt;div class="flex-1 min-w-0"&gt;
-        &lt;!-- 値 --&gt;
-        &lt;div class="flex items-baseline"&gt;
-          &lt;div :class="valueClasses" class="text-2xl font-bold truncate"&gt;
+      <!-- コンテンツ -->
+      <div class="flex-1 min-w-0">
+        <!-- 値 -->
+        <div class="flex items-baseline">
+          <div :class="valueClasses" class="text-2xl font-bold truncate">
             {{ displayValue }}
-          &lt;/div&gt;
-          &lt;div v-if="unit" class="ml-2 text-sm text-gray-500"&gt;
+          </div>
+          <div v-if="unit" class="ml-2 text-sm text-gray-500">
             {{ unit }}
-          &lt;/div&gt;
-        &lt;/div&gt;
+          </div>
+        </div>
         
-        &lt;!-- ラベル --&gt;
-        &lt;div class="text-sm text-gray-600 mt-1 truncate"&gt;
+        <!-- ラベル -->
+        <div class="text-sm text-gray-600 mt-1 truncate">
           {{ label }}
-        &lt;/div&gt;
+        </div>
         
-        &lt;!-- 変化量（オプション） --&gt;
-        &lt;div v-if="change !== null" class="flex items-center mt-2"&gt;
-          &lt;i :class="changeIcon" class="text-xs mr-1"&gt;&lt;/i&gt;
-          &lt;span :class="changeClasses" class="text-xs font-medium"&gt;
+        <!-- 変化量（オプション） -->
+        <div v-if="change !== null" class="flex items-center mt-2">
+          <i :class="changeIcon" class="text-xs mr-1"></i>
+          <span :class="changeClasses" class="text-xs font-medium">
             {{ changeText }}
-          &lt;/span&gt;
-          &lt;span v-if="changePeriod" class="text-xs text-gray-400 ml-1"&gt;
+          </span>
+          <span v-if="changePeriod" class="text-xs text-gray-400 ml-1">
             {{ changePeriod }}
-          &lt;/span&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
+          </span>
+        </div>
+      </div>
       
-      &lt;!-- 追加コンテンツ --&gt;
-      &lt;div v-if="$slots.extra" class="flex-shrink-0 ml-4"&gt;
-        &lt;slot name="extra"&gt;&lt;/slot&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
+      <!-- 追加コンテンツ -->
+      <div v-if="$slots.extra" class="flex-shrink-0 ml-4">
+        <slot name="extra"></slot>
+      </div>
+    </div>
     
-    &lt;!-- ボトムコンテンツ --&gt;
-    &lt;div v-if="$slots.bottom" class="mt-4 pt-4 border-t border-gray-100"&gt;
-      &lt;slot name="bottom"&gt;&lt;/slot&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/template&gt;
+    <!-- ボトムコンテンツ -->
+    <div v-if="$slots.bottom" class="mt-4 pt-4 border-t border-gray-100">
+      <slot name="bottom"></slot>
+    </div>
+  </div>
+</template>
 
-&lt;script&gt;
+<script>
 export default {
   name: 'StatCard',
   
@@ -78,12 +79,12 @@ export default {
     color: {
       type: String,
       default: 'blue',
-      validator: value =&gt; ['blue', 'green', 'yellow', 'red', 'purple', 'gray', 'indigo'].includes(value)
+      validator: value => ['blue', 'green', 'yellow', 'red', 'purple', 'gray', 'indigo'].includes(value)
     },
     borderPosition: {
       type: String,
       default: 'left',
-      validator: value =&gt; ['left', 'top', 'none'].includes(value)
+      validator: value => ['left', 'top', 'none'].includes(value)
     },
     
     // 変化量
@@ -150,17 +151,17 @@ export default {
     
     changeIcon() {
       if (this.change === null) return ''
-      return this.change &gt; 0 ? 'fas fa-arrow-up' : this.change &lt; 0 ? 'fas fa-arrow-down' : 'fas fa-minus'
+      return this.change > 0 ? 'fas fa-arrow-up' : this.change < 0 ? 'fas fa-arrow-down' : 'fas fa-minus'
     },
     
     changeClasses() {
       if (this.change === null) return ''
-      return this.change &gt; 0 ? 'text-green-600' : this.change &lt; 0 ? 'text-red-600' : 'text-gray-600'
+      return this.change > 0 ? 'text-green-600' : this.change < 0 ? 'text-red-600' : 'text-gray-600'
     },
     
     changeText() {
       if (this.change === null) return ''
-      const prefix = this.change &gt; 0 ? '+' : ''
+      const prefix = this.change > 0 ? '+' : ''
       return `${prefix}${this.change}%`
     }
   },
@@ -173,4 +174,4 @@ export default {
     }
   }
 }
-&lt;/script&gt;
+</script>

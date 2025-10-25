@@ -1,37 +1,37 @@
-&lt;template&gt;
-  &lt;div class="container mx-auto px-4 py-8"&gt;
-    &lt;PageHeader
+<template>
+  <div class="container mx-auto px-4 py-8">
+    <PageHeader
       title="勤怠一覧"
       subtitle="過去の勤怠記録を確認できます"
       icon="fas fa-calendar-alt"
       :breadcrumbs="breadcrumbs"
-    /&gt;
+    />
     
-    &lt;!-- フィルター --&gt;
-    &lt;div class="bg-white rounded-lg shadow-md p-6 mb-6"&gt;
-      &lt;h2 class="text-lg font-semibold text-gray-800 mb-4"&gt;絞り込み&lt;/h2&gt;
-      &lt;div class="grid grid-cols-1 md:grid-cols-3 gap-4"&gt;
-        &lt;FormInput
+    <!-- フィルター -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <h2 class="text-lg font-semibold text-gray-800 mb-4">絞り込み</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <FormInput
           v-model="selectedMonth"
           type="month"
           label="年月"
           :required="false"
-        /&gt;
-        &lt;div class="flex items-end"&gt;
-          &lt;button
+        />
+        <div class="flex items-end">
+          <button
             @click="loadAttendanceData"
             :disabled="isLoading"
             class="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-4 py-2 rounded-md transition-colors"
-          &gt;
-            &lt;i class="fas fa-search mr-2"&gt;&lt;/i&gt;
+          >
+            <i class="fas fa-search mr-2"></i>
             検索
-          &lt;/button&gt;
-        &lt;/div&gt;
-      &lt;/div&gt;
-    &lt;/div&gt;
+          </button>
+        </div>
+      </div>
+    </div>
     
-    &lt;!-- 勤怠記録テーブル --&gt;
-    &lt;AttendanceTable
+    <!-- 勤怠記録テーブル -->
+    <AttendanceTable
       :title="`${formatMonthYear(selectedMonth)}の勤怠記録`"
       :data="attendanceRecords"
       :columns="tableColumns"
@@ -41,34 +41,34 @@
       :total-items="totalItems"
       @detail="goToDetail"
       @page-change="handlePageChange"
-    &gt;
-      &lt;template #cell-date="{ item }"&gt;
-        &lt;div&gt;
-          &lt;div class="text-gray-900"&gt;{{ formatDate(item.date) }}&lt;/div&gt;
-          &lt;div class="text-xs text-gray-500"&gt;{{ getDayOfWeek(item.date) }}&lt;/div&gt;
-        &lt;/div&gt;
-      &lt;/template&gt;
+    >
+      <template #cell-date="{ item }">
+        <div>
+          <div class="text-gray-900">{{ formatDate(item.date) }}</div>
+          <div class="text-xs text-gray-500">{{ getDayOfWeek(item.date) }}</div>
+        </div>
+      </template>
       
-      &lt;template #actions="{ item }"&gt;
-        &lt;nuxt-link
+      <template #actions="{ item }">
+        <nuxt-link
           :to="`/attendance/${item.id}`"
           class="text-blue-600 hover:text-blue-900 mr-3"
-        &gt;
+        >
           詳細
-        &lt;/nuxt-link&gt;
-        &lt;button
+        </nuxt-link>
+        <button
           v-if="canRequestCorrection(item)"
           @click="requestCorrection(item.id)"
           class="text-yellow-600 hover:text-yellow-900"
-        &gt;
+        >
           修正申請
-        &lt;/button&gt;
-      &lt;/template&gt;
-    &lt;/AttendanceTable&gt;
-  &lt;/div&gt;
-&lt;/template&gt;
+        </button>
+      </template>
+    </AttendanceTable>
+  </div>
+</template>
 
-&lt;script&gt;
+<script>
 import AttendanceTable from '~/components/AttendanceTable.vue'
 import PageHeader from '~/components/PageHeader.vue'
 import FormInput from '~/components/FormInput.vue'
@@ -163,7 +163,7 @@ export default {
         this.isLoading = true
         
         // TODO: API呼び出しで勤怠データを取得
-        await new Promise(resolve =&gt; setTimeout(resolve, 500))
+        await new Promise(resolve => setTimeout(resolve, 500))
         
         // モックデータはすでにdata()で設定済み
         this.totalItems = this.attendanceRecords.length
@@ -200,7 +200,7 @@ export default {
     
     canRequestCorrection(record) {
       // 修正申請可能な条件をチェック
-      return record.status !== 'pending' &amp;&amp; record.clockIn
+      return record.status !== 'pending' && record.clockIn
     },
     
     goToDetail(item) {
@@ -218,4 +218,4 @@ export default {
     }
   }
 }
-&lt;/script&gt;
+</script>

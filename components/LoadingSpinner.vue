@@ -1,21 +1,21 @@
-&lt;template&gt;
-  &lt;div v-if="show" :class="containerClasses"&gt;
-    &lt;!-- スピナー --&gt;
-    &lt;div :class="spinnerClasses"&gt;&lt;/div&gt;
+<template>
+  <div v-if="show" :class="containerClasses">
+    <!-- スピナー -->
+    <div :class="spinnerClasses"></div>
     
-    &lt;!-- メッセージ --&gt;
-    &lt;div v-if="message" :class="messageClasses"&gt;
+    <!-- メッセージ -->
+    <div v-if="message" :class="messageClasses">
       {{ message }}
-    &lt;/div&gt;
+    </div>
     
-    &lt;!-- 追加コンテンツ --&gt;
-    &lt;div v-if="$slots.default" class="mt-4"&gt;
-      &lt;slot&gt;&lt;/slot&gt;
-    &lt;/div&gt;
-  &lt;/div&gt;
-&lt;/template&gt;
+    <!-- 追加コンテンツ -->
+    <div v-if="$slots.default" class="mt-4">
+      <slot></slot>
+    </div>
+  </div>
+</template>
 
-&lt;script&gt;
+<script>
 export default {
   name: 'LoadingSpinner',
   
@@ -31,12 +31,12 @@ export default {
     size: {
       type: String,
       default: 'medium',
-      validator: value =&gt; ['small', 'medium', 'large'].includes(value)
+      validator: value => ['small', 'medium', 'large'].includes(value)
     },
     color: {
       type: String,
       default: 'blue',
-      validator: value =&gt; ['blue', 'green', 'yellow', 'red', 'purple', 'gray', 'white'].includes(value)
+      validator: value => ['blue', 'green', 'yellow', 'red', 'purple', 'gray', 'white'].includes(value)
     },
     overlay: {
       type: Boolean,
@@ -122,4 +122,4 @@ export default {
     }
   }
 }
-&lt;/script&gt;
+</script>
