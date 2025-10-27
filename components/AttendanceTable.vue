@@ -1,61 +1,59 @@
 <template>
-  <div class="bg-white rounded-lg shadow-md overflow-hidden">
+  <div class="attendance-table">
     <!-- テーブルヘッダー -->
-    <div v-if="title" class="px-6 py-4 border-b border-gray-200">
-      <h2 class="text-lg font-semibold text-gray-800">{{ title }}</h2>
-      <p v-if="subtitle" class="text-sm text-gray-600 mt-1">{{ subtitle }}</p>
+    <div v-if="title" class="attendance-table__header">
+      <h2 class="attendance-table__title">{{ title }}</h2>
+      <p v-if="subtitle" class="attendance-table__subtitle">{{ subtitle }}</p>
     </div>
     
     <!-- フィルター（オプション） -->
-    <div v-if="showFilters" class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+    <div v-if="showFilters" class="attendance-table__filters">
       <slot name="filters"></slot>
     </div>
     
     <!-- テーブル本体 -->
-    <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
+    <div class="attendance-table__wrapper">
+      <table class="attendance-table__table">
+        <thead>
           <tr>
             <th
               v-for="column in columns"
               :key="column.key"
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
               :class="column.headerClass"
             >
               {{ column.label }}
             </th>
-            <th v-if="showActions" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th v-if="showActions">
               操作
             </th>
           </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
+        <tbody>
           <!-- ローディング状態 -->
           <tr v-if="loading">
-            <td :colspan="columns.length + (showActions ? 1 : 0)" class="px-6 py-12 text-center">
-              <div class="flex items-center justify-center">
-                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                <span class="ml-3 text-gray-500">読み込み中...</span>
+            <td :colspan="columns.length + (showActions ? 1 : 0)" class="attendance-table__cell--loading">
+              <div class="attendance-table__loading">
+                <div class="attendance-table__loading-spinner"></div>
+                <span class="attendance-table__loading-text">読み込み中...</span>
               </div>
             </td>
           </tr>
           
           <!-- データなし状態 -->
           <tr v-else-if="data.length === 0">
-            <td :colspan="columns.length + (showActions ? 1 : 0)" class="px-6 py-12 text-center text-gray-500">
+            <td :colspan="columns.length + (showActions ? 1 : 0)" class="attendance-table__cell--empty">
               <slot name="empty">
-                <i class="fas fa-inbox text-4xl mb-4 text-gray-300"></i>
+                <i class="fas fa-inbox attendance-table__empty-icon"></i>
                 <p>データがありません</p>
               </slot>
             </td>
           </tr>
           
           <!-- データ行 -->
-          <tr v-else v-for="(item, index) in data" :key="getItemKey(item, index)" class="hover:bg-gray-50">
+          <tr v-else v-for="(item, index) in data" :key="getItemKey(item, index)">
             <td
               v-for="column in columns"
               :key="column.key"
-              class="px-6 py-4 whitespace-nowrap text-sm"
               :class="column.cellClass"
             >
               <slot :name="`cell-${column.key}`" :item="item" :value="getValueByKey(item, column.key)">
@@ -68,33 +66,33 @@
                 <span v-else-if="column.type === 'status'">
                   <StatusBadge :status="getValueByKey(item, column.key)" />
                 </span>
-                <span v-else class="text-gray-900">
+                <span v-else :class="getValueByKey(item, column.key) ? 'attendance-table__cell--text' : 'attendance-table__cell--dash'">
                   {{ getValueByKey(item, column.key) || '−' }}
                 </span>
               </slot>
             </td>
             
             <!-- アクション列 -->
-            <td v-if="showActions" class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <td v-if="showActions">
               <slot name="actions" :item="item" :index="index">
                 <button
                   v-if="showDetailAction"
                   @click="$emit('detail', item)"
-                  class="text-blue-600 hover:text-blue-900 mr-3"
+                  class="attendance-table__action attendance-table__action--detail"
                 >
                   詳細
                 </button>
                 <button
                   v-if="showEditAction"
                   @click="$emit('edit', item)"
-                  class="text-yellow-600 hover:text-yellow-900 mr-3"
+                  class="attendance-table__action attendance-table__action--edit"
                 >
                   編集
                 </button>
                 <button
                   v-if="showDeleteAction"
                   @click="$emit('delete', item)"
-                  class="text-red-600 hover:text-red-900"
+                  class="attendance-table__action attendance-table__action--delete"
                 >
                   削除
                 </button>
@@ -106,25 +104,25 @@
     </div>
     
     <!-- ページネーション -->
-    <div v-if="showPagination" class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-      <div class="text-sm text-gray-700">
+    <div v-if="showPagination" class="attendance-table__pagination">
+      <div class="attendance-table__pagination-text">
         {{ paginationText }}
       </div>
-      <div class="flex space-x-2">
+      <div class="attendance-table__pagination-controls">
         <button
           :disabled="currentPage === 1"
           @click="$emit('page-change', currentPage - 1)"
-          class="px-3 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50 hover:bg-gray-50"
+          class="attendance-table__pagination-button"
         >
           前へ
         </button>
-        <span class="px-3 py-1 text-sm text-gray-700">
+        <span class="attendance-table__pagination-info">
           {{ currentPage }} / {{ totalPages }}
         </span>
         <button
           :disabled="currentPage === totalPages"
           @click="$emit('page-change', currentPage + 1)"
-          class="px-3 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50 hover:bg-gray-50"
+          class="attendance-table__pagination-button"
         >
           次へ
         </button>
@@ -245,3 +243,5 @@ export default {
   }
 }
 </script>
+
+<style src="~/assets/css/components/AttendanceTable.css"></style>

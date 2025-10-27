@@ -1,55 +1,66 @@
 <template>
-  <div class="mb-8">
+  <div class="page-header">
     <!-- パンくずリスト -->
-    <nav v-if="breadcrumbs && breadcrumbs.length > 0" class="flex items-center space-x-2 text-sm text-gray-500 mb-4">
-      <template v-for="(breadcrumb, index) in breadcrumbs" :key="index">
+    <nav v-if="breadcrumbs && breadcrumbs.length > 0" class="page-header__breadcrumbs">
+      <template v-for="(breadcrumb, index) in breadcrumbs">
         <nuxt-link
           v-if="breadcrumb.to && index < breadcrumbs.length - 1"
+          :key="`link-${index}`"
           :to="breadcrumb.to"
-          class="hover:text-blue-600 transition-colors"
+          class="page-header__breadcrumb-link"
         >
           {{ breadcrumb.text }}
         </nuxt-link>
-        <span v-else :class="{ 'text-gray-900 font-medium': index === breadcrumbs.length - 1 }">
+        <span
+          v-else
+          :key="`span-${index}`"
+          :class="{ 'page-header__breadcrumb-current': index === breadcrumbs.length - 1 }"
+        >
           {{ breadcrumb.text }}
         </span>
-        <span v-if="index < breadcrumbs.length - 1" class="text-gray-300">/</span>
+        <span
+          v-if="index < breadcrumbs.length - 1"
+          :key="`separator-${index}`"
+          class="page-header__breadcrumb-separator"
+        >
+          /
+        </span>
       </template>
     </nav>
-    
+
     <!-- ヘッダーコンテンツ -->
-    <div class="flex items-start justify-between">
-      <div class="flex-1">
+    <div class="page-header__content">
+      <div class="page-header__main">
         <!-- アイコン付きタイトル -->
-        <div class="flex items-center mb-2">
-          <i v-if="icon" :class="icon" class="text-2xl mr-3" :style="{ color: iconColor }"></i>
-          <h1 class="text-3xl font-bold text-gray-900">{{ title }}</h1>
+        <div class="page-header__title-container">
+          <i v-if="icon" :class="icon" class="page-header__icon" :style="{ color: iconColor }"></i>
+          <h1 class="page-header__title">{{ title }}</h1>
         </div>
-        
+
         <!-- サブタイトル -->
-        <p v-if="subtitle" class="text-gray-600 mt-2">{{ subtitle }}</p>
-        
+        <p v-if="subtitle" class="page-header__subtitle">{{ subtitle }}</p>
+
         <!-- 追加情報スロット -->
-        <div v-if="$slots.info" class="mt-3">
+        <div v-if="$slots.info" class="page-header__info">
           <slot name="info"></slot>
         </div>
       </div>
-      
+
       <!-- アクションボタン -->
-      <div v-if="$slots.actions" class="flex-shrink-0 ml-6">
+      <div v-if="$slots.actions" class="page-header__actions">
         <slot name="actions"></slot>
       </div>
     </div>
-    
+
     <!-- 区切り線 -->
-    <div v-if="showDivider" class="border-b border-gray-200 mt-6"></div>
+    <div v-if="showDivider" class="page-header__divider"></div>
   </div>
 </template>
 
 <script>
 export default {
   name: 'PageHeader',
-  
+
   props: {
     title: {
       type: String,
@@ -79,3 +90,5 @@ export default {
   }
 }
 </script>
+
+<style src="~/assets/css/components/PageHeader.css"></style>

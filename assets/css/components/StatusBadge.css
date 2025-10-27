@@ -1,0 +1,102 @@
+/* ステータスバッジ基本スタイル */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 9999px;
+}
+
+.status-badge__icon {
+    margin-right: 0.25rem;
+}
+
+/* 勤怠ステータス */
+.status-badge--attendance-normal {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.status-badge--attendance-late {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-badge--attendance-early-leave {
+    background-color: #fed7aa;
+    color: #c2410c;
+}
+
+.status-badge--attendance-absent {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.status-badge--attendance-pending {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.status-badge--attendance-working {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.status-badge--attendance-off {
+    background-color: #f3f4f6;
+    color: #1f2937;
+}
+
+/* 申請ステータス */
+.status-badge--request-pending {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-badge--request-approved {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.status-badge--request-rejected {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.status-badge--request-canceled {
+    background-color: #f3f4f6;
+    color: #1f2937;
+}
+
+/* ユーザーステータス */
+.status-badge--user-active {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.status-badge--user-inactive {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+.status-badge--user-pending {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.status-badge--user-admin {
+    background-color: #f3e8ff;
+    color: #6b21a8;
+}
+
+.status-badge--user-user {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+/* デフォルトスタイル（未知のステータス） */
+.status-badge--default {
+    background-color: #f3f4f6;
+    color: #1f2937;
+}

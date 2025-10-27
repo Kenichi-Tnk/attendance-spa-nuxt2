@@ -2,14 +2,14 @@
   <div v-if="show" :class="containerClasses">
     <!-- スピナー -->
     <div :class="spinnerClasses"></div>
-    
+
     <!-- メッセージ -->
     <div v-if="message" :class="messageClasses">
       {{ message }}
     </div>
-    
+
     <!-- 追加コンテンツ -->
-    <div v-if="$slots.default" class="mt-4">
+    <div v-if="$slots.default" class="spinner-slot">
       <slot></slot>
     </div>
   </div>
@@ -18,7 +18,7 @@
 <script>
 export default {
   name: 'LoadingSpinner',
-  
+
   props: {
     show: {
       type: Boolean,
@@ -51,75 +51,55 @@ export default {
       default: false
     }
   },
-  
+
   computed: {
     containerClasses() {
-      const classes = []
-      
+      const classes = ['spinner-container']
+
       if (this.overlay) {
-        classes.push('fixed inset-0 bg-black bg-opacity-50 z-50')
+        classes.push('spinner-container--overlay')
       }
-      
+
       if (this.center) {
-        classes.push('flex items-center justify-center')
+        classes.push('spinner-container--center')
         if (!this.inline) {
-          classes.push('min-h-32')
+          classes.push('spinner-container--center-block')
         }
       }
-      
+
       if (this.inline) {
-        classes.push('inline-flex items-center')
+        classes.push('spinner-container--inline')
       } else {
-        classes.push('flex flex-col')
+        classes.push('spinner-container--block')
       }
-      
+
       return classes.join(' ')
     },
-    
+
     spinnerClasses() {
-      const classes = ['animate-spin rounded-full border-2 border-transparent']
-      
-      // サイズ
-      const sizes = {
-        small: 'h-4 w-4',
-        medium: 'h-8 w-8',
-        large: 'h-12 w-12'
-      }
-      classes.push(sizes[this.size])
-      
-      // カラー
-      const colors = {
-        blue: 'border-t-blue-600 border-r-blue-600',
-        green: 'border-t-green-600 border-r-green-600',
-        yellow: 'border-t-yellow-600 border-r-yellow-600',
-        red: 'border-t-red-600 border-r-red-600',
-        purple: 'border-t-purple-600 border-r-purple-600',
-        gray: 'border-t-gray-600 border-r-gray-600',
-        white: 'border-t-white border-r-white'
-      }
-      classes.push(colors[this.color])
-      
+      const classes = ['spinner']
+      classes.push(`spinner--${this.size}`)
+      classes.push(`spinner--${this.color}`)
       return classes.join(' ')
     },
-    
+
     messageClasses() {
-      const classes = ['text-sm']
-      
+      const classes = ['spinner-message']
+
       if (this.inline) {
-        classes.push('ml-3')
+        classes.push('spinner-message--inline')
       } else {
-        classes.push('mt-3 text-center')
+        classes.push('spinner-message--block')
       }
-      
-      // オーバーレイ時は白文字
+
       if (this.overlay) {
-        classes.push('text-white')
-      } else {
-        classes.push('text-gray-600')
+        classes.push('spinner-message--overlay')
       }
-      
+
       return classes.join(' ')
     }
   }
 }
 </script>
+
+<style src="~/assets/css/components/LoadingSpinner.css"></style>

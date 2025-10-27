@@ -1,23 +1,22 @@
 <template>
-  <div class="form-group">
+  <div class="form-input">
     <!-- ラベル -->
     <label
       v-if="label"
       :for="inputId"
       :class="labelClasses"
-      class="block text-sm font-medium mb-2"
     >
       {{ label }}
-      <span v-if="required" class="text-red-500 ml-1">*</span>
+      <span v-if="required" class="form-input__required">*</span>
     </label>
-    
+
     <!-- 入力フィールド -->
-    <div class="relative">
+    <div class="form-input__container">
       <!-- プレフィックスアイコン -->
-      <div v-if="prefixIcon" class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-        <i :class="prefixIcon" class="text-gray-400"></i>
+      <div v-if="prefixIcon" class="form-input__icon--prefix">
+        <i :class="prefixIcon" class="form-input__icon"></i>
       </div>
-      
+
       <!-- テキストエリア -->
       <textarea
         v-if="type === 'textarea'"
@@ -29,12 +28,11 @@
         :required="required"
         :rows="rows"
         :class="inputClasses"
-        class="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent transition-colors resize-vertical"
         @input="handleInput"
         @blur="handleBlur"
         @focus="handleFocus"
       ></textarea>
-      
+
       <!-- セレクト -->
       <select
         v-else-if="type === 'select'"
@@ -43,7 +41,6 @@
         :disabled="disabled"
         :required="required"
         :class="inputClasses"
-        class="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent transition-colors"
         @change="handleInput"
         @blur="handleBlur"
         @focus="handleFocus"
@@ -52,7 +49,7 @@
           {{ getOptionLabel(option) }}
         </option>
       </select>
-      
+
       <!-- 通常の入力フィールド -->
       <input
         v-else
@@ -67,36 +64,35 @@
         :max="max"
         :step="step"
         :class="inputClasses"
-        class="w-full border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:border-transparent transition-colors"
         @input="handleInput"
         @blur="handleBlur"
         @focus="handleFocus"
       >
-      
+
       <!-- サフィックスアイコン -->
-      <div v-if="suffixIcon" class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-        <i :class="suffixIcon" class="text-gray-400"></i>
+      <div v-if="suffixIcon" class="form-input__icon--suffix">
+        <i :class="suffixIcon" class="form-input__icon"></i>
       </div>
-      
+
       <!-- クリアボタン -->
       <button
         v-if="clearable && modelValue"
         type="button"
-        class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+        class="form-input__clear"
         @click="clearValue"
       >
-        <i class="fas fa-times text-sm"></i>
+        <i class="fas fa-times form-input__clear-icon"></i>
       </button>
     </div>
-    
+
     <!-- ヘルプテキスト -->
-    <p v-if="helpText" class="mt-2 text-sm text-gray-500">
+    <p v-if="helpText" class="form-input__help">
       {{ helpText }}
     </p>
-    
+
     <!-- エラーメッセージ -->
-    <p v-if="error" class="mt-2 text-sm text-red-600">
-      <i class="fas fa-exclamation-circle mr-1"></i>
+    <p v-if="error" class="form-input__error">
+      <i class="fas fa-exclamation-circle form-input__error-icon"></i>
       {{ error }}
     </p>
   </div>
@@ -105,14 +101,14 @@
 <script>
 export default {
   name: 'FormInput',
-  
+
   props: {
     // v-model
     modelValue: {
       type: [String, Number],
       default: ''
     },
-    
+
     // 基本設定
     type: {
       type: String,
@@ -135,7 +131,7 @@ export default {
       type: String,
       default: ''
     },
-    
+
     // バリデーション
     required: {
       type: Boolean,
@@ -145,7 +141,7 @@ export default {
       type: String,
       default: ''
     },
-    
+
     // 状態
     disabled: {
       type: Boolean,
@@ -159,7 +155,7 @@ export default {
       type: Boolean,
       default: false
     },
-    
+
     // 数値・日付用
     min: {
       type: [String, Number],
@@ -173,13 +169,13 @@ export default {
       type: [String, Number],
       default: undefined
     },
-    
+
     // テキストエリア用
     rows: {
       type: Number,
       default: 3
     },
-    
+
     // セレクト用
     options: {
       type: Array,
@@ -193,7 +189,7 @@ export default {
       type: String,
       default: 'label'
     },
-    
+
     // アイコン
     prefixIcon: {
       type: String,
@@ -208,83 +204,92 @@ export default {
       default: false
     }
   },
-  
+
   emits: ['update:modelValue', 'focus', 'blur', 'clear'],
-  
+
   data() {
     return {
       focused: false
     }
   },
-  
+
   computed: {
     inputId() {
       return `input-${this._uid || Math.random().toString(36).substr(2, 9)}`
     },
-    
+
     labelClasses() {
-      const classes = ['text-gray-700']
-      if (this.disabled) classes.push('text-gray-400')
+      const classes = ['form-input__label']
+      if (this.disabled) {
+        classes.push('form-input__label--disabled')
+      } else {
+        classes.push('form-input__label--normal')
+      }
       return classes.join(' ')
     },
-    
+
     inputClasses() {
-      const classes = []
-      
+      const classes = ['form-input__field']
+
       // 基本スタイル
-      if (this.prefixIcon) classes.push('pl-10')
-      if (this.suffixIcon || this.clearable) classes.push('pr-10')
-      
+      if (this.prefixIcon) classes.push('form-input__field--with-prefix')
+      if (this.suffixIcon || this.clearable) classes.push('form-input__field--with-suffix')
+
+      // テキストエリア用
+      if (this.type === 'textarea') classes.push('form-input__textarea')
+
       // 状態に応じたスタイル
       if (this.error) {
-        classes.push('border-red-300 focus:ring-red-500 focus:border-red-500')
+        classes.push('form-input__field--error')
       } else if (this.focused) {
-        classes.push('border-blue-300 focus:ring-blue-500 focus:border-blue-500')
+        classes.push('form-input__field--focused')
       } else {
-        classes.push('border-gray-300 focus:ring-blue-500 focus:border-blue-500')
+        classes.push('form-input__field--normal')
       }
-      
+
       if (this.disabled) {
-        classes.push('bg-gray-50 text-gray-400 cursor-not-allowed')
+        classes.push('form-input__field--disabled')
       } else if (this.readonly) {
-        classes.push('bg-gray-50 text-gray-700')
+        classes.push('form-input__field--readonly')
       }
-      
+
       if (this.loading) {
-        classes.push('animate-pulse')
+        classes.push('form-input__field--loading')
       }
-      
+
       return classes.join(' ')
     }
   },
-  
+
   methods: {
     handleInput(event) {
       this.$emit('update:modelValue', event.target.value)
     },
-    
+
     handleFocus(event) {
       this.focused = true
       this.$emit('focus', event)
     },
-    
+
     handleBlur(event) {
       this.focused = false
       this.$emit('blur', event)
     },
-    
+
     clearValue() {
       this.$emit('update:modelValue', '')
       this.$emit('clear')
     },
-    
+
     getOptionValue(option) {
       return typeof option === 'object' ? option[this.optionValue] : option
     },
-    
+
     getOptionLabel(option) {
       return typeof option === 'object' ? option[this.optionLabel] : option
     }
   }
 }
 </script>
+
+<style src="~/assets/css/components/FormInput.css"></style>

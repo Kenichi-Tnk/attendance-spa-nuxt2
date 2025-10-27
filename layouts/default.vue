@@ -9,7 +9,7 @@
               勤怠管理システム
             </NuxtLink>
           </div>
-          
+
           <!-- ナビゲーション -->
           <div class="hidden md:flex items-center space-x-4">
             <NuxtLink to="/" class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
@@ -22,7 +22,7 @@
               管理者画面
             </NuxtLink>
           </div>
-          
+
           <!-- ユーザーメニュー -->
           <div class="flex items-center space-x-4">
             <span class="text-gray-700 text-sm">
@@ -35,7 +35,7 @@
         </div>
       </div>
     </nav>
-    
+
     <!-- メインコンテンツ -->
     <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       <Nuxt />
