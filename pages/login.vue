@@ -1,19 +1,19 @@
 <template>
   <div>
-    <h2 class="text-center text-2xl font-bold text-gray-900 mb-6">
+    <h2 class="auth__title">
       ログイン
     </h2>
     
     <!-- エラーメッセージ -->
-    <div v-if="errorMessage" class="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+    <div v-if="errorMessage" class="auth__message auth__message--error">
       {{ errorMessage }}
     </div>
     
     <form @submit.prevent="handleLogin">
-      <div class="space-y-6">
+      <div class="auth__form-container">
         <!-- メールアドレス -->
-        <div>
-          <label for="email" class="block text-sm font-medium text-gray-700">
+        <div class="auth__field-group">
+          <label for="email" class="auth__field-label">
             メールアドレス
           </label>
           <input
@@ -21,14 +21,14 @@
             v-model="form.email"
             type="email"
             required
-            class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            class="auth__field-input"
             placeholder="email@example.com"
           />
         </div>
         
         <!-- パスワード -->
-        <div>
-          <label for="password" class="block text-sm font-medium text-gray-700">
+        <div class="auth__field-group">
+          <label for="password" class="auth__field-label">
             パスワード
           </label>
           <input
@@ -36,7 +36,7 @@
             v-model="form.password"
             type="password"
             required
-            class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            class="auth__field-input"
             placeholder="パスワード"
           />
         </div>
@@ -46,7 +46,7 @@
           <button
             type="submit"
             :disabled="$store.getters['auth/isLoading']"
-            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="auth__btn auth__btn--primary"
           >
             <span v-if="$store.getters['auth/isLoading']">ログイン中...</span>
             <span v-else>ログイン</span>
@@ -56,19 +56,19 @@
     </form>
     
     <!-- 登録リンク -->
-    <div class="mt-6 text-center">
-      <p class="text-sm text-gray-600">
+    <div class="auth__link-section">
+      <p class="auth__link-text">
         アカウントをお持ちでない方は
-        <NuxtLink to="/register" class="font-medium text-indigo-600 hover:text-indigo-500">
+        <NuxtLink to="/register" class="auth__link">
           新規登録
         </NuxtLink>
       </p>
     </div>
     
     <!-- デモ用認証情報 -->
-    <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
-      <h3 class="text-sm font-medium text-blue-800 mb-2">デモ用ログイン情報</h3>
-      <div class="text-xs text-blue-700 space-y-1">
+    <div class="login__demo-section">
+      <h3 class="login__demo-title">デモ用ログイン情報</h3>
+      <div class="login__demo-content">
         <p><strong>一般ユーザー:</strong> user@example.com / password</p>
         <p><strong>管理者:</strong> admin@example.com / password</p>
       </div>
@@ -112,3 +112,35 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+@import '@/assets/css/pages/auth.css';
+
+/* Login-specific styles */
+.login__demo-section {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 0.375rem;
+}
+
+.login__demo-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1e40af;
+  margin-bottom: 0.5rem;
+}
+
+.login__demo-content {
+  font-size: 0.75rem;
+  color: #1d4ed8;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.login__demo-content p {
+  margin: 0;
+}
+</style>

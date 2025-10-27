@@ -1,0 +1,232 @@
+/* Authentication Pages Shared Styles */
+
+/* =======================
+   Layout & Typography
+   ======================= */
+.auth__title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1.5rem;
+}
+
+.auth__title--large {
+  font-size: 3rem;
+  font-weight: 800;
+  margin-top: 1.5rem;
+}
+
+.auth__subtitle {
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+/* =======================
+   Message Components
+   ======================= */
+.auth__message {
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.375rem;
+  border: 1px solid;
+}
+
+.auth__message--error {
+  background-color: #fef2f2;
+  border-color: #fecaca;
+  color: #b91c1c;
+}
+
+.auth__message--success {
+  background-color: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+/* =======================
+   Form Layout
+   ======================= */
+.auth__form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.auth__field-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth__field-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.25rem;
+}
+
+.auth__field-input {
+  margin-top: 0.25rem;
+  appearance: none;
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  color: #111827;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.auth__field-input::placeholder {
+  color: #6b7280;
+}
+
+.auth__field-input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* =======================
+   Button Components
+   ======================= */
+.auth__btn {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  border: 1px solid transparent;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0.375rem;
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.auth__btn--primary {
+  color: #ffffff;
+  background-color: #6366f1;
+}
+
+.auth__btn--primary:hover:not(:disabled) {
+  background-color: #4f46e5;
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.auth__btn--primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5);
+}
+
+.auth__btn--primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.auth__btn--link {
+  background: none;
+  border: none;
+  color: #6366f1;
+  padding: 0;
+  width: auto;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.auth__btn--link:hover {
+  color: #4f46e5;
+  text-decoration: none;
+}
+
+/* =======================
+   Link Sections
+   ======================= */
+.auth__link-section {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.auth__link-text {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.auth__link {
+  font-weight: 500;
+  color: #6366f1;
+  text-decoration: none;
+  transition: color 0.15s ease-in-out;
+}
+
+.auth__link:hover {
+  color: #4f46e5;
+  text-decoration: none;
+}
+
+/* =======================
+   Verification Page Specific
+   ======================= */
+.verify-email__container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9fafb;
+  padding: 3rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .verify-email__container {
+    padding: 3rem 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .verify-email__container {
+    padding: 3rem 2rem;
+  }
+}
+
+.verify-email__content {
+  max-width: 28rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.verify-email__actions {
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.verify-email__description {
+  text-align: center;
+}
+
+.verify-email__description p {
+  color: #374151;
+}
+
+.verify-email__message {
+  text-align: center;
+}
+
+.verify-email__message--success {
+  color: #059669;
+}
+
+.verify-email__message--error {
+  color: #dc2626;
+}

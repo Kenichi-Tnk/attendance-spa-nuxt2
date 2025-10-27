@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto px-4 py-8">
+  <div class="admin-dashboard__container">
     <PageHeader
       title="管理者ダッシュボード"
       :subtitle="`${currentUser.name}さん（管理者）`"
@@ -8,7 +8,7 @@
     />
     
     <!-- 統計サマリー -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="admin-dashboard__stats-grid">
       <StatCard
         :value="stats.totalStaff"
         label="総スタッフ数"
@@ -41,83 +41,83 @@
     </div>
     
     <!-- 管理メニュー -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <div class="admin-dashboard__menu-grid">
       <nuxt-link
         to="/admin/attendance/daily"
-        class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+        class="admin-dashboard__menu-card"
       >
-        <div class="flex items-center mb-4">
-          <i class="fas fa-calendar-day text-blue-500 text-2xl mr-4"></i>
-          <h3 class="text-lg font-semibold text-gray-800">日次勤怠一覧</h3>
+        <div class="admin-dashboard__menu-content">
+          <i class="fas fa-calendar-day admin-dashboard__menu-icon admin-dashboard__menu-icon--daily"></i>
+          <h3 class="admin-dashboard__menu-title">日次勤怠一覧</h3>
         </div>
-        <p class="text-gray-600 text-sm">日毎の全スタッフ勤怠状況を確認</p>
+        <p class="admin-dashboard__menu-desc">日毎の全スタッフ勤怠状況を確認</p>
       </nuxt-link>
       
       <nuxt-link
         to="/admin/staff"
-        class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+        class="admin-dashboard__menu-card"
       >
-        <div class="flex items-center mb-4">
-          <i class="fas fa-users text-green-500 text-2xl mr-4"></i>
-          <h3 class="text-lg font-semibold text-gray-800">スタッフ一覧</h3>
+        <div class="admin-dashboard__menu-content">
+          <i class="fas fa-users admin-dashboard__menu-icon admin-dashboard__menu-icon--staff"></i>
+          <h3 class="admin-dashboard__menu-title">スタッフ一覧</h3>
         </div>
-        <p class="text-gray-600 text-sm">登録されているスタッフの管理</p>
+        <p class="admin-dashboard__menu-desc">登録されているスタッフの管理</p>
       </nuxt-link>
       
       <nuxt-link
         to="/admin/attendance/monthly"
-        class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+        class="admin-dashboard__menu-card"
       >
-        <div class="flex items-center mb-4">
-          <i class="fas fa-calendar-alt text-purple-500 text-2xl mr-4"></i>
-          <h3 class="text-lg font-semibold text-gray-800">月次勤怠一覧</h3>
+        <div class="admin-dashboard__menu-content">
+          <i class="fas fa-calendar-alt admin-dashboard__menu-icon admin-dashboard__menu-icon--monthly"></i>
+          <h3 class="admin-dashboard__menu-title">月次勤怠一覧</h3>
         </div>
-        <p class="text-gray-600 text-sm">スタッフ毎の月次勤怠を確認</p>
+        <p class="admin-dashboard__menu-desc">スタッフ毎の月次勤怠を確認</p>
       </nuxt-link>
       
       <nuxt-link
         to="/admin/correction-requests"
-        class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+        class="admin-dashboard__menu-card"
       >
-        <div class="flex items-center mb-4">
-          <i class="fas fa-edit text-yellow-500 text-2xl mr-4"></i>
-          <h3 class="text-lg font-semibold text-gray-800">修正申請管理</h3>
+        <div class="admin-dashboard__menu-content">
+          <i class="fas fa-edit admin-dashboard__menu-icon admin-dashboard__menu-icon--requests"></i>
+          <h3 class="admin-dashboard__menu-title">修正申請管理</h3>
         </div>
-        <p class="text-gray-600 text-sm">スタッフからの修正申請を管理</p>
+        <p class="admin-dashboard__menu-desc">スタッフからの修正申請を管理</p>
       </nuxt-link>
       
       <nuxt-link
         to="/admin/reports"
-        class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+        class="admin-dashboard__menu-card"
       >
-        <div class="flex items-center mb-4">
-          <i class="fas fa-chart-bar text-indigo-500 text-2xl mr-4"></i>
-          <h3 class="text-lg font-semibold text-gray-800">レポート</h3>
+        <div class="admin-dashboard__menu-content">
+          <i class="fas fa-chart-bar admin-dashboard__menu-icon admin-dashboard__menu-icon--reports"></i>
+          <h3 class="admin-dashboard__menu-title">レポート</h3>
         </div>
-        <p class="text-gray-600 text-sm">勤怠データの分析とレポート</p>
+        <p class="admin-dashboard__menu-desc">勤怠データの分析とレポート</p>
       </nuxt-link>
       
       <nuxt-link
         to="/admin/settings"
-        class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+        class="admin-dashboard__menu-card"
       >
-        <div class="flex items-center mb-4">
-          <i class="fas fa-cog text-gray-500 text-2xl mr-4"></i>
-          <h3 class="text-lg font-semibold text-gray-800">システム設定</h3>
+        <div class="admin-dashboard__menu-content">
+          <i class="fas fa-cog admin-dashboard__menu-icon admin-dashboard__menu-icon--settings"></i>
+          <h3 class="admin-dashboard__menu-title">システム設定</h3>
         </div>
-        <p class="text-gray-600 text-sm">勤怠管理システムの設定</p>
+        <p class="admin-dashboard__menu-desc">勤怠管理システムの設定</p>
       </nuxt-link>
     </div>
     
     <!-- 最近の活動 -->
-    <div class="bg-white rounded-lg shadow-md p-6">
-      <h2 class="text-xl font-semibold text-gray-800 mb-4">最近の活動</h2>
-      <div class="space-y-3">
-        <div v-for="activity in recentActivities" :key="activity.id" class="flex items-center p-3 bg-gray-50 rounded-lg">
-          <i :class="activity.icon" class="text-gray-500 mr-3"></i>
-          <div class="flex-1">
-            <p class="text-sm text-gray-800">{{ activity.message }}</p>
-            <p class="text-xs text-gray-500">{{ activity.time }}</p>
+    <div class="admin-dashboard__activity-section">
+      <h2 class="admin-dashboard__activity-title">最近の活動</h2>
+      <div class="admin-dashboard__activity-list">
+        <div v-for="activity in recentActivities" :key="activity.id" class="admin-dashboard__activity-item">
+          <i :class="activity.icon" class="admin-dashboard__activity-icon"></i>
+          <div class="admin-dashboard__activity-content">
+            <p class="admin-dashboard__activity-message">{{ activity.message }}</p>
+            <p class="admin-dashboard__activity-time">{{ activity.time }}</p>
           </div>
         </div>
       </div>
@@ -196,3 +196,7 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+@import '@/assets/css/pages/admin-dashboard.css';
+</style>

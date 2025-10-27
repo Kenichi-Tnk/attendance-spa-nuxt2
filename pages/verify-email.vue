@@ -1,18 +1,18 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
+  <div class="verify-email__container">
+    <div class="verify-email__content">
       <div>
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+        <h2 class="auth__title auth__title--large">
           メール認証が必要です
         </h2>
-        <p class="mt-2 text-center text-sm text-gray-600">
+        <p class="auth__subtitle">
           登録されたメールアドレスに認証リンクを送信しました
         </p>
       </div>
       
-      <div class="rounded-md shadow-sm space-y-4">
-        <div class="text-center">
-          <p class="text-gray-700">
+      <div class="verify-email__actions">
+        <div class="verify-email__description">
+          <p>
             認証メールが届いていない場合は、下記ボタンから再送信できます
           </p>
         </div>
@@ -21,21 +21,21 @@
           <button
             @click="resendVerificationEmail"
             :disabled="isLoading"
-            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+            class="auth__btn auth__btn--primary"
           >
             <span v-if="isLoading">送信中...</span>
             <span v-else>認証メールを再送信</span>
           </button>
         </div>
         
-        <div v-if="message" class="text-center">
-          <p class="text-green-600">{{ message }}</p>
+        <div v-if="message" class="verify-email__message">
+          <p :class="message.includes('エラー') ? 'verify-email__message--error' : 'verify-email__message--success'">{{ message }}</p>
         </div>
         
-        <div class="text-center">
+        <div class="verify-email__message">
           <button
             @click="$store.dispatch('auth/logout')"
-            class="text-indigo-600 hover:text-indigo-500"
+            class="auth__btn--link"
           >
             ログアウト
           </button>
@@ -78,3 +78,7 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+@import '@/assets/css/pages/auth.css';
+</style>

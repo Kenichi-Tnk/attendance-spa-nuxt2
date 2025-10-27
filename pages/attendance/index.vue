@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto px-4 py-8">
+  <div class="attendance-index__container">
     <PageHeader
       title="勤怠一覧"
       subtitle="過去の勤怠記録を確認できます"
@@ -8,20 +8,20 @@
     />
     
     <!-- フィルター -->
-    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-      <h2 class="text-lg font-semibold text-gray-800 mb-4">絞り込み</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="attendance-index__filter-section">
+      <h2 class="attendance-index__filter-title">絞り込み</h2>
+      <div class="attendance-index__filter-grid">
         <FormInput
           v-model="selectedMonth"
           type="month"
           label="年月"
           :required="false"
         />
-        <div class="flex items-end">
+        <div class="attendance-index__search-container">
           <button
             @click="loadAttendanceData"
             :disabled="isLoading"
-            class="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-4 py-2 rounded-md transition-colors"
+            class="attendance-index__search-btn"
           >
             <i class="fas fa-search mr-2"></i>
             検索
@@ -52,14 +52,14 @@
       <template #actions="{ item }">
         <nuxt-link
           :to="`/attendance/${item.id}`"
-          class="text-blue-600 hover:text-blue-900 mr-3"
+          class="attendance-index__action-link attendance-index__action-link--detail"
         >
           詳細
         </nuxt-link>
         <button
           v-if="canRequestCorrection(item)"
           @click="requestCorrection(item.id)"
-          class="text-yellow-600 hover:text-yellow-900"
+          class="attendance-index__action-btn attendance-index__action-btn--correction"
         >
           修正申請
         </button>
@@ -219,3 +219,7 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+@import '@/assets/css/pages/attendance-index.css';
+</style>

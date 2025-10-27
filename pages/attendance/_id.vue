@@ -1,67 +1,67 @@
 <template>
-  <div class="container mx-auto px-4 py-8">
-    <div class="mb-8">
-      <nav class="flex items-center space-x-2 text-sm text-gray-500 mb-4">
-        <nuxt-link to="/attendance" class="hover:text-blue-600">勤怠一覧</nuxt-link>
+  <div class="attendance-detail__container">
+    <div class="attendance-detail__header">
+      <nav class="attendance-detail__breadcrumb">
+        <nuxt-link to="/attendance" class="attendance-detail__breadcrumb-link">勤怠一覧</nuxt-link>
         <span>/</span>
-        <span class="text-gray-900">勤怠詳細</span>
+        <span class="attendance-detail__breadcrumb-current">勤怠詳細</span>
       </nav>
       
-      <h1 class="text-3xl font-bold text-gray-900">勤怠詳細</h1>
-      <p class="text-gray-600 mt-2">{{ formatFullDate(attendance.date) }}の勤怠記録</p>
+      <h1 class="attendance-detail__title">勤怠詳細</h1>
+      <p class="attendance-detail__subtitle">{{ formatFullDate(attendance.date) }}の勤怠記録</p>
     </div>
     
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="attendance-detail__grid">
       <!-- 勤怠情報 -->
-      <div class="bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-xl font-semibold text-gray-800 mb-6">勤怠情報</h2>
+      <div class="attendance-detail__info-card">
+        <h2 class="attendance-detail__card-title">勤怠情報</h2>
         
-        <div class="space-y-4">
-          <div class="flex justify-between py-3 border-b border-gray-100">
-            <span class="text-gray-600">日付</span>
-            <span class="font-semibold">{{ formatFullDate(attendance.date) }}</span>
+        <div class="attendance-detail__info-list">
+          <div class="attendance-detail__info-item">
+            <span class="attendance-detail__info-label">日付</span>
+            <span class="attendance-detail__info-value">{{ formatFullDate(attendance.date) }}</span>
           </div>
           
-          <div class="flex justify-between py-3 border-b border-gray-100">
-            <span class="text-gray-600">出勤時刻</span>
-            <span :class="attendance.clockInLate ? 'text-red-600 font-semibold' : 'font-semibold'">
+          <div class="attendance-detail__info-item">
+            <span class="attendance-detail__info-label">出勤時刻</span>
+            <span :class="attendance.clockInLate ? 'attendance-detail__info-value--late' : 'attendance-detail__info-value'">
               {{ attendance.clockIn || '−' }}
               <i v-if="attendance.clockInLate" class="fas fa-exclamation-triangle ml-1"></i>
             </span>
           </div>
           
-          <div class="flex justify-between py-3 border-b border-gray-100">
-            <span class="text-gray-600">退勤時刻</span>
-            <span :class="attendance.clockOutEarly ? 'text-orange-600 font-semibold' : 'font-semibold'">
+          <div class="attendance-detail__info-item">
+            <span class="attendance-detail__info-label">退勤時刻</span>
+            <span :class="attendance.clockOutEarly ? 'attendance-detail__info-value--early' : 'attendance-detail__info-value'">
               {{ attendance.clockOut || '−' }}
               <i v-if="attendance.clockOutEarly" class="fas fa-exclamation-triangle ml-1"></i>
             </span>
           </div>
           
-          <div class="flex justify-between py-3 border-b border-gray-100">
-            <span class="text-gray-600">休憩時間</span>
-            <span class="font-semibold">{{ attendance.breakTime || '1:00' }}</span>
+          <div class="attendance-detail__info-item">
+            <span class="attendance-detail__info-label">休憩時間</span>
+            <span class="attendance-detail__info-value">{{ attendance.breakTime || '1:00' }}</span>
           </div>
           
-          <div class="flex justify-between py-3 border-b border-gray-100">
-            <span class="text-gray-600">実労働時間</span>
-            <span class="font-semibold text-lg text-blue-600">{{ attendance.workHours || '−' }}</span>
+          <div class="attendance-detail__info-item">
+            <span class="attendance-detail__info-label">実労働時間</span>
+            <span class="attendance-detail__info-value--work-hours">{{ attendance.workHours || '−' }}</span>
           </div>
           
-          <div class="flex justify-between py-3">
-            <span class="text-gray-600">ステータス</span>
-            <span :class="getStatusClass(attendance.status)" class="px-3 py-1 rounded-full text-sm font-medium">
+          <div class="attendance-detail__info-item">
+            <span class="attendance-detail__info-label">ステータス</span>
+            <span :class="getStatusClass(attendance.status)" class="attendance-detail__status-badge">
               {{ getStatusText(attendance.status) }}
             </span>
           </div>
         </div>
         
         <!-- 操作ボタン -->
-        <div class="mt-6 flex space-x-3">
+        <div class="attendance-detail__actions">
           <button
             v-if="canRequestCorrection"
             @click="requestCorrection"
-            class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-md transition-colors"
+            class="attendance-detail__correction-btn"
           >
             <i class="fas fa-edit mr-2"></i>
             修正申請
@@ -69,7 +69,7 @@
           
           <nuxt-link
             to="/attendance"
-            class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md transition-colors"
+            class="attendance-detail__back-btn"
           >
             <i class="fas fa-arrow-left mr-2"></i>
             一覧に戻る
@@ -78,26 +78,26 @@
       </div>
       
       <!-- 修正履歴 -->
-      <div class="bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-xl font-semibold text-gray-800 mb-6">修正履歴</h2>
+      <div class="attendance-detail__history-card">
+        <h2 class="attendance-detail__card-title">修正履歴</h2>
         
-        <div v-if="correctionHistory.length === 0" class="text-center py-8 text-gray-500">
-          <i class="fas fa-history text-4xl mb-4"></i>
+        <div v-if="correctionHistory.length === 0" class="attendance-detail__empty-history">
+          <i class="fas fa-history attendance-detail__empty-icon"></i>
           <p>修正履歴はありません</p>
         </div>
         
-        <div v-else class="space-y-4">
-          <div v-for="correction in correctionHistory" :key="correction.id" class="border-l-4 border-blue-500 pl-4 py-3 bg-gray-50 rounded-r-lg">
-            <div class="flex justify-between items-start mb-2">
-              <h4 class="font-semibold text-gray-800">{{ correction.type }}</h4>
-              <span :class="getCorrectionStatusClass(correction.status)" class="px-2 py-1 rounded text-xs font-medium">
+        <div v-else class="attendance-detail__history-list">
+          <div v-for="correction in correctionHistory" :key="correction.id" class="attendance-detail__history-item">
+            <div class="attendance-detail__history-header">
+              <h4 class="attendance-detail__history-type">{{ correction.type }}</h4>
+              <span :class="getCorrectionStatusClass(correction.status)" class="attendance-detail__history-status">
                 {{ getCorrectionStatusText(correction.status) }}
               </span>
             </div>
-            <p class="text-sm text-gray-600 mb-2">{{ correction.reason }}</p>
-            <div class="text-xs text-gray-500">
+            <p class="attendance-detail__history-reason">{{ correction.reason }}</p>
+            <div class="attendance-detail__history-dates">
               <span>申請日時: {{ formatDateTime(correction.requestedAt) }}</span>
-              <span v-if="correction.reviewedAt" class="ml-4">承認日時: {{ formatDateTime(correction.reviewedAt) }}</span>
+              <span v-if="correction.reviewedAt">承認日時: {{ formatDateTime(correction.reviewedAt) }}</span>
             </div>
           </div>
         </div>
@@ -179,13 +179,13 @@ export default {
     
     getStatusClass(status) {
       const classes = {
-        normal: 'bg-green-100 text-green-800',
-        late: 'bg-yellow-100 text-yellow-800',
-        early_leave: 'bg-orange-100 text-orange-800',
-        absent: 'bg-red-100 text-red-800',
-        pending: 'bg-blue-100 text-blue-800'
+        normal: 'attendance-detail__status-badge--normal',
+        late: 'attendance-detail__status-badge--late',
+        early_leave: 'attendance-detail__status-badge--early-leave',
+        absent: 'attendance-detail__status-badge--absent',
+        pending: 'attendance-detail__status-badge--pending'
       }
-      return classes[status] || 'bg-gray-100 text-gray-800'
+      return classes[status] || 'attendance-detail__status-badge'
     },
     
     getStatusText(status) {
@@ -201,11 +201,11 @@ export default {
     
     getCorrectionStatusClass(status) {
       const classes = {
-        pending: 'bg-yellow-100 text-yellow-800',
-        approved: 'bg-green-100 text-green-800',
-        rejected: 'bg-red-100 text-red-800'
+        pending: 'attendance-detail__history-status--pending',
+        approved: 'attendance-detail__history-status--approved',
+        rejected: 'attendance-detail__history-status--rejected'
       }
-      return classes[status] || 'bg-gray-100 text-gray-800'
+      return classes[status] || 'attendance-detail__history-status'
     },
     
     getCorrectionStatusText(status) {
@@ -223,3 +223,7 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+@import '@/assets/css/pages/attendance-detail.css';
+</style>

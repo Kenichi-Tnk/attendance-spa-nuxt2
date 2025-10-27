@@ -1,34 +1,34 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="default-layout__container">
     <!-- ヘッダー -->
-    <nav class="bg-white shadow-sm border-b">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-          <div class="flex items-center">
-            <NuxtLink to="/" class="text-xl font-semibold text-gray-900">
+    <nav class="default-layout__header">
+      <div class="default-layout__nav-container">
+        <div class="default-layout__nav-content">
+          <div class="default-layout__brand-section">
+            <NuxtLink to="/" class="default-layout__brand-link">
               勤怠管理システム
             </NuxtLink>
           </div>
 
           <!-- ナビゲーション -->
-          <div class="hidden md:flex items-center space-x-4">
-            <NuxtLink to="/" class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+          <div class="default-layout__nav-menu">
+            <NuxtLink to="/" class="default-layout__nav-link">
               ダッシュボード
             </NuxtLink>
-            <NuxtLink to="/attendance" class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+            <NuxtLink to="/attendance" class="default-layout__nav-link">
               勤怠一覧
             </NuxtLink>
-            <NuxtLink v-if="$store.getters['auth/isAdmin']" to="/admin" class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">
+            <NuxtLink v-if="$store.getters['auth/isAdmin']" to="/admin" class="default-layout__nav-link">
               管理者画面
             </NuxtLink>
           </div>
 
           <!-- ユーザーメニュー -->
-          <div class="flex items-center space-x-4">
-            <span class="text-gray-700 text-sm">
+          <div class="default-layout__user-menu">
+            <span class="default-layout__user-name">
               {{ $store.getters['auth/user']?.name }}さん
             </span>
-            <button @click="logout" class="text-red-600 hover:text-red-800 text-sm font-medium">
+            <button @click="logout" class="default-layout__logout-btn">
               ログアウト
             </button>
           </div>
@@ -37,7 +37,7 @@
     </nav>
 
     <!-- メインコンテンツ -->
-    <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <main class="default-layout__main">
       <Nuxt />
     </main>
   </div>
