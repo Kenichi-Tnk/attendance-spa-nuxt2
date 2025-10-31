@@ -94,9 +94,11 @@ export default {
   methods: {
     async handleLogin() {
       this.errorMessage = ''
+      console.log('Login form data:', this.form)
       
       try {
         const result = await this.$store.dispatch('auth/login', this.form)
+        console.log('Login result:', result)
         
         if (result.success) {
           // リダイレクト先の取得
@@ -104,8 +106,10 @@ export default {
           this.$router.push(redirectTo)
         } else {
           this.errorMessage = result.error
+          console.error('Login failed:', result.error)
         }
       } catch (error) {
+        console.error('Login exception:', error)
         this.errorMessage = 'ログインに失敗しました'
       }
     }

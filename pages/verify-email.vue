@@ -9,14 +9,14 @@
           登録されたメールアドレスに認証リンクを送信しました
         </p>
       </div>
-      
+
       <div class="verify-email__actions">
         <div class="verify-email__description">
           <p>
             認証メールが届いていない場合は、下記ボタンから再送信できます
           </p>
         </div>
-        
+
         <div>
           <button
             @click="resendVerificationEmail"
@@ -27,11 +27,11 @@
             <span v-else>認証メールを再送信</span>
           </button>
         </div>
-        
+
         <div v-if="message" class="verify-email__message">
           <p :class="message.includes('エラー') ? 'verify-email__message--error' : 'verify-email__message--success'">{{ message }}</p>
         </div>
-        
+
         <div class="verify-email__message">
           <button
             @click="$store.dispatch('auth/logout')"
@@ -50,24 +50,23 @@ export default {
   name: 'VerifyEmailPage',
   layout: 'auth',
   middleware: ['auth'],
-  
+
   data() {
     return {
       isLoading: false,
       message: ''
     }
   },
-  
+
   methods: {
     async resendVerificationEmail() {
       try {
         this.isLoading = true
         this.message = ''
-        
-        // TODO: API呼び出しでメール再送信
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        
-        this.message = '認証メールを再送信しました'
+
+        const response = await this.$axios.$post('/email/verification-notification')
+
+        this.message = response.message || '認証メールを再送信しました'
       } catch (error) {
         console.error('メール再送信エラー:', error)
         this.message = 'エラーが発生しました。しばらくしてから再度お試しください。'

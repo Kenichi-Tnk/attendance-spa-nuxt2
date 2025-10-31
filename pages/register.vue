@@ -124,6 +124,7 @@ export default {
     async handleRegister() {
       this.errorMessage = ''
       this.successMessage = ''
+      console.log('Registration form data:', this.form)
       
       // パスワード確認チェック
       if (this.form.password !== this.form.password_confirmation) {
@@ -133,6 +134,7 @@ export default {
       
       try {
         const result = await this.$store.dispatch('auth/register', this.form)
+        console.log('Registration result:', result)
         
         if (result.success) {
           this.successMessage = result.message
@@ -145,8 +147,10 @@ export default {
           }
         } else {
           this.errorMessage = result.error
+          console.error('Registration failed:', result.error)
         }
       } catch (error) {
+        console.error('Registration exception:', error)
         this.errorMessage = '登録に失敗しました'
       }
     }

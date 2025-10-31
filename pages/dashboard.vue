@@ -7,47 +7,7 @@
     
     <!-- 勤怠打刻セクション -->
     <div class="dashboard__clock-section">
-      <h2 class="dashboard__clock-title">勤怠打刻</h2>
-      <div class="dashboard__clock-grid">
-        <div class="dashboard__clock-button-container">
-          <button
-            @click="clockIn"
-            :disabled="isLoading || isWorking"
-            class="dashboard__clock-in-btn"
-          >
-            <i class="fas fa-sign-in-alt mr-2"></i>
-            出勤
-          </button>
-          <p class="dashboard__clock-help-text">勤務開始時に押してください</p>
-        </div>
-        
-        <div class="dashboard__clock-button-container">
-          <button
-            @click="clockOut"
-            :disabled="isLoading || !isWorking"
-            class="dashboard__clock-out-btn"
-          >
-            <i class="fas fa-sign-out-alt mr-2"></i>
-            退勤
-          </button>
-          <p class="dashboard__clock-help-text">勤務終了時に押してください</p>
-        </div>
-      </div>
-      
-      <!-- 現在の勤務状態 -->
-      <div class="dashboard__status-section">
-        <div class="dashboard__status-row">
-          <div>
-            <span class="dashboard__status-label">現在の状態:</span>
-            <span :class="isWorking ? 'dashboard__status-working' : 'dashboard__status-not-working'">
-              {{ isWorking ? '勤務中' : '勤務外' }}
-            </span>
-          </div>
-          <div v-if="todayStartTime" class="dashboard__start-time">
-            出勤時刻: <span class="dashboard__start-time-value">{{ todayStartTime }}</span>
-          </div>
-        </div>
-      </div>
+      <TimeClock />
     </div>
     
     <!-- クイックアクション -->
@@ -124,9 +84,6 @@ export default {
   
   data() {
     return {
-      isLoading: false,
-      isWorking: false,
-      todayStartTime: null,
       monthlyStats: {
         workDays: 20,
         totalHours: '160.5h',
@@ -142,68 +99,9 @@ export default {
     }
   },
   
-  mounted() {
-    this.loadTodayAttendance()
-  },
-  
-  methods: {
-    async clockIn() {
-      try {
-        this.isLoading = true
-        
-        // TODO: API呼び出し
-        await new Promise(resolve => setTimeout(resolve, 500))
-        
-        this.isWorking = true
-        this.todayStartTime = new Date().toLocaleTimeString('ja-JP', {
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-        
-        this.$toast.success('出勤打刻が完了しました')
-      } catch (error) {
-        console.error('出勤打刻エラー:', error)
-        this.$toast.error('出勤打刻に失敗しました')
-      } finally {
-        this.isLoading = false
-      }
-    },
-    
-    async clockOut() {
-      try {
-        this.isLoading = true
-        
-        // TODO: API呼び出し
-        await new Promise(resolve => setTimeout(resolve, 500))
-        
-        this.isWorking = false
-        
-        this.$toast.success('退勤打刻が完了しました')
-      } catch (error) {
-        console.error('退勤打刻エラー:', error)
-        this.$toast.error('退勤打刻に失敗しました')
-      } finally {
-        this.isLoading = false
-      }
-    },
-    
-    async loadTodayAttendance() {
-      try {
-        // TODO: API呼び出しで今日の勤怠状況を取得
-        await new Promise(resolve => setTimeout(resolve, 300))
-        
-        // モックデータ
-        const todayAttendance = {
-          isWorking: false,
-          startTime: null
-        }
-        
-        this.isWorking = todayAttendance.isWorking
-        this.todayStartTime = todayAttendance.startTime
-      } catch (error) {
-        console.error('勤怠状況取得エラー:', error)
-      }
-    }
+  async mounted() {
+    // 今日の勤怠データを取得
+    await this.$store.dispatch('attendance/fetchTodayAttendance')
   }
 }
 </script>

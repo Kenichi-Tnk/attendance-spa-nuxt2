@@ -1,0 +1,265 @@
+/* TimeClock Component Styles */
+
+/* =======================
+   Main Container
+   ======================= */
+.time-clock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  padding: 3rem 2rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  min-height: 500px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* =======================
+   Date & Time Display
+   ======================= */
+.time-clock__datetime {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.time-clock__date {
+  font-size: 1.125rem;
+  color: #374151;
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+}
+
+.time-clock__time {
+  font-size: 4rem;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1;
+  font-family: 'Arial', monospace;
+}
+
+@media (max-width: 640px) {
+  .time-clock__time {
+    font-size: 3rem;
+  }
+}
+
+/* =======================
+   Status Badge
+   ======================= */
+.time-clock__status {
+  margin-bottom: 2rem;
+}
+
+.time-clock__status-badge {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 2rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-align: center;
+  min-width: 120px;
+}
+
+.time-clock__status-badge--not-working {
+  background-color: #6b7280;
+}
+
+.time-clock__status-badge--working {
+  background-color: #10b981;
+}
+
+.time-clock__status-badge--on-break {
+  background-color: #f59e0b;
+}
+
+.time-clock__status-badge--finished {
+  background-color: #3b82f6;
+}
+
+/* =======================
+   Action Buttons
+   ======================= */
+.time-clock__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.time-clock__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  min-width: 140px;
+  text-decoration: none;
+}
+
+.time-clock__btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.time-clock__btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.time-clock__btn--clock-in {
+  background-color: #10b981;
+}
+
+.time-clock__btn--clock-in:hover:not(:disabled) {
+  background-color: #059669;
+}
+
+.time-clock__btn--clock-out {
+  background-color: #ef4444;
+}
+
+.time-clock__btn--clock-out:hover:not(:disabled) {
+  background-color: #dc2626;
+}
+
+.time-clock__btn--break {
+  background-color: #f59e0b;
+}
+
+.time-clock__btn--break:hover:not(:disabled) {
+  background-color: #d97706;
+}
+
+.time-clock__btn--break-end {
+  background-color: #3b82f6;
+}
+
+.time-clock__btn--break-end:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+/* =======================
+   Work Information
+   ======================= */
+.time-clock__work-info {
+  text-align: center;
+  background-color: #f9fafb;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  width: 100%;
+  max-width: 400px;
+}
+
+.time-clock__work-start {
+  font-size: 1rem;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.time-clock__work-duration {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* =======================
+   Loading State
+   ======================= */
+.time-clock__btn:disabled {
+  position: relative;
+}
+
+.time-clock__btn:disabled::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1rem;
+  height: 1rem;
+  margin-top: -0.5rem;
+  margin-left: -0.5rem;
+  border: 2px solid transparent;
+  border-top: 2px solid #ffffff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* =======================
+   Responsive Design
+   ======================= */
+@media (max-width: 640px) {
+  .time-clock {
+    padding: 2rem 1rem;
+    min-height: 400px;
+  }
+  
+  .time-clock__buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .time-clock__btn {
+    width: 100%;
+    max-width: 200px;
+  }
+  
+  .time-clock__work-info {
+    padding: 1rem;
+  }
+}
+
+/* =======================
+   Animation Effects
+   ======================= */
+.time-clock__status-badge {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.time-clock__btn {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
