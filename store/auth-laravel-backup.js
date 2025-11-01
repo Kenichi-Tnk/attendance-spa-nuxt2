@@ -42,7 +42,7 @@ export const actions = {
       commit('SET_LOADING', true)
       console.log('Attempting login with:', credentials)
       
-      const response = await this.$axios.$post('/api/login', {
+      const response = await this.$axios.$post('/login', {
         email: credentials.email,
         password: credentials.password
       })
@@ -76,7 +76,7 @@ export const actions = {
       commit('SET_LOADING', true)
       console.log('Attempting registration with:', userData)
       
-      const response = await this.$axios.$post('/api/register', {
+      const response = await this.$axios.$post('/register', {
         name: userData.name,
         email: userData.email,
         password: userData.password,
@@ -111,7 +111,7 @@ export const actions = {
       const token = localStorage.getItem('auth-token')
       if (token) {
         this.$axios.setToken(token, 'Bearer')
-        await this.$axios.$post('/api/logout')
+        await this.$axios.$post('/logout')
       }
     } catch (error) {
       // ログアウトAPIが失敗してもローカルの認証情報はクリア
@@ -147,7 +147,7 @@ export const actions = {
   // ユーザー情報を更新
   async fetchUser({ commit }) {
     try {
-      const response = await this.$axios.$get('/api/user')
+      const response = await this.$axios.$get('/user')
       commit('SET_USER', response.user)
       return response.user
     } catch (error) {

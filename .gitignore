@@ -7,6 +7,15 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Security: API keys and sensitive files
+*firebase*.js
+*firebase*.ts
+.env.local
+.env.*.local
+*.key
+*.pem
+config/secrets*
+
 # Runtime data
 pids
 *.pid
