@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\NewAccessToken;
 
@@ -18,6 +19,13 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
+        $startTime = microtime(true);
+        Log::info('Registration started', [
+            'timestamp' => now()->toISOString(),
+            'email' => $request->email,
+            'start_time' => $startTime
+        ]);
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -25,11 +33,26 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
+            $endTime = microtime(true);
+            Log::error('Registration validation failed', [
+                'timestamp' => now()->toISOString(),
+                'email' => $request->email,
+                'duration' => ($endTime - $startTime) * 1000 . 'ms',
+                'errors' => $validator->errors()
+            ]);
+
             return response()->json([
                 'message' => 'Validation failed',
                 'errors' => $validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+
+        $beforeCreate = microtime(true);
+        Log::info('Creating user', [
+            'timestamp' => now()->toISOString(),
+            'email' => $request->email,
+            'validation_duration' => ($beforeCreate - $startTime) * 1000 . 'ms'
+        ]);
 
         /** @var User $user */
         $user = User::create([
@@ -39,10 +62,35 @@ class AuthController extends Controller
             'is_admin' => false,
         ]);
 
+        $afterCreate = microtime(true);
+        Log::info('User created, sending email verification', [
+            'timestamp' => now()->toISOString(),
+            'email' => $request->email,
+            'user_id' => $user->id,
+            'create_duration' => ($afterCreate - $beforeCreate) * 1000 . 'ms'
+        ]);
+
         // メール認証通知を送信
         $user->sendEmailVerificationNotification();
 
+        $afterEmail = microtime(true);
+        Log::info('Email sent, creating token', [
+            'timestamp' => now()->toISOString(),
+            'email' => $request->email,
+            'user_id' => $user->id,
+            'email_duration' => ($afterEmail - $afterCreate) * 1000 . 'ms'
+        ]);
+
         $token = $user->createToken('attendance-app')->plainTextToken;
+
+        $endTime = microtime(true);
+        Log::info('Registration completed successfully', [
+            'timestamp' => now()->toISOString(),
+            'email' => $request->email,
+            'user_id' => $user->id,
+            'total_duration' => ($endTime - $startTime) * 1000 . 'ms',
+            'token_duration' => ($endTime - $afterEmail) * 1000 . 'ms'
+        ]);
 
         return response()->json([
             'message' => 'User registered successfully. Please check your email for verification.',

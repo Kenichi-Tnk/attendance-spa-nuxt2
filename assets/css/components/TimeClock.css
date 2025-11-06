@@ -68,7 +68,15 @@
   background-color: #6b7280;
 }
 
+.time-clock__status-badge--not_started {
+  background-color: #6b7280;
+}
+
 .time-clock__status-badge--working {
+  background-color: #10b981;
+}
+
+.time-clock__status-badge--checked_in {
   background-color: #10b981;
 }
 
@@ -76,7 +84,15 @@
   background-color: #f59e0b;
 }
 
+.time-clock__status-badge--on_break {
+  background-color: #f59e0b;
+}
+
 .time-clock__status-badge--finished {
+  background-color: #3b82f6;
+}
+
+.time-clock__status-badge--checked_out {
   background-color: #3b82f6;
 }
 

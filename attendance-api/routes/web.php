@@ -16,3 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+// SPA用のダミーログインルート（API認証ではフロントエンドでログイン処理を行う）
+Route::get('/login', function () {
+    return response()->json(['message' => 'Please use the API endpoint for authentication']);
+})->name('login');

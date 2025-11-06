@@ -73,6 +73,10 @@ export const mutations = {
     state.breakDuration += minutes
   },
   
+  SET_BREAK_DURATION(state, minutes) {
+    state.breakDuration = minutes
+  },
+  
   SET_TODAY_ATTENDANCE(state, attendance) {
     state.todayAttendance = attendance
     
@@ -120,7 +124,7 @@ export const actions = {
   // 勤怠状況を取得
   async fetchStatus({ commit }) {
     try {
-      const response = await this.$axios.$get('/attendance/status')
+      const response = await this.$axios.$get('/api/attendance/status')
       
       // APIレスポンスに基づいて状態を設定
       commit('SET_CURRENT_STATUS', response.status)
@@ -157,9 +161,9 @@ export const actions = {
   },
   
   // 出勤打刻
-  async clockIn({ commit, dispatch }) {
+  async clockIn({ commit }) {
     try {
-      const response = await this.$axios.$post('/attendance/check-in')
+      const response = await this.$axios.$post('/api/attendance/check-in')
       
       commit('SET_WORK_START_TIME', response.attendance.check_in)
       commit('SET_CURRENT_STATUS', 'checked_in')
@@ -174,7 +178,7 @@ export const actions = {
   // 退勤打刻
   async clockOut({ commit, dispatch }) {
     try {
-      const response = await this.$axios.$post('/attendance/check-out')
+      const response = await this.$axios.$post('/api/attendance/check-out')
       
       commit('SET_WORK_END_TIME', response.attendance.check_out)
       commit('SET_CURRENT_STATUS', 'checked_out')
@@ -187,9 +191,9 @@ export const actions = {
   },
   
   // 休憩開始
-  async startBreak({ commit, dispatch }) {
+  async startBreak({ commit }) {
     try {
-      const response = await this.$axios.$post('/attendance/start-rest')
+      const response = await this.$axios.$post('/api/attendance/start-rest')
       
       commit('SET_BREAK_START_TIME', response.rest.rest_start)
       commit('SET_CURRENT_STATUS', 'on_break')
@@ -202,44 +206,17 @@ export const actions = {
   },
   
   // 休憩終了
-  async endBreak({ commit, state, dispatch }) {
+  async endBreak({ commit }) {
     try {
-      const response = await this.$axios.$post('/attendance/end-rest')
-      
-      // 休憩時間を計算してbreakDurationに追加
-      if (state.breakStartTime) {
-        const breakStart = new Date(`1970-01-01T${state.breakStartTime}`)
-        const breakEnd = new Date(`1970-01-01T${response.rest.rest_end}`)
-        const breakMinutes = Math.floor((breakEnd - breakStart) / (1000 * 60))
-        commit('ADD_BREAK_DURATION', breakMinutes)
-      }
+      const response = await this.$axios.$post('/api/attendance/end-rest')
       
       commit('SET_BREAK_END_TIME', response.rest.rest_end)
-      commit('SET_BREAK_START_TIME', null)
       commit('SET_CURRENT_STATUS', 'checked_in')
       
       return { success: true, message: response.message }
     } catch (error) {
       const message = error.response?.data?.message || '休憩終了に失敗しました'
       return { success: false, error: message }
-    }
-  },
-  
-  // 今日の勤怠データを取得
-  async fetchTodayAttendance({ commit }) {
-    try {
-      const response = await this.$axios.$get('/attendance')
-      
-      // 今日のデータを探す
-      const today = new Date().toISOString().split('T')[0]
-      const todayAttendance = response.data.find(att => att.date === today)
-      
-      commit('SET_TODAY_ATTENDANCE', todayAttendance)
-      
-      return { success: true, data: todayAttendance }
-    } catch (error) {
-      console.error('Fetch today attendance error:', error)
-      return { success: false, error: '勤怠データの取得に失敗しました' }
     }
   },
   

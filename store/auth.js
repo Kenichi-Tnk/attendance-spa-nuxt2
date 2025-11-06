@@ -74,7 +74,10 @@ export const actions = {
   async register({ commit }, userData) {
     try {
       commit('SET_LOADING', true)
+      const startTime = Date.now()
       console.log('Attempting registration with:', userData)
+      console.log('Axios baseURL:', this.$axios.defaults.baseURL)
+      console.log('Start time:', new Date(startTime).toISOString())
       
       const response = await this.$axios.$post('/api/register', {
         name: userData.name,
@@ -82,6 +85,10 @@ export const actions = {
         password: userData.password,
         password_confirmation: userData.password_confirmation
       })
+      
+      const endTime = Date.now()
+      console.log('Registration completed in:', endTime - startTime, 'ms')
+      console.log('End time:', new Date(endTime).toISOString())
       
       console.log('Registration response:', response)
       
@@ -96,9 +103,32 @@ export const actions = {
       
       return { success: true, message: response.message }
     } catch (error) {
+      const errorTime = Date.now()
+      console.error('Registration error at:', new Date(errorTime).toISOString())
       console.error('Registration error:', error)
       console.error('Error response:', error.response)
-      const message = error.response?.data?.message || '登録に失敗しました'
+      console.error('Error status:', error.response?.status)
+      console.error('Error data:', error.response?.data)
+      console.error('Validation errors:', error.response?.data?.errors)
+      console.error('Network error:', error.code)
+      console.error('Request timeout:', error.code === 'ECONNABORTED')
+      
+      let message = error.response?.data?.message || '登録に失敗しました'
+      
+      // ネットワークエラーの特別な処理
+      if (error.code === 'ECONNABORTED') {
+        message = 'リクエストがタイムアウトしました。もう一度お試しください。'
+      } else if (!error.response) {
+        message = 'ネットワークエラーが発生しました。サーバーに接続できません。'
+      }
+      
+      // バリデーションエラーがある場合は詳細を表示
+      if (error.response?.data?.errors) {
+        const errors = error.response.data.errors
+        const errorMessages = Object.values(errors).flat()
+        message = errorMessages.join(', ')
+      }
+      
       return { success: false, error: message }
     } finally {
       commit('SET_LOADING', false)

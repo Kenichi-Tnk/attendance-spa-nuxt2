@@ -100,8 +100,8 @@ export default {
   },
   
   async mounted() {
-    // 今日の勤怠データを取得
-    await this.$store.dispatch('attendance/fetchTodayAttendance')
+    // TimeClock.vueで既にfetchStatusを実行しているため、ここでは不要
+    // await this.$store.dispatch('attendance/fetchTodayAttendance')
   }
 }
 </script>

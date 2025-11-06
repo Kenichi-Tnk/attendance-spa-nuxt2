@@ -52,7 +52,7 @@
         class="time-clock__btn time-clock__btn--break-end"
       >
         <i class="fas fa-play"></i>
-        休憩終了
+        休憩戻
       </button>
     </div>
 
@@ -81,7 +81,9 @@ export default {
   },
   computed: {
     attendanceStatus() {
-      return this.$store.getters['attendance/currentStatus']
+      const status = this.$store.state.attendance.currentStatus
+      console.log('Current attendance status:', status)
+      return status
     },
     workStartTime() {
       return this.$store.getters['attendance/workStartTime']
@@ -95,9 +97,12 @@ export default {
     currentStatusText() {
       const statusMap = {
         'not_started': '勤務外',
-        'checked_in': '勤務中',
+        'checked_in': '出勤中', 
+        'working': '出勤中',
         'on_break': '休憩中',
-        'checked_out': '退勤済'
+        'on-break': '休憩中',
+        'checked_out': '退勤済',
+        'finished': '退勤済'
       }
       return statusMap[this.attendanceStatus] || '勤務外'
     },
@@ -105,16 +110,23 @@ export default {
       return `time-clock__status-badge--${this.attendanceStatus}`
     },
     canClockIn() {
-      return this.attendanceStatus === 'not_started'
+      // 勤務外か、退勤済み（但し同日の場合は不可）の場合のみ出勤可能
+      return this.attendanceStatus === 'not_started' || 
+             this.attendanceStatus === 'finished' ||
+             !this.attendanceStatus
+      // 注意: checked_outは同日再出勤を防ぐため削除
     },
     canClockOut() {
-      return this.attendanceStatus === 'checked_in' || this.attendanceStatus === 'on_break'
+      // 出勤中（休憩中ではない）のみ退勤可能
+      return this.attendanceStatus === 'checked_in' || this.attendanceStatus === 'working'
     },
     canBreakStart() {
-      return this.attendanceStatus === 'checked_in'
+      // 出勤中（休憩中ではない）のみ休憩開始可能
+      return this.attendanceStatus === 'checked_in' || this.attendanceStatus === 'working'
     },
     canBreakEnd() {
-      return this.attendanceStatus === 'on_break'
+      // 休憩中のみ休憩終了可能
+      return this.attendanceStatus === 'on_break' || this.attendanceStatus === 'on-break'
     }
   },
   mounted() {
@@ -150,13 +162,13 @@ export default {
       this.isLoading = true
       try {
         const result = await this.$store.dispatch('attendance/clockIn')
-        if (result.success) {
-          this.$toast.success(result.message)
+        if (result && result.success) {
+          // 成功時の処理
+          await this.fetchAttendanceStatus()
         } else {
-          this.$toast.error(result.error)
+          console.error('Clock in failed:', result?.error)
         }
       } catch (error) {
-        this.$toast.error('出勤打刻に失敗しました')
         console.error('Clock in error:', error)
       } finally {
         this.isLoading = false
@@ -166,13 +178,13 @@ export default {
       this.isLoading = true
       try {
         const result = await this.$store.dispatch('attendance/clockOut')
-        if (result.success) {
-          this.$toast.success(result.message)
+        if (result && result.success) {
+          // 成功時の処理
+          await this.fetchAttendanceStatus()
         } else {
-          this.$toast.error(result.error)
+          console.error('Clock out failed:', result?.error)
         }
       } catch (error) {
-        this.$toast.error('退勤打刻に失敗しました')
         console.error('Clock out error:', error)
       } finally {
         this.isLoading = false
@@ -182,13 +194,13 @@ export default {
       this.isLoading = true
       try {
         const result = await this.$store.dispatch('attendance/startBreak')
-        if (result.success) {
-          this.$toast.success(result.message)
+        if (result && result.success) {
+          // 成功時の処理
+          await this.fetchAttendanceStatus()
         } else {
-          this.$toast.error(result.error)
+          console.error('Start break failed:', result?.error)
         }
       } catch (error) {
-        this.$toast.error('休憩開始に失敗しました')
         console.error('Start break error:', error)
       } finally {
         this.isLoading = false
@@ -198,13 +210,13 @@ export default {
       this.isLoading = true
       try {
         const result = await this.$store.dispatch('attendance/endBreak')
-        if (result.success) {
-          this.$toast.success(result.message)
+        if (result && result.success) {
+          // 成功時の処理
+          await this.fetchAttendanceStatus()
         } else {
-          this.$toast.error(result.error)
+          console.error('End break failed:', result?.error)
         }
       } catch (error) {
-        this.$toast.error('休憩終了に失敗しました')
         console.error('End break error:', error)
       } finally {
         this.isLoading = false
@@ -212,7 +224,10 @@ export default {
     },
     async fetchAttendanceStatus() {
       try {
-        await this.$store.dispatch('attendance/fetchStatus')
+        console.log('Component: fetchAttendanceStatus called')
+        const result = await this.$store.dispatch('attendance/fetchStatus')
+        console.log('Component: fetchStatus result:', result)
+        console.log('Component: current status after fetch:', this.attendanceStatus)
       } catch (error) {
         console.error('Fetch attendance status error:', error)
         // エラーが発生してもアプリの動作は継続
