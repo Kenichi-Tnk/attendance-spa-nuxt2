@@ -1,4 +1,4 @@
-# 勤怠管理システム SPA (Nuxt.js 2)
+ 勤怠管理システム SPA (Nuxt.js 2)
 
 ![Nuxt.js](https://img.shields.io/badge/Nuxt.js-2.18.1-00C58E.svg)
 ![Laravel](https://img.shields.io/badge/Laravel-8.x-FF2D20.svg)
@@ -563,18 +563,3 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 ```
-
-## 📞 サポート
-
-問題が解決しない場合は、以下の情報を含めてお問い合わせください：
-
-1. エラーメッセージの全文
-2. 実行環境 (OS、Node.js、PHP のバージョン)
-3. 実行したコマンドとその結果
-4. ブラウザの開発者ツールのエラーログ
-
----
-
-**開発者**: 田中健一  
-**作成日**: 2025 年 11 月 12 日  
-**バージョン**: 1.0.0
