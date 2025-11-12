@@ -16,6 +16,7 @@ class AttendanceCorrect extends Model
         'check_out',
         'reason',
         'status',
+        'reject_reason',
     ];
 
     protected $casts = [

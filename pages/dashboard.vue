@@ -39,7 +39,7 @@
       </nuxt-link>
       
       <nuxt-link
-        to="/my-requests"
+        to="/correction-requests"
         class="dashboard__action-card dashboard__action-card--requests"
       >
         <div class="dashboard__action-content">

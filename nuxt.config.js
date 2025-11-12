@@ -55,6 +55,7 @@ export default {
     baseURL: 'http://localhost:8000',
     timeout: 10000, // 10秒のタイムアウト
     retry: { retries: 0 }, // リトライを無効化して問題を特定しやすくする
+    credentials: true, // クロスオリジンリクエストでクッキーを送信
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

@@ -13,15 +13,21 @@ export const getters = {
   currentStatus: (state) => state.currentStatus,
   
   workStartTime: (state) => {
-    return state.workStartTime ? formatTime(state.workStartTime) : null
+    if (!state.workStartTime) return null
+    // HH:MM:SS形式をHH:MM形式に変換
+    return state.workStartTime.substring(0, 5)
   },
   
   workEndTime: (state) => {
-    return state.workEndTime ? formatTime(state.workEndTime) : null
+    if (!state.workEndTime) return null
+    // HH:MM:SS形式をHH:MM形式に変換
+    return state.workEndTime.substring(0, 5)
   },
   
   breakStartTime: (state) => {
-    return state.breakStartTime ? formatTime(state.breakStartTime) : null
+    if (!state.breakStartTime) return null
+    // HH:MM:SS形式をHH:MM形式に変換
+    return state.breakStartTime.substring(0, 5)
   },
   
   isWorking: (state) => {
@@ -31,18 +37,34 @@ export const getters = {
   totalWorkTime: (state) => {
     if (!state.workStartTime) return null
     
-    const startTime = new Date(state.workStartTime)
-    const endTime = state.workEndTime ? new Date(state.workEndTime) : new Date()
+    // 今日の日付を取得
+    const today = new Date().toISOString().split('T')[0]
+    
+    // 開始時刻をDateオブジェクトに変換（ISO形式で）
+    const startTime = new Date(`${today}T${state.workStartTime}`)
+    
+    // 終了時刻の処理（退勤していない場合は現在時刻を使用）
+    let endTime
+    if (state.workEndTime) {
+      endTime = new Date(`${today}T${state.workEndTime}`)
+    } else {
+      endTime = new Date() // 現在時刻
+    }
+    
+    // 日時パースが失敗した場合の処理
+    if (isNaN(startTime.getTime()) || isNaN(endTime.getTime())) {
+      return '0:00'
+    }
     
     // 勤務時間から休憩時間を差し引く
     const workMilliseconds = endTime - startTime - (state.breakDuration * 60 * 1000)
     
-    if (workMilliseconds <= 0) return '00:00'
+    if (workMilliseconds <= 0) return '0:00'
     
     const hours = Math.floor(workMilliseconds / (1000 * 60 * 60))
     const minutes = Math.floor((workMilliseconds % (1000 * 60 * 60)) / (1000 * 60))
     
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+    return `${hours}:${String(minutes).padStart(2, '0')}`
   },
   
   todayAttendance: (state) => state.todayAttendance
@@ -224,12 +246,4 @@ export const actions = {
   resetAttendance({ commit }) {
     commit('RESET_ATTENDANCE')
   }
-}
-
-// ヘルパー関数
-function formatTime(timestamp) {
-  const date = new Date(timestamp)
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
-  return `${hours}:${minutes}`
 }

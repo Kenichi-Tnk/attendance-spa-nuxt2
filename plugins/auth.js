@@ -13,6 +13,9 @@ export default function ({ store, $axios }) {
     console.log('Request interceptor - Method:', config.method)
     console.log('Request interceptor - Start time:', new Date().toISOString())
     
+    // CORS対応
+    config.withCredentials = true
+    
     const token = store.state.auth.token
     if (token) {
       config.headers.common['Authorization'] = `Bearer ${token}`

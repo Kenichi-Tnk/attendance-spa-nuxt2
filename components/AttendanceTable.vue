@@ -63,9 +63,6 @@
                 <span v-else-if="column.type === 'time'">
                   {{ getValueByKey(item, column.key) || '−' }}
                 </span>
-                <span v-else-if="column.type === 'status'">
-                  <StatusBadge :status="getValueByKey(item, column.key)" />
-                </span>
                 <span v-else :class="getValueByKey(item, column.key) ? 'attendance-table__cell--text' : 'attendance-table__cell--dash'">
                   {{ getValueByKey(item, column.key) || '−' }}
                 </span>
@@ -132,13 +129,8 @@
 </template>
 
 <script>
-import StatusBadge from './StatusBadge.vue'
-
 export default {
   name: 'AttendanceTable',
-  components: {
-    StatusBadge
-  },
   
   props: {
     // 基本設定

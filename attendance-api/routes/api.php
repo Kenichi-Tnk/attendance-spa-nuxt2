@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\AttendanceController;
+use App\Http\Controllers\API\AttendanceCorrectController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,21 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/end-rest', [AttendanceController::class, 'endRest']);
         Route::get('/', [AttendanceController::class, 'index']);
         Route::get('/{id}', [AttendanceController::class, 'show']);
+    });
+
+    // Attendance correction request routes
+    Route::prefix('correction-requests')->group(function () {
+        Route::get('/', [AttendanceCorrectController::class, 'index']); // ユーザーの申請一覧
+        Route::post('/', [AttendanceCorrectController::class, 'store']); // 申請作成
+        Route::get('/{id}', [AttendanceCorrectController::class, 'show']); // 申請詳細
+
+        // 管理者専用ルート
+        Route::middleware(['admin'])->group(function () {
+            Route::get('/admin/all', [AttendanceCorrectController::class, 'adminIndex']); // 全申請管理
+            Route::get('/admin/pending', [AttendanceCorrectController::class, 'pendingRequests']); // 承認待ち申請
+            Route::put('/{id}/approve', [AttendanceCorrectController::class, 'approve']); // 承認
+            Route::put('/{id}/reject', [AttendanceCorrectController::class, 'reject']); // 却下
+        });
     });
 });
 
