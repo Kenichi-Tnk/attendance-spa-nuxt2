@@ -17,7 +17,6 @@
                         type="date"
                         :max="today"
                         class="form-input"
-                        @input="onDateInput"
                         @blur="onDateBlur"
                         @focus="onDateFocus"
                     />
@@ -49,13 +48,11 @@
 
                     <div class="form-group">
                         <label for="check_in" class="form-label">出勤時刻 <span class="required">*</span></label>
-                        <!-- 一時的に直接的なinput要素でテスト -->
                         <input
                             id="check_in"
                             v-model="form.check_in"
                             type="time"
                             class="form-input"
-                            @input="onTimeInput('check_in', $event)"
                             @blur="onTimeBlur('check_in')"
                             @focus="onTimeFocus('check_in')"
                         />
@@ -64,13 +61,11 @@
 
                     <div class="form-group">
                         <label for="check_out" class="form-label">退勤時刻</label>
-                        <!-- 一時的に直接的なinput要素でテスト -->
                         <input
                             id="check_out"
                             v-model="form.check_out"
                             type="time"
                             class="form-input"
-                            @input="onTimeInput('check_out', $event)"
                             @blur="onTimeBlur('check_out')"
                             @focus="onTimeFocus('check_out')"
                         />
@@ -91,7 +86,6 @@
                                     v-model="rest.rest_start"
                                     class="form-input"
                                     :class="{ 'is-invalid': errors[`rests.${index}.rest_start`] }"
-                                    @input="onRestInput('rest_start', index, $event)"
                                     @focus="onRestFocus('rest_start', index)"
                                     @blur="onRestBlur('rest_start', index)"
                                 />
@@ -106,7 +100,6 @@
                                     v-model="rest.rest_end"
                                     class="form-input"
                                     :class="{ 'is-invalid': errors[`rests.${index}.rest_end`] }"
-                                    @input="onRestInput('rest_end', index, $event)"
                                     @focus="onRestFocus('rest_end', index)"
                                     @blur="onRestBlur('rest_end', index)"
                                 />
@@ -397,9 +390,10 @@ export default {
       if (isNaN(date.getTime())) {
         return ''
       }
-      
-      return date.toISOString().split('T')[0]
-    },        calculateWorkHours(attendance) {
+            return date.toISOString().split('T')[0]
+        },
+
+        calculateWorkHours(attendance) {
             if (!attendance.check_in || !attendance.check_out) {
                 return '−'
             }
@@ -439,7 +433,13 @@ export default {
             return `${hours}:${String(minutes).padStart(2, '0')}`
         },
 
-
+        // イベントハンドラーメソッド（必要に応じて処理を追加）
+        onDateFocus() {},
+        onDateBlur() {},
+        onTimeFocus(field) {},
+        onTimeBlur(field) {},
+        onRestFocus(field, index) {},
+        onRestBlur(field, index) {}
     }
 }
 </script>
