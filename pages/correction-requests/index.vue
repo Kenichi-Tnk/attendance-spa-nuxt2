@@ -123,7 +123,7 @@ export default {
           reason: request.reason.length > 50 ? request.reason.substring(0, 50) + '...' : request.reason,
           status: request.status,
           created_at: this.formatDateTime(request.created_at),
-          original: request // 元データも保持
+          original: request
         }))
         
         this.totalPages = response.last_page || 1
@@ -139,7 +139,6 @@ export default {
     
     formatTime(timeString) {
       if (!timeString) return '−'
-      // HH:MM:SS形式をHH:MM形式に変換
       return timeString.substring(0, 5)
     },
     
@@ -166,73 +165,4 @@ export default {
 }
 </script>
 
-<style scoped>
-.correction-requests {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.correction-requests__actions {
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.correction-requests__new-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  background-color: #3b82f6;
-  color: white;
-  text-decoration: none;
-  border-radius: 6px;
-  font-weight: 500;
-  transition: background-color 0.2s;
-}
-
-.correction-requests__new-btn:hover {
-  background-color: #2563eb;
-}
-
-.correction-requests__table-container {
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.correction-requests__empty {
-  text-align: center;
-  padding: 40px 20px;
-}
-
-.correction-requests__empty i {
-  font-size: 48px;
-  color: #9ca3af;
-  margin-bottom: 16px;
-}
-
-.correction-requests__empty p {
-  color: #6b7280;
-  margin-bottom: 16px;
-  font-size: 16px;
-}
-
-.correction-requests__empty-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background-color: #3b82f6;
-  color: white;
-  text-decoration: none;
-  border-radius: 6px;
-  font-size: 14px;
-  transition: background-color 0.2s;
-}
-
-.correction-requests__empty-link:hover {
-  background-color: #2563eb;
-}
-</style>
+<style src="@/assets/css/pages/correction-requests-index.css" scoped></style>
