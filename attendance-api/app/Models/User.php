@@ -11,7 +11,7 @@ use Laravel\Sanctum\NewAccessToken;
 
 /**
  * User model with Sanctum API token support
- * 
+ *
  * @method NewAccessToken createToken(string $name, array $abilities = ['*'])
  * @method \Illuminate\Database\Eloquent\Relations\MorphMany tokens()
  * @method void sendEmailVerificationNotification()
@@ -31,7 +31,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-        'is_admin',
+        'role',
+        'password_change_required',
+        'invited_at',
     ];
 
     /**
@@ -51,7 +53,9 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'invited_at' => 'datetime',
         'is_admin' => 'boolean',
+        'password_change_required' => 'boolean',
     ];
 
     /**

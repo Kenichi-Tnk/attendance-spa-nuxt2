@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\AttendanceController;
 use App\Http\Controllers\API\AttendanceCorrectController;
+use App\Http\Controllers\API\StaffController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,6 +54,16 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::put('/{id}/approve', [AttendanceCorrectController::class, 'approve']); // 承認
             Route::put('/{id}/reject', [AttendanceCorrectController::class, 'reject']); // 却下
         });
+    });
+
+    // 管理者専用スタッフ管理
+    Route::middleware(['admin'])->prefix('staff')->group(function () {
+        Route::get('/', [StaffController::class, 'index']); // スタッフ一覧
+        Route::get('/statistics', [StaffController::class, 'statistics']); // 統計情報
+        Route::post('/', [StaffController::class, 'store']); // スタッフ新規作成
+        Route::put('/{id}', [StaffController::class, 'update']); // スタッフ更新
+        Route::delete('/{id}', [StaffController::class, 'destroy']); // スタッフ削除
+        Route::post('/{id}/verify-email', [StaffController::class, 'verifyEmail']); // メール認証
     });
 });
 

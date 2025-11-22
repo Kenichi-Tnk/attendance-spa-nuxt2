@@ -32,7 +32,7 @@ export const getters = {
   user: state => state.user,
   token: state => state.token,
   isEmailVerified: state => state.user?.email_verified_at !== null,
-  isAdmin: state => state.user?.is_admin === true
+  isAdmin: state => state.user?.role === 'admin'
 }
 
 export const actions = {

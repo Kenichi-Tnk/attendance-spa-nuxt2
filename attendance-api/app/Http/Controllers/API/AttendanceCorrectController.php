@@ -8,6 +8,7 @@ use App\Models\Attendance;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class AttendanceCorrectController extends Controller
@@ -132,24 +133,42 @@ class AttendanceCorrectController extends Controller
      */
     public function approve(Request $request, $id)
     {
-        $correction = AttendanceCorrect::findOrFail($id);
+        try {
+            Log::info("承認処理開始 - ID: {$id}");
 
-        if ($correction->status !== 'pending') {
-            return response()->json([
-                'message' => 'この申請は既に処理済みです'
-            ], Response::HTTP_CONFLICT);
-        }
+            $correction = AttendanceCorrect::findOrFail($id);
+            Log::info("修正申請データ取得成功", ['correction' => $correction->toArray()]);
 
-        // 承認処理：元の勤怠データを修正申請内容で更新
-        $attendance = Attendance::where('user_id', $correction->user_id)
-            ->where('date', $correction->date)
-            ->first();
+            if ($correction->status !== 'pending') {
+                return response()->json([
+                    'message' => 'この申請は既に処理済みです'
+                ], Response::HTTP_CONFLICT);
+            }
 
-        if ($attendance) {
-            $attendance->update([
-                'check_in' => $correction->check_in,
-                'check_out' => $correction->check_out
-            ]);
+            // 承認処理：元の勤怠データを修正申請内容で更新または新規作成
+            $attendance = Attendance::where('user_id', $correction->user_id)
+                ->where('date', $correction->date)
+                ->first();
+
+            Log::info("勤怠データ検索結果", ['attendance' => $attendance ? $attendance->toArray() : 'null']);
+
+            if ($attendance) {
+                // 既存データを更新
+                $attendance->update([
+                    'check_in' => $correction->check_in,
+                    'check_out' => $correction->check_out
+                ]);
+                Log::info("既存勤怠データを更新");
+            } else {
+                // 新規データを作成
+                $attendance = Attendance::create([
+                    'user_id' => $correction->user_id,
+                    'date' => $correction->date,
+                    'check_in' => $correction->check_in,
+                    'check_out' => $correction->check_out
+                ]);
+                Log::info("新規勤怠データを作成", ['attendance' => $attendance->toArray()]);
+            }
 
             // 休憩時間も更新
             if ($correction->rests->count() > 0) {
@@ -163,16 +182,23 @@ class AttendanceCorrectController extends Controller
                         'rest_end' => $rest->rest_end
                     ]);
                 }
+                Log::info("休憩データを更新");
             }
+
+            // 申請ステータスを承認済みに更新
+            $correction->update(['status' => 'approved']);
+            Log::info("申請ステータスを承認済みに更新");
+
+            return response()->json([
+                'message' => '申請を承認しました',
+                'correction' => $correction->fresh('rests')
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            Log::error("承認処理エラー", ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            return response()->json([
+                'message' => '承認処理中にエラーが発生しました: ' . $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        // 申請ステータスを承認済みに更新
-        $correction->update(['status' => 'approved']);
-
-        return response()->json([
-            'message' => '申請を承認しました',
-            'correction' => $correction->fresh('rests')
-        ], Response::HTTP_OK);
     }
 
     /**
