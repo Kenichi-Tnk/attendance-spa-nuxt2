@@ -58,6 +58,11 @@ export default {
     credentials: true, // クロスオリジンリクエストでクッキーを送信
   },
 
+  // Public runtime configuration
+  publicRuntimeConfig: {
+    dev: process.env.NODE_ENV === 'development'
+  },
+
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   }

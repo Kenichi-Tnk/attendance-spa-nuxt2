@@ -73,7 +73,7 @@ class AttendanceController extends Controller
         $attendance = Attendance::create([
             'user_id' => $user->id,
             'date' => $today,
-            'check_in' => now()->toTimeString(),
+            'check_in' => now(),
         ]);
 
         return response()->json([
@@ -113,12 +113,12 @@ class AttendanceController extends Controller
 
         if ($activeRest) {
             $activeRest->update([
-                'rest_end' => now()->toTimeString()
+                'rest_end' => now()
             ]);
         }
 
         $attendance->update([
-            'check_out' => now()->toTimeString()
+            'check_out' => now()
         ]);
 
         return response()->json([
@@ -164,7 +164,7 @@ class AttendanceController extends Controller
 
         $rest = Rest::create([
             'attendance_id' => $attendance->id,
-            'rest_start' => now()->toTimeString(),
+            'rest_start' => now(),
         ]);
 
         return response()->json([
@@ -202,7 +202,7 @@ class AttendanceController extends Controller
         }
 
         $activeRest->update([
-            'rest_end' => now()->toTimeString()
+            'rest_end' => now()
         ]);
 
         return response()->json([
@@ -222,6 +222,20 @@ class AttendanceController extends Controller
             ->with('rests')
             ->orderBy('date', 'desc')
             ->paginate(15);
+
+        // Transform the data to ensure date is returned as string format
+        $attendances->getCollection()->transform(function ($attendance) {
+            return [
+                'id' => $attendance->id,
+                'user_id' => $attendance->user_id,
+                'date' => $attendance->date->format('Y-m-d'),
+                'check_in' => $attendance->check_in ? $attendance->check_in->format('H:i:s') : null,
+                'check_out' => $attendance->check_out ? $attendance->check_out->format('H:i:s') : null,
+                'created_at' => $attendance->created_at,
+                'updated_at' => $attendance->updated_at,
+                'rests' => $attendance->rests
+            ];
+        });
 
         return response()->json($attendances, Response::HTTP_OK);
     }
@@ -245,7 +259,16 @@ class AttendanceController extends Controller
         }
 
         return response()->json([
-            'attendance' => $attendance
+            'attendance' => [
+                'id' => $attendance->id,
+                'user_id' => $attendance->user_id,
+                'date' => $attendance->date->format('Y-m-d'),
+                'check_in' => $attendance->check_in ? $attendance->check_in->format('H:i:s') : null,
+                'check_out' => $attendance->check_out ? $attendance->check_out->format('H:i:s') : null,
+                'created_at' => $attendance->created_at,
+                'updated_at' => $attendance->updated_at,
+                'rests' => $attendance->rests
+            ]
         ], Response::HTTP_OK);
     }
 }

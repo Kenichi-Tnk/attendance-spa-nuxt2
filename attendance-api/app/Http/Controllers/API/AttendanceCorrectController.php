@@ -25,6 +25,22 @@ class AttendanceCorrectController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
+        // Transform the data to ensure date is returned as string format
+        $corrections->getCollection()->transform(function ($correction) {
+            return [
+                'id' => $correction->id,
+                'user_id' => $correction->user_id,
+                'date' => $correction->date->format('Y-m-d'),
+                'check_in' => $correction->check_in,
+                'check_out' => $correction->check_out,
+                'reason' => $correction->reason,
+                'status' => $correction->status,
+                'created_at' => $correction->created_at,
+                'updated_at' => $correction->updated_at,
+                'rests' => $correction->rests
+            ];
+        });
+
         return response()->json($corrections, Response::HTTP_OK);
     }
 
@@ -271,5 +287,41 @@ class AttendanceCorrectController extends Controller
         $corrections = $query->paginate(15);
 
         return response()->json($corrections, Response::HTTP_OK);
+    }
+
+    /**
+     * Get original attendance data for correction request
+     */
+    public function getOriginalAttendance(Request $request, $id)
+    {
+        $user = $request->user();
+
+        // 修正申請を取得
+        $correction = AttendanceCorrect::where('user_id', $user->id)
+            ->where('id', $id)
+            ->first();
+
+        if (!$correction) {
+            return response()->json([
+                'message' => '申請が見つかりません'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // 修正前の勤怠データを取得
+        $originalAttendance = Attendance::where('user_id', $user->id)
+            ->where('date', $correction->date)
+            ->with('rests')
+            ->first();
+
+        if (!$originalAttendance) {
+            return response()->json([
+                'message' => '元の勤怠データが見つかりません',
+                'original_attendance' => null
+            ], Response::HTTP_OK);
+        }
+
+        return response()->json([
+            'original_attendance' => $originalAttendance
+        ], Response::HTTP_OK);
     }
 }

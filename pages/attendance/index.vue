@@ -1,11 +1,9 @@
 <template>
   <div class="attendance-index__container">
-    <PageHeader
-      title="勤怠一覧"
-      subtitle="過去の勤怠記録を確認できます"
-      icon="fas fa-calendar-alt"
-      :breadcrumbs="breadcrumbs"
-    />
+    <div class="attendance-index__page-header">
+      <h1 class="attendance-index__title">勤怠一覧</h1>
+      <p class="attendance-index__subtitle">過去の勤怠記録を確認できます</p>
+    </div>
     
     <!-- フィルター -->
     <div class="attendance-index__filter-section">
@@ -54,6 +52,7 @@
           :to="`/attendance/${item.id}`"
           class="attendance-index__action-link attendance-index__action-link--detail"
         >
+          <i class="fas fa-eye"></i>
           詳細
         </nuxt-link>
         <button
@@ -61,6 +60,7 @@
           @click="requestCorrection(item.id)"
           class="attendance-index__action-btn attendance-index__action-btn--correction"
         >
+          <i class="fas fa-edit"></i>
           修正申請
         </button>
       </template>
@@ -70,14 +70,12 @@
 
 <script>
 import AttendanceTable from '~/components/AttendanceTable.vue'
-import PageHeader from '~/components/PageHeader.vue'
 import FormInput from '~/components/FormInput.vue'
 
 export default {
   name: 'AttendanceList',
   components: {
     AttendanceTable,
-    PageHeader,
     FormInput
   },
   middleware: ['auth', 'verified'],
@@ -94,13 +92,6 @@ export default {
   },
   
   computed: {
-    breadcrumbs() {
-      return [
-        { text: 'ダッシュボード', to: '/dashboard' },
-        { text: '勤怠一覧' }
-      ]
-    },
-    
     tableColumns() {
       return [
         { key: 'date', label: '日付', type: 'date' },
@@ -208,8 +199,21 @@ export default {
     },
     
     requestCorrection(recordId) {
-      // 修正申請ページへ遷移
-      this.$router.push(`/correction-requests/new?attendance_id=${recordId}`)
+      // 該当の勤怠記録を取得
+      const record = this.attendanceRecords.find(r => r.id === recordId)
+      if (!record) {
+        console.error('Record not found:', recordId)
+        return
+      }
+      
+      // 日付を YYYY-MM-DD 形式に変換
+      const dateStr = record.date.split('T')[0]
+      
+      // 修正申請ページへ日付付きで遷移
+      this.$router.push({
+        path: '/correction-requests/new',
+        query: { date: dateStr }
+      })
     },
     
     handlePageChange(page) {

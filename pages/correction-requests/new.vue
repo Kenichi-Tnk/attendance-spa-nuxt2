@@ -1,25 +1,29 @@
 <template>
     <div class="correction-request-new">
-        <PageHeader
-        title="新規修正申請"
-        :breadcrumbs="breadcrumbs"
-        />
+        <div class="correction-request-new__page-header">
+            <h1 class="correction-request-new__title">修正申請</h1>
+            <p class="correction-request-new__subtitle">勤怠情報の修正を申請できます</p>
+        </div>
 
         <div class="correction-request-new__container">
             <form @submit.prevent="submitRequest" class="correction-request-form">
                 <!-- 対象日選択 -->
                 <div class="form-group">
                     <label for="date" class="form-label">対象日 <span class="required">*</span></label>
-                    <!-- 一時的に直接的なinput要素でテスト -->
                     <input
                         id="date"
                         v-model="form.date"
                         type="date"
                         :max="today"
-                        class="form-input"
+                        :readonly="isDateFromQuery"
+                        :class="['form-input', { 'form-input--readonly': isDateFromQuery }]"
                         @blur="onDateBlur"
                         @focus="onDateFocus"
                     />
+                    <div v-if="isDateFromQuery" class="form-help-text">
+                        <i class="fas fa-info-circle"></i>
+                        勤怠一覧から選択された日付です
+                    </div>
                     <div v-if="errors.date" class="error-message">{{ errors.date }}</div>
                 </div>
 
@@ -42,6 +46,43 @@
                     </div>
                 </div>
 
+                <!-- 承認待ち通知（目立つ表示） -->
+                <div v-if="hasPendingRequest" class="pending-request-alert">
+                    <div class="pending-request-alert__icon">
+                        <i class="fas fa-hourglass-half"></i>
+                    </div>
+                    <div class="pending-request-alert__content">
+                        <h3 class="pending-request-alert__title">承認待ちの申請があります</h3>
+                        <p class="pending-request-alert__message">
+                            この日付は既に修正申請が提出されており、管理者の承認待ちです。<br>
+                            承認または却下されるまで、新たな申請はできません。
+                        </p>
+                        <div class="pending-request-alert__info">
+                            <span class="info-label">申請ID:</span>
+                            <span class="info-value">#{{ pendingRequest.id }}</span>
+                            <span class="info-separator">|</span>
+                            <span class="info-label">申請日時:</span>
+                            <span class="info-value">{{ formatDateTime(pendingRequest.created_at) }}</span>
+                        </div>
+                        <div class="pending-request-alert__actions">
+                            <nuxt-link
+                                :to="`/correction-requests/${pendingRequest.id}`"
+                                class="btn btn--secondary btn--sm"
+                            >
+                                <i class="fas fa-eye"></i>
+                                申請内容を確認
+                            </nuxt-link>
+                            <nuxt-link
+                                to="/correction-requests"
+                                class="btn btn--outline btn--sm"
+                            >
+                                <i class="fas fa-list"></i>
+                                申請一覧へ戻る
+                            </nuxt-link>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 修正内容入力 -->
                 <div class="form-section">
                     <h3 class="section-title">修正内容</h3>
@@ -53,6 +94,8 @@
                             v-model="form.check_in"
                             type="time"
                             class="form-input"
+                            :disabled="hasPendingRequest"
+                            :class="{ 'form-input--disabled': hasPendingRequest }"
                             @blur="onTimeBlur('check_in')"
                             @focus="onTimeFocus('check_in')"
                         />
@@ -66,6 +109,8 @@
                             v-model="form.check_out"
                             type="time"
                             class="form-input"
+                            :disabled="hasPendingRequest"
+                            :class="{ 'form-input--disabled': hasPendingRequest }"
                             @blur="onTimeBlur('check_out')"
                             @focus="onTimeFocus('check_out')"
                         />
@@ -123,6 +168,7 @@
                         type="button"
                         @click="addRest"
                         class="add-rest-btn"
+                        :disabled="hasPendingRequest"
                     >
                         <i class="fas fa-plus"></i>
                         休憩時間を追加
@@ -135,37 +181,40 @@
                     <textarea
                         id="reason"
                         v-model="form.reason"
-                        :class="['form-textarea', { 'error': errors.reason }]"
+                        :class="['form-textarea', { 'error': errors.reason, 'form-textarea--disabled': hasPendingRequest }]"
+                        :disabled="hasPendingRequest"
                         placeholder="修正が必要な理由を詳しく記入してください"
                         rows="4"
                         maxlength="500"
                     ></textarea>
                     <div v-if="errors.reason" class="error-message">{{ errors.reason }}</div>
-                    <div class="char-count">{{ form.reason.length }}/500</div>
+                    <div v-if="!hasPendingRequest" class="char-count">{{ form.reason.length }}/500</div>
                 </div>
 
                 <!-- ボタン -->
                 <div class="form-actions">
                     <nuxt-link
-                    to="/correction-requests"
-                    class="btn btn--secondary"
+                        to="/attendance"
+                        class="btn btn--secondary"
                     >
-                        キャンセル
+                        <i class="fas fa-arrow-left"></i>
+                        勤怠一覧へ戻る
                     </nuxt-link>
                     <!-- デバッグボタン（開発環境でのみ表示） -->
                     <button
-                    v-if="$config.dev"
-                    type="button"
-                    @click="debugFormData"
-                    class="btn btn--secondary"
-                    style="margin: 0 8px;"
+                        v-if="$config.dev"
+                        type="button"
+                        @click="debugFormData"
+                        class="btn btn--secondary"
+                        style="margin: 0 8px;"
                     >
                         デバッグ情報
                     </button>
                     <button
-                    type="submit"
-                    :disabled="isSubmitting"
-                    class="btn btn--primary"
+                        v-if="!hasPendingRequest"
+                        type="submit"
+                        :disabled="isSubmitting"
+                        class="btn btn--primary"
                     >
                         <i v-if="isSubmitting" class="fas fa-spinner fa-spin"></i>
                         <span>{{ isSubmitting ? '申請中...' : '申請する' }}</span>
@@ -177,13 +226,8 @@
 </template>
 
 <script>
-import PageHeader from '~/components/PageHeader.vue'
-
 export default {
     name: 'CorrectionRequestNew',
-    components: {
-        PageHeader
-    },
     middleware: ['auth', 'verified'],
 
     data() {
@@ -196,38 +240,54 @@ export default {
                 rests: []
             },
             currentAttendance: null,
+            pendingRequest: null, // 申請中の修正依頼
             errors: {},
             isSubmitting: false,
             isLoadingAttendance: false,
-            isUpdatingForm: false // フォーム更新中フラグ
+            isUpdatingForm: false, // フォーム更新中フラグ
+            isDateFromQuery: false // クエリパラメータから日付が渡されたかどうか
         }
     },
 
     computed: {
-        breadcrumbs() {
-            return [
-                { text: 'ダッシュボード', to: '/dashboard' },
-                { text: '修正申請', to: '/correction-requests' },
-                { text: '新規申請' }
-            ]
-        },
-
         today() {
             return new Date().toISOString().split('T')[0]
+        },
+
+        hasPendingRequest() {
+            return this.pendingRequest && this.pendingRequest.status === 'pending'
         }
     },
     
     mounted() {
-        // コンポーネント初期化時の処理
+        // クエリパラメータから日付を取得
+        const dateFromQuery = this.$route.query.date
+        
+        if (dateFromQuery) {
+            console.log('日付パラメータを受信:', dateFromQuery)
+            // 日付をフォームに設定
+            this.form.date = dateFromQuery
+            this.isDateFromQuery = true
+            // データを自動的にロード
+            this.$nextTick(() => {
+                this.loadAttendanceData()
+            })
+        } else {
+            // 日付パラメータがない場合は勤怠一覧へリダイレクト
+            console.warn('日付パラメータがありません。勤怠一覧へリダイレクトします。')
+            this.$router.replace('/attendance')
+        }
     },
 
     watch: {
         'form.date'(newDate, oldDate) {
             if (this.isUpdatingForm) {
+                console.log('フォーム更新中のため、loadAttendanceDataをスキップ')
                 return
             }
             
             if (newDate && newDate !== oldDate) {
+                console.log(`日付変更: ${oldDate} → ${newDate}`)
                 setTimeout(() => {
                     this.loadAttendanceData()
                 }, 300)
@@ -246,54 +306,97 @@ export default {
         async loadAttendanceData() {
             if (!this.form.date) {
                 this.currentAttendance = null
+                this.pendingRequest = null
                 return
             }
 
             try {
                 this.isLoadingAttendance = true
 
-                const response = await this.$axios.$get('/api/attendance')
+                // 勤怠データと修正申請データを並行で取得
+                const [attendanceResponse, requestsResponse] = await Promise.all([
+                    this.$axios.$get('/api/attendance'),
+                    this.$axios.$get('/api/correction-requests')
+                ])
 
-                const attendanceData = response.data.find(item => {
+                // 指定日の勤怠データを検索
+                const attendanceData = attendanceResponse.data.find(item => {
                     const itemDate = item.date.split('T')[0]
                     return itemDate === this.form.date
                 })
 
+                // 修正申請データの取得（ページネーション対応）
+                const requestsData = requestsResponse.data || requestsResponse
+                const requests = Array.isArray(requestsData) ? requestsData : (requestsData.data || [])
+
+                console.log('取得した修正申請データ:', requests)
+                console.log('検索対象日付:', this.form.date)
+
+                // 指定日の申請中の修正依頼を検索
+                const pendingRequestData = requests.find(item => {
+                    const itemDate = item.date ? item.date.split('T')[0] : null
+                    const isPending = item.status === 'pending'
+                    const isMatchDate = itemDate === this.form.date
+                    
+                    console.log(`申請ID:${item.id} 日付:${itemDate} ステータス:${item.status} 一致:${isMatchDate && isPending}`)
+                    
+                    return isMatchDate && isPending
+                })
+
+                console.log('申請中のリクエスト:', pendingRequestData)
+
+                this.pendingRequest = pendingRequestData || null
+
                 if (attendanceData) {
                     this.currentAttendance = attendanceData
 
-                    this.isUpdatingForm = true
-                    await this.$nextTick()
-                    
-                    // 現在の値が空の場合のみフォームにセット
-                    if (!this.form.check_in) {
+                    // 申請中の場合はフォームをクリア
+                    if (this.hasPendingRequest) {
+                        this.isUpdatingForm = true
+                        await this.$nextTick()
+                        
+                        // フォームの入力フィールドを強制的にクリア
+                        this.form.check_in = ''
+                        this.form.check_out = ''
+                        this.form.reason = ''
+                        this.form.rests = []
+                        
+                        await this.$nextTick()
+                        this.isUpdatingForm = false
+                    } else {
+                        // 申請中でない場合のみフォームにセット
+                        this.isUpdatingForm = true
+                        await this.$nextTick()
+                        
+                        // フォームに勤怠データをセット
                         this.form.check_in = this.formatTime(attendanceData.check_in)
-                    }
-                    if (!this.form.check_out) {
                         this.form.check_out = this.formatTime(attendanceData.check_out)
-                    }
 
-                    // 休憩データを更新
-                    if (attendanceData.rests && attendanceData.rests.length > 0 && this.form.rests.length === 0) {
-                        this.form.rests = attendanceData.rests.map(rest => ({
-                        rest_start: this.formatTime(rest.rest_start),
-                        rest_end: this.formatTime(rest.rest_end)
-                        }))
+                        // 休憩データを更新
+                        if (attendanceData.rests && attendanceData.rests.length > 0) {
+                            this.form.rests = attendanceData.rests.map(rest => ({
+                                rest_start: this.formatTime(rest.rest_start),
+                                rest_end: this.formatTime(rest.rest_end)
+                            }))
+                        } else {
+                            this.form.rests = []
+                        }
+                        
+                        await this.$nextTick()
+                        this.isUpdatingForm = false
                     }
-                    
-                    await this.$nextTick()
-                    this.isUpdatingForm = false
                 } else {
                     this.currentAttendance = null
-                    if (this.$toast) {
+                    if (this.$toast && !this.hasPendingRequest) {
                         this.$toast.warning('指定した日の勤怠データが見つかりません。手動で入力してください。')
                     }
                 }
             } catch (error) {
-                console.error('勤怠データ取得エラー:', error)
+                console.error('データ取得エラー:', error)
                 this.currentAttendance = null
+                this.pendingRequest = null
                 if (this.$toast) {
-                    this.$toast.error('勤怠データの取得に失敗しました')
+                    this.$toast.error('データの取得に失敗しました')
                 }
             } finally {
                 this.isLoadingAttendance = false
@@ -315,11 +418,26 @@ export default {
 
                 const response = await this.$axios.$post('/api/correction-requests', requestData)
 
+                // 申請成功後、pendingRequestを設定してボタンを非表示にする
+                this.pendingRequest = {
+                    ...response,
+                    status: 'pending'
+                }
+
+                // フォームの入力フィールドをクリア（日付は残す）
+                this.form.check_in = ''
+                this.form.check_out = ''
+                this.form.reason = ''
+                this.form.rests = []
+
                 if (this.$toast) {
                     this.$toast.success('修正申請を提出しました')
                 }
 
-                this.$router.push('/correction-requests')
+                // 3秒後に勤怠一覧画面へ遷移
+                setTimeout(() => {
+                    this.$router.push('/attendance')
+                }, 3000)
             } catch (error) {
                 console.error('申請提出エラー:', error)
 
@@ -393,6 +511,20 @@ export default {
             return date.toISOString().split('T')[0]
         },
 
+        formatDateTime(dateTimeString) {
+            if (!dateTimeString) return '−'
+            const date = new Date(dateTimeString)
+            if (isNaN(date.getTime())) return '−'
+            
+            return date.toLocaleString('ja-JP', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            })
+        },
+
         calculateWorkHours(attendance) {
             if (!attendance.check_in || !attendance.check_out) {
                 return '−'
@@ -431,6 +563,27 @@ export default {
             const minutes = Math.floor((workMilliseconds % (1000 * 60 * 60)) / (1000 * 60))
 
             return `${hours}:${String(minutes).padStart(2, '0')}`
+        },
+
+        // デバッグ用メソッド
+        debugFormData() {
+            console.log('=== フォームデバッグ情報 ===')
+            console.log('フォームデータ:', JSON.parse(JSON.stringify(this.form)))
+            console.log('現在の勤怠データ:', this.currentAttendance)
+            console.log('承認待ちリクエスト:', this.pendingRequest)
+            console.log('hasPendingRequest:', this.hasPendingRequest)
+            console.log('エラー:', this.errors)
+            console.log('====================\n')
+            
+            alert(
+                `【デバッグ情報】\n\n` +
+                `対象日: ${this.form.date}\n` +
+                `出勤: ${this.form.check_in}\n` +
+                `退勤: ${this.form.check_out}\n` +
+                `休憩回数: ${this.form.rests.length}\n` +
+                `承認待ち: ${this.hasPendingRequest ? 'あり' : 'なし'}\n` +
+                `申請ID: ${this.pendingRequest?.id || 'なし'}`
+            )
         },
 
         // イベントハンドラーメソッド（必要に応じて処理を追加）

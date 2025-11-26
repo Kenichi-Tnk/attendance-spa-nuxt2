@@ -12,6 +12,25 @@
 }
 
 /* =======================
+   Page Header
+   ======================= */
+.attendance-index__page-header {
+  margin-bottom: 2rem;
+}
+
+.attendance-index__title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.attendance-index__subtitle {
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+/* =======================
    Filter Section
    ======================= */
 .attendance-index__filter-section {
@@ -71,36 +90,52 @@
    Action Links
    ======================= */
 .attendance-index__action-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   text-decoration: none;
   margin-right: 0.75rem;
   font-size: 0.875rem;
   font-weight: 500;
-  transition: color 0.15s ease-in-out;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: all 0.15s ease-in-out;
 }
 
 .attendance-index__action-link--detail {
   color: #2563eb;
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
 }
 
 .attendance-index__action-link--detail:hover {
   color: #1e3a8a;
+  background-color: #dbeafe;
+  border-color: #93c5fd;
   text-decoration: none;
 }
 
 .attendance-index__action-btn {
-  background: none;
-  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   cursor: pointer;
   font-size: 0.875rem;
   font-weight: 500;
-  padding: 0;
-  transition: color 0.15s ease-in-out;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: all 0.15s ease-in-out;
+  border: 1px solid;
 }
 
 .attendance-index__action-btn--correction {
   color: #d97706;
+  background-color: #fffbeb;
+  border-color: #fde68a;
 }
 
 .attendance-index__action-btn--correction:hover {
   color: #92400e;
+  background-color: #fef3c7;
+  border-color: #fcd34d;
 }

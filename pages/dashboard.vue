@@ -20,20 +20,7 @@
           <i class="fas fa-calendar-alt dashboard__action-icon dashboard__action-icon--attendance"></i>
           <div>
             <h3 class="dashboard__action-title">勤怠一覧</h3>
-            <p class="dashboard__action-desc">過去の勤怠記録を確認</p>
-          </div>
-        </div>
-      </nuxt-link>
-      
-      <nuxt-link
-        to="/correction-requests"
-        class="dashboard__action-card dashboard__action-card--correction"
-      >
-        <div class="dashboard__action-content">
-          <i class="fas fa-edit dashboard__action-icon dashboard__action-icon--correction"></i>
-          <div>
-            <h3 class="dashboard__action-title">修正申請</h3>
-            <p class="dashboard__action-desc">勤怠の修正を申請</p>
+            <p class="dashboard__action-desc">過去の勤怠記録を確認・修正申請</p>
           </div>
         </div>
       </nuxt-link>
@@ -43,9 +30,9 @@
         class="dashboard__action-card dashboard__action-card--requests"
       >
         <div class="dashboard__action-content">
-          <i class="fas fa-list dashboard__action-icon dashboard__action-icon--requests"></i>
+          <i class="fas fa-clipboard-list dashboard__action-icon dashboard__action-icon--requests"></i>
           <div>
-            <h3 class="dashboard__action-title">申請状況</h3>
+            <h3 class="dashboard__action-title">修正申請一覧</h3>
             <p class="dashboard__action-desc">申請の進捗を確認</p>
           </div>
         </div>

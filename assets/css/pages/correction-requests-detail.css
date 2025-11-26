@@ -6,6 +6,20 @@
     margin: 0 auto;
 }
 
+/* =======================
+   Page Header
+   ======================= */
+.correction-request-detail__page-header {
+    margin-bottom: 2rem;
+}
+
+.correction-request-detail__title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+}
+
 .correction-request-detail__container {
     background: white;
     border-radius: 8px;

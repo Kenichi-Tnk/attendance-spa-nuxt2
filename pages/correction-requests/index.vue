@@ -1,19 +1,8 @@
 <template>
   <div class="correction-requests">
-    <PageHeader
-      title="修正申請"
-      :breadcrumbs="breadcrumbs"
-    />
-    
-    <!-- 新規申請ボタン -->
-    <div class="correction-requests__actions">
-      <nuxt-link
-        to="/correction-requests/new"
-        class="correction-requests__new-btn"
-      >
-        <i class="fas fa-plus"></i>
-        新規申請作成
-      </nuxt-link>
+    <div class="correction-requests__page-header">
+      <h1 class="correction-requests__title">修正申請一覧</h1>
+      <p class="correction-requests__subtitle">提出した修正申請の状況を確認できます</p>
     </div>
 
     <!-- 申請一覧テーブル -->
@@ -42,12 +31,16 @@
         <template #empty>
           <div class="correction-requests__empty">
             <i class="fas fa-clipboard-list"></i>
-            <p>申請はありません</p>
+            <p>修正申請はありません</p>
+            <p class="correction-requests__empty-hint">
+              修正申請は勤怠一覧から行えます
+            </p>
             <nuxt-link
-              to="/correction-requests/new"
+              to="/attendance"
               class="correction-requests__empty-link"
             >
-              新規申請を作成する
+              <i class="fas fa-calendar-alt"></i>
+              勤怠一覧へ
             </nuxt-link>
           </div>
         </template>
@@ -58,14 +51,12 @@
 
 <script>
 import AttendanceTable from '~/components/AttendanceTable.vue'
-import PageHeader from '~/components/PageHeader.vue'
 import StatusBadge from '~/components/StatusBadge.vue'
 
 export default {
   name: 'CorrectionRequestsList',
   components: {
     AttendanceTable,
-    PageHeader,
     StatusBadge
   },
   middleware: ['auth', 'verified'],
@@ -80,18 +71,9 @@ export default {
   },
   
   computed: {
-    breadcrumbs() {
-      return [
-        { text: 'ダッシュボード', to: '/dashboard' },
-        { text: '修正申請' }
-      ]
-    },
-    
     tableColumns() {
       return [
         { key: 'date', label: '対象日', type: 'date' },
-        { key: 'check_in', label: '修正後出勤時刻', type: 'time' },
-        { key: 'check_out', label: '修正後退勤時刻', type: 'time' },
         { key: 'reason', label: '申請理由', type: 'text' },
         { key: 'status', label: 'ステータス', type: 'status' },
         { key: 'created_at', label: '申請日時', type: 'datetime' }
@@ -118,8 +100,6 @@ export default {
         this.correctionRequests = response.data.map(request => ({
           id: request.id,
           date: request.date,
-          check_in: this.formatTime(request.check_in),
-          check_out: this.formatTime(request.check_out),
           reason: request.reason.length > 50 ? request.reason.substring(0, 50) + '...' : request.reason,
           status: request.status,
           created_at: this.formatDateTime(request.created_at),

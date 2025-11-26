@@ -46,6 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [AttendanceCorrectController::class, 'index']); // ユーザーの申請一覧
         Route::post('/', [AttendanceCorrectController::class, 'store']); // 申請作成
         Route::get('/{id}', [AttendanceCorrectController::class, 'show']); // 申請詳細
+        Route::get('/{id}/original-attendance', [AttendanceCorrectController::class, 'getOriginalAttendance']); // 修正前データ取得
 
         // 管理者専用ルート
         Route::middleware(['admin'])->group(function () {

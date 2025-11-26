@@ -29,40 +29,15 @@ export default {
     statusConfig() {
       const configs = {
         attendance: {
-          normal: {
-            text: '正常',
-            classes: 'status-badge--attendance-normal',
-            icon: 'fas fa-check-circle'
-          },
-          late: {
-            text: '遅刻',
-            classes: 'status-badge--attendance-late',
-            icon: 'fas fa-clock'
-          },
-          early_leave: {
-            text: '早退',
-            classes: 'status-badge--attendance-early-leave',
-            icon: 'fas fa-door-open'
-          },
-          absent: {
-            text: '欠席',
-            classes: 'status-badge--attendance-absent',
-            icon: 'fas fa-times-circle'
-          },
-          pending: {
-            text: '承認待ち',
-            classes: 'status-badge--attendance-pending',
-            icon: 'fas fa-hourglass-half'
-          },
           working: {
             text: '勤務中',
             classes: 'status-badge--attendance-working',
             icon: 'fas fa-user-clock'
           },
-          off: {
-            text: '勤務時間外',
-            classes: 'status-badge--attendance-off',
-            icon: 'fas fa-moon'
+          completed: {
+            text: '勤務完了',
+            classes: 'status-badge--attendance-completed',
+            icon: 'fas fa-check-circle'
           }
         },
         request: {

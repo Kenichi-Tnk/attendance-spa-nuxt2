@@ -1,9 +1,8 @@
 <template>
   <div class="correction-request-detail">
-    <PageHeader
-      title="修正申請詳細"
-      :breadcrumbs="breadcrumbs"
-    />
+    <div class="correction-request-detail__page-header">
+      <h1 class="correction-request-detail__title">修正申請詳細</h1>
+    </div>
     
     <div v-if="isLoading" class="loading-container">
       <LoadingSpinner />
@@ -164,16 +163,6 @@ export default {
     }
   },
   
-  computed: {
-    breadcrumbs() {
-      return [
-        { text: 'ダッシュボード', to: '/dashboard' },
-        { text: '修正申請', to: '/correction-requests' },
-        { text: '詳細' }
-      ]
-    }
-  },
-  
   async mounted() {
     await this.loadCorrectionRequest()
   },
@@ -204,18 +193,18 @@ export default {
       try {
         if (!this.correctionRequest) return
         
-        const response = await this.$axios.$get('/api/attendance', {
-          params: {
-            date: this.correctionRequest.date
-          }
-        })
-        
-        // その日の勤怠データを見つける
-        this.originalAttendance = response.data.find(item => 
-          item.date === this.correctionRequest.date
+        // APIから修正前の勤怠データを取得
+        const response = await this.$axios.$get(
+          `/api/correction-requests/${this.correctionRequest.id}/original-attendance`
         )
+        
+        if (response.original_attendance) {
+          this.originalAttendance = response.original_attendance
+        }
       } catch (error) {
         console.error('元勤怠データ取得エラー:', error)
+        // エラー時は空のオブジェクトをセット
+        this.originalAttendance = null
       }
     },
     

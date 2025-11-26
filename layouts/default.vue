@@ -18,6 +18,9 @@
             <NuxtLink to="/attendance" class="default-layout__nav-link">
               勤怠一覧
             </NuxtLink>
+            <NuxtLink to="/correction-requests" class="default-layout__nav-link">
+              修正申請一覧
+            </NuxtLink>
             <NuxtLink v-if="$store.getters['auth/isAdmin']" to="/admin" class="default-layout__nav-link">
               管理者画面
             </NuxtLink>

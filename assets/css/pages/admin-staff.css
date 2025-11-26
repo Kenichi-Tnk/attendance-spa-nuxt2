@@ -1,0 +1,517 @@
+/* 管理者スタッフ管理ページのスタイル */
+.admin-staff {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  padding-bottom: 2rem;
+}
+
+.admin-staff__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* 統計カード */
+.admin-staff__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.admin-staff__stat-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.admin-staff__stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.5rem;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.admin-staff__stat-icon--total { background: #3b82f6; }
+.admin-staff__stat-icon--verified { background: #10b981; }
+.admin-staff__stat-icon--unverified { background: #f59e0b; }
+.admin-staff__stat-icon--admin { background: #8b5cf6; }
+
+.admin-staff__stat-info h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  color: #1f2937;
+}
+
+.admin-staff__stat-info p {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* コンテンツ */
+.admin-staff__content {
+  background: white;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.admin-staff__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-staff__header h2 {
+  margin: 0;
+  color: #1f2937;
+}
+
+.admin-staff__btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-staff__btn--primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.admin-staff__btn--primary:hover {
+  background: #2563eb;
+}
+
+.admin-staff__btn--secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.admin-staff__btn--secondary:hover {
+  background: #e5e7eb;
+}
+
+/* 検索・フィルター */
+.admin-staff__filters {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.admin-staff__search {
+  position: relative;
+  flex: 1;
+  min-width: 250px;
+}
+
+.admin-staff__search-input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  background: white;
+}
+
+.admin-staff__search-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.admin-staff__search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+}
+
+.admin-staff__filter-group {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.admin-staff__select {
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  background: white;
+  min-width: 120px;
+}
+
+.admin-staff__select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* テーブル */
+.admin-staff__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #6b7280;
+}
+
+.admin-staff__table-container {
+  overflow-x: auto;
+}
+
+.admin-staff__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-staff__table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.admin-staff__table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-staff__row:hover {
+  background: #f9fafb;
+}
+
+.admin-staff__staff-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-staff__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: #e5e7eb;
+  border-radius: 50%;
+  color: #6b7280;
+}
+
+.admin-staff__name {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.admin-staff__id {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.admin-staff__role-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.admin-staff__role-badge--admin {
+  background: #ddd6fe;
+  color: #7c3aed;
+}
+
+.admin-staff__role-badge--user {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.admin-staff__actions-cell {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.admin-staff__action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-staff__action-btn--edit {
+  background: #fbbf24;
+  color: white;
+}
+
+.admin-staff__action-btn--edit:hover {
+  background: #f59e0b;
+}
+
+.admin-staff__action-btn--delete {
+  background: #ef4444;
+  color: white;
+}
+
+.admin-staff__action-btn--delete:hover:not(:disabled) {
+  background: #dc2626;
+}
+
+.admin-staff__action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* モーダル */
+.admin-staff__modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.admin-staff__modal {
+  background: white;
+  border-radius: 0.75rem;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.admin-staff__modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-staff__modal-header h3 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.admin-staff__modal-close {
+  background: none;
+  border: none;
+  font-size: 1.125rem;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  transition: all 0.2s;
+}
+
+.admin-staff__modal-close:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.admin-staff__form {
+  padding: 1.5rem;
+}
+
+.admin-staff__form-group {
+  margin-bottom: 1.5rem;
+}
+
+.admin-staff__label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #374151;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+.admin-staff__input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.admin-staff__input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.admin-staff__form-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.admin-staff__btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ページネーション情報 */
+.admin-staff__pagination-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.admin-staff__record-count {
+  font-weight: 500;
+}
+
+.admin-staff__page-info {
+  font-style: italic;
+}
+
+/* モーダル説明文 */
+.admin-staff__modal-description {
+  padding: 0 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.admin-staff__modal-description p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* ヘルプテキスト */
+.admin-staff__help-text {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .admin-staff__container {
+    padding: 1rem;
+  }
+
+  .admin-staff__stats {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+  .admin-staff__stat-card {
+    padding: 1rem;
+  }
+
+  .admin-staff__stat-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.25rem;
+  }
+
+  .admin-staff__stat-info h3 {
+    font-size: 1.5rem;
+  }
+
+  .admin-staff__filters {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .admin-staff__search {
+    min-width: auto;
+  }
+
+  .admin-staff__filter-group {
+    justify-content: center;
+  }
+
+  .admin-staff__table-container {
+    font-size: 0.875rem;
+  }
+
+  .admin-staff__table th,
+  .admin-staff__table td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .admin-staff__staff-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .admin-staff__avatar {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .admin-staff__actions-cell {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .admin-staff__action-btn {
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 0.75rem;
+  }
+
+  .admin-staff__modal {
+    margin: 1rem;
+    max-width: none;
+  }
+
+  .admin-staff__pagination-info {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+}
