@@ -21,8 +21,14 @@
             >
               勤怠一覧
             </NuxtLink>
-            <NuxtLink to="/correction-requests" class="default-layout__nav-link">
-              修正申請一覧
+            <NuxtLink
+              :to="$store.getters['auth/isAdmin'] ? '/admin/correction-requests' : '/correction-requests'"
+              class="default-layout__nav-link"
+            >
+              {{ $store.getters['auth/isAdmin'] ? '修正申請管理' : '修正申請一覧' }}
+            </NuxtLink>
+            <NuxtLink v-if="$store.getters['auth/isAdmin']" to="/admin/staff" class="default-layout__nav-link">
+              スタッフ一覧
             </NuxtLink>
             <NuxtLink v-if="$store.getters['auth/isAdmin']" to="/admin" class="default-layout__nav-link">
               管理者画面
