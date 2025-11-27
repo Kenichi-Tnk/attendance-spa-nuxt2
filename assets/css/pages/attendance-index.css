@@ -87,34 +87,8 @@
 }
 
 /* =======================
-   Action Links
+   Action Button
    ======================= */
-.attendance-index__action-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  text-decoration: none;
-  margin-right: 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  padding: 6px 12px;
-  border-radius: 4px;
-  transition: all 0.15s ease-in-out;
-}
-
-.attendance-index__action-link--detail {
-  color: #2563eb;
-  background-color: #eff6ff;
-  border: 1px solid #bfdbfe;
-}
-
-.attendance-index__action-link--detail:hover {
-  color: #1e3a8a;
-  background-color: #dbeafe;
-  border-color: #93c5fd;
-  text-decoration: none;
-}
-
 .attendance-index__action-btn {
   display: inline-flex;
   align-items: center;

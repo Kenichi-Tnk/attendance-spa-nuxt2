@@ -5,11 +5,32 @@
       <p class="correction-requests__subtitle">提出した修正申請の状況を確認できます</p>
     </div>
 
+    <!-- ステータスフィルター -->
+    <div class="correction-requests__filter-section">
+      <div class="correction-requests__filter-tabs">
+        <button
+          v-for="filter in statusFilters"
+          :key="filter.value"
+          @click="selectedStatus = filter.value"
+          :class="[
+            'correction-requests__filter-tab',
+            { 'correction-requests__filter-tab--active': selectedStatus === filter.value }
+          ]"
+        >
+          <i :class="filter.icon"></i>
+          {{ filter.label }}
+          <span v-if="filter.count !== undefined" class="correction-requests__filter-count">
+            {{ filter.count }}
+          </span>
+        </button>
+      </div>
+    </div>
+
     <!-- 申請一覧テーブル -->
     <div class="correction-requests__table-container">
       <AttendanceTable
         title="申請一覧"
-        :data="correctionRequests"
+        :data="filteredRequests"
         :columns="tableColumns"
         :loading="isLoading"
         :show-actions="true"
@@ -66,7 +87,14 @@ export default {
       correctionRequests: [],
       currentPage: 1,
       totalPages: 1,
-      isLoading: false
+      isLoading: false,
+      selectedStatus: 'all',
+      statusCounts: {
+        all: 0,
+        pending: 0,
+        approved: 0,
+        rejected: 0
+      }
     }
   },
   
@@ -78,6 +106,29 @@ export default {
         { key: 'status', label: 'ステータス', type: 'status' },
         { key: 'created_at', label: '申請日時', type: 'datetime' }
       ]
+    },
+    
+    statusFilters() {
+      return [
+        { value: 'all', label: '全て', icon: 'fas fa-list', count: this.statusCounts.all },
+        { value: 'pending', label: '承認待ち', icon: 'fas fa-hourglass-half', count: this.statusCounts.pending },
+        { value: 'approved', label: '承認済み', icon: 'fas fa-check-circle', count: this.statusCounts.approved },
+        { value: 'rejected', label: '却下', icon: 'fas fa-times-circle', count: this.statusCounts.rejected }
+      ]
+    },
+    
+    filteredRequests() {
+      if (this.selectedStatus === 'all') {
+        return this.correctionRequests
+      }
+      return this.correctionRequests.filter(request => request.statusValue === this.selectedStatus)
+    }
+  },
+  
+  watch: {
+    selectedStatus() {
+      // ステータス変更時はページを1に戻す
+      this.currentPage = 1
     }
   },
   
@@ -101,10 +152,17 @@ export default {
           id: request.id,
           date: request.date,
           reason: request.reason.length > 50 ? request.reason.substring(0, 50) + '...' : request.reason,
-          status: request.status,
+          status: this.formatStatusText(request.status),
+          statusValue: request.status, // フィルタリング用に元の値も保持
           created_at: this.formatDateTime(request.created_at),
           original: request
         }))
+        
+        // ステータスごとの件数をカウント
+        this.statusCounts.all = this.correctionRequests.length
+        this.statusCounts.pending = this.correctionRequests.filter(r => r.statusValue === 'pending').length
+        this.statusCounts.approved = this.correctionRequests.filter(r => r.statusValue === 'approved').length
+        this.statusCounts.rejected = this.correctionRequests.filter(r => r.statusValue === 'rejected').length
         
         this.totalPages = response.last_page || 1
       } catch (error) {
@@ -131,6 +189,15 @@ export default {
         hour: '2-digit',
         minute: '2-digit'
       })
+    },
+    
+    formatStatusText(status) {
+      const statusMap = {
+        pending: '承認待ち',
+        approved: '承認済み',
+        rejected: '却下'
+      }
+      return statusMap[status] || status
     },
     
     goToDetail(item) {

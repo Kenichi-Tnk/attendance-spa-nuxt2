@@ -37,7 +37,6 @@
       :current-page="currentPage"
       :total-pages="totalPages"
       :total-items="totalItems"
-      @detail="goToDetail"
       @page-change="handlePageChange"
     >
       <template #cell-date="{ item }">
@@ -48,13 +47,6 @@
       </template>
       
       <template #actions="{ item }">
-        <nuxt-link
-          :to="`/attendance/${item.id}`"
-          class="attendance-index__action-link attendance-index__action-link--detail"
-        >
-          <i class="fas fa-eye"></i>
-          詳細
-        </nuxt-link>
         <button
           v-if="canRequestCorrection(item)"
           @click="requestCorrection(item.id)"
@@ -192,10 +184,6 @@ export default {
     canRequestCorrection(record) {
       // 修正申請可能な条件をチェック
       return record.status !== 'pending' && record.clockIn
-    },
-    
-    goToDetail(item) {
-      this.$router.push(`/attendance/${item.id}`)
     },
     
     requestCorrection(recordId) {
