@@ -1,11 +1,9 @@
 <template>
   <div class="admin-staff">
-    <PageHeader
-      title="スタッフ管理"
-      subtitle="登録されているスタッフ情報を管理"
-      icon="fas fa-users"
-      icon-color="#3B82F6"
-    />
+    <div class="admin-staff__page-header">
+      <h1 class="admin-staff__title">スタッフ管理</h1>
+      <p class="admin-staff__subtitle">登録されているスタッフ情報を管理</p>
+    </div>
 
     <div class="admin-staff__container">
       <!-- スタッフ統計 -->
@@ -56,9 +54,11 @@
         <div class="admin-staff__header">
           <h2>スタッフ一覧</h2>
           <div class="admin-staff__actions">
-            <button 
+            <button
+              type="button"
               @click="showCreateModal = true"
               class="admin-staff__btn admin-staff__btn--primary"
+              aria-label="スタッフを招待"
             >
               <i class="fas fa-user-plus"></i>
               スタッフを招待
@@ -143,16 +143,22 @@
                 <td>{{ formatDate(staff.created_at) }}</td>
                 <td>{{ staff.last_login_at ? formatDate(staff.last_login_at) : '未ログイン' }}</td>
                 <td class="admin-staff__actions-cell">
-                  <button 
+                  <button
+                    type="button"
                     class="admin-staff__action-btn admin-staff__action-btn--edit"
                     @click="editStaff(staff)"
+                    :aria-label="`編集 ${staff.name}`"
+                    title="編集"
                   >
                     <i class="fas fa-edit"></i>
                   </button>
                   <button
+                    type="button"
                     class="admin-staff__action-btn admin-staff__action-btn--delete"
                     @click="deleteStaff(staff)"
                     :disabled="staff.role === 'admin' && staff.id === currentUser.id"
+                    :aria-label="`削除 ${staff.name}`"
+                    title="削除"
                   >
                     <i class="fas fa-trash"></i>
                   </button>
@@ -471,7 +477,11 @@ export default {
 
     async deleteStaff(staff) {
       if (staff.role === 'admin' && staff.id === this.currentUser.id) {
-        this.$toast.error('自分自身は削除できません')
+        if (this.$toast) {
+          this.$toast.error('自分自身は削除できません')
+        } else {
+          alert('自分自身は削除できません')
+        }
         return
       }
 

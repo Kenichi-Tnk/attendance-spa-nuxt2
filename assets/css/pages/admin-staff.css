@@ -11,6 +11,29 @@
   padding: 2rem;
 }
 
+/* ページヘッダー */
+.admin-staff__page-header {
+  padding: 2rem 0 1rem 0;
+  max-width: 1200px;
+  margin: 0 auto 1rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.admin-staff__title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.admin-staff__subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
 /* 統計カード */
 .admin-staff__stats {
   display: grid;

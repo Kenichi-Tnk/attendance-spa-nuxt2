@@ -1,0 +1,387 @@
+/* 管理者日次勤怠一覧ページのスタイル */
+.admin-daily-attendance {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  padding-bottom: 2rem;
+}
+
+/* ページヘッダー */
+.admin-daily-attendance__page-header {
+  padding: 2rem 0 1rem 0;
+  max-width: 1400px;
+  margin: 0 auto 1rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.admin-daily-attendance__title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.admin-daily-attendance__subtitle {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+.admin-daily-attendance__container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem 2rem 2rem;
+}
+
+/* 日付選択 */
+.admin-daily-attendance__date-selector {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.admin-daily-attendance__date-display {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.admin-daily-attendance__date-input {
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  background: white;
+}
+
+.admin-daily-attendance__date-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.admin-daily-attendance__date-label {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  min-width: 250px;
+  text-align: center;
+}
+
+.admin-daily-attendance__date-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  background: white;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-daily-attendance__date-btn:hover:not(:disabled) {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.admin-daily-attendance__date-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.admin-daily-attendance__today-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  background: white;
+  color: #374151;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-daily-attendance__today-btn:hover:not(:disabled) {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.admin-daily-attendance__today-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* 統計カード */
+.admin-daily-attendance__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-daily-attendance__stat-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.admin-daily-attendance__stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.5rem;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.admin-daily-attendance__stat-icon--total { background: #3b82f6; }
+.admin-daily-attendance__stat-icon--present { background: #10b981; }
+.admin-daily-attendance__stat-icon--completed { background: #8b5cf6; }
+.admin-daily-attendance__stat-icon--absent { background: #ef4444; }
+
+.admin-daily-attendance__stat-info h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  color: #1f2937;
+}
+
+.admin-daily-attendance__stat-info p {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* コンテンツ */
+.admin-daily-attendance__content {
+  background: white;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.admin-daily-attendance__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-daily-attendance__header h2 {
+  margin: 0;
+  color: #1f2937;
+}
+
+.admin-daily-attendance__btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-daily-attendance__btn--secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.admin-daily-attendance__btn--secondary:hover {
+  background: #e5e7eb;
+}
+
+/* テーブル */
+.admin-daily-attendance__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #6b7280;
+}
+
+.admin-daily-attendance__table-container {
+  overflow-x: auto;
+}
+
+.admin-daily-attendance__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-daily-attendance__table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.admin-daily-attendance__table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-daily-attendance__row:hover {
+  background: #f9fafb;
+}
+
+.admin-daily-attendance__staff-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-daily-attendance__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: #e5e7eb;
+  border-radius: 50%;
+  color: #6b7280;
+}
+
+.admin-daily-attendance__name {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.admin-daily-attendance__id {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.admin-daily-attendance__actions-cell {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.admin-daily-attendance__action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-daily-attendance__action-btn--detail {
+  background: #3b82f6;
+  color: white;
+}
+
+.admin-daily-attendance__action-btn--detail:hover {
+  background: #2563eb;
+}
+
+/* 空データ表示 */
+.admin-daily-attendance__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #6b7280;
+}
+
+.admin-daily-attendance__empty i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #d1d5db;
+}
+
+.admin-daily-attendance__empty p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .admin-daily-attendance__container {
+    padding: 0 1rem 1rem 1rem;
+  }
+
+  .admin-daily-attendance__date-selector {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .admin-daily-attendance__date-display {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .admin-daily-attendance__date-label {
+    min-width: auto;
+    font-size: 1rem;
+  }
+
+  .admin-daily-attendance__stats {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+  .admin-daily-attendance__stat-card {
+    padding: 1rem;
+  }
+
+  .admin-daily-attendance__stat-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.25rem;
+  }
+
+  .admin-daily-attendance__stat-info h3 {
+    font-size: 1.5rem;
+  }
+
+  .admin-daily-attendance__table-container {
+    font-size: 0.875rem;
+  }
+
+  .admin-daily-attendance__table th,
+  .admin-daily-attendance__table td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .admin-daily-attendance__staff-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .admin-daily-attendance__avatar {
+    width: 2rem;
+    height: 2rem;
+  }
+}

@@ -15,7 +15,10 @@
             <NuxtLink to="/" class="default-layout__nav-link">
               ダッシュボード
             </NuxtLink>
-            <NuxtLink to="/attendance" class="default-layout__nav-link">
+            <NuxtLink
+              :to="$store.getters['auth/isAdmin'] ? '/admin/attendance/daily' : '/attendance'"
+              class="default-layout__nav-link"
+            >
               勤怠一覧
             </NuxtLink>
             <NuxtLink to="/correction-requests" class="default-layout__nav-link">
