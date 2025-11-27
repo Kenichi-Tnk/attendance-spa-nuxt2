@@ -145,6 +145,15 @@
                 <td class="admin-staff__actions-cell">
                   <button
                     type="button"
+                    class="admin-staff__action-btn admin-staff__action-btn--detail"
+                    @click="viewStaffDetail(staff)"
+                    :aria-label="`詳細 ${staff.name}`"
+                    title="詳細"
+                  >
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button
+                    type="button"
                     class="admin-staff__action-btn admin-staff__action-btn--edit"
                     @click="editStaff(staff)"
                     :aria-label="`編集 ${staff.name}`"
@@ -464,6 +473,10 @@ export default {
       } finally {
         this.isCreating = false
       }
+    },
+
+    viewStaffDetail(staff) {
+      this.$router.push(`/admin/staff/${staff.id}`)
     },
 
     editStaff(staff) {

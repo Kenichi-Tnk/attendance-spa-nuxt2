@@ -292,6 +292,15 @@
   transition: all 0.2s;
 }
 
+.admin-staff__action-btn--detail {
+  background: #3b82f6;
+  color: white;
+}
+
+.admin-staff__action-btn--detail:hover {
+  background: #2563eb;
+}
+
 .admin-staff__action-btn--edit {
   background: #fbbf24;
   color: white;

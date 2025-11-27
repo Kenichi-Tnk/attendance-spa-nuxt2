@@ -1,0 +1,338 @@
+/* スタッフ詳細ページのスタイル */
+.staff-detail {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  padding-bottom: 2rem;
+}
+
+/* ページヘッダー */
+.staff-detail__page-header {
+  padding: 2rem 0 1rem 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.staff-detail__header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.staff-detail__back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: transparent;
+  color: #3b82f6;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  align-self: flex-start;
+}
+
+.staff-detail__back-btn:hover {
+  color: #2563eb;
+  gap: 0.75rem;
+}
+
+.staff-detail__title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.staff-detail__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem 2rem 2rem;
+}
+
+/* 基本情報カード */
+.staff-detail__info-card {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.staff-detail__info-header {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.staff-detail__avatar-large {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 5rem;
+  height: 5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  color: white;
+  font-size: 2.5rem;
+  flex-shrink: 0;
+}
+
+.staff-detail__info-main {
+  flex: 1;
+}
+
+.staff-detail__name {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.staff-detail__email {
+  margin: 0 0 1rem 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.staff-detail__badges {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.staff-detail__role-badge {
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.staff-detail__role-badge--admin {
+  background: #ddd6fe;
+  color: #7c3aed;
+}
+
+.staff-detail__role-badge--user {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.staff-detail__verified-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  background: #d1fae5;
+  color: #059669;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.staff-detail__unverified-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border-radius: 0.375rem;
+  background: #fef3c7;
+  color: #d97706;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.staff-detail__info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.staff-detail__info-item label {
+  display: block;
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+  font-weight: 500;
+}
+
+.staff-detail__info-item p {
+  margin: 0;
+  color: #1f2937;
+  font-size: 0.95rem;
+}
+
+/* アクションボタン */
+.staff-detail__actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.staff-detail__btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.95rem;
+}
+
+.staff-detail__btn--primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.staff-detail__btn--primary:hover {
+  background: #2563eb;
+}
+
+.staff-detail__btn--secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.staff-detail__btn--secondary:hover {
+  background: #e5e7eb;
+}
+
+/* 統計情報 */
+.staff-detail__stats {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.staff-detail__section-title {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.staff-detail__stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.staff-detail__stat-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: #f9fafb;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+.staff-detail__stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  font-size: 1.25rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.staff-detail__stat-icon--days { background: #3b82f6; }
+.staff-detail__stat-icon--hours { background: #10b981; }
+.staff-detail__stat-icon--late { background: #f59e0b; }
+
+.staff-detail__stat-info h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.staff-detail__stat-value {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* ローディング */
+.staff-detail__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #6b7280;
+}
+
+/* エラー */
+.staff-detail__error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.staff-detail__error i {
+  font-size: 3rem;
+  color: #ef4444;
+  margin-bottom: 1rem;
+}
+
+.staff-detail__error p {
+  margin: 0 0 1.5rem 0;
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .staff-detail__container {
+    padding: 0 1rem 1rem 1rem;
+  }
+
+  .staff-detail__info-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .staff-detail__avatar-large {
+    width: 4rem;
+    height: 4rem;
+    font-size: 2rem;
+  }
+
+  .staff-detail__name {
+    font-size: 1.25rem;
+  }
+
+  .staff-detail__badges {
+    justify-content: center;
+  }
+
+  .staff-detail__actions {
+    flex-direction: column;
+  }
+
+  .staff-detail__btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .staff-detail__stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

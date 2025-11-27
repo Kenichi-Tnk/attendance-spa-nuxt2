@@ -1,0 +1,360 @@
+/* スタッフ月次勤怠ページのスタイル */
+.staff-attendance {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  padding-bottom: 2rem;
+}
+
+/* ページヘッダー */
+.staff-attendance__page-header {
+  padding: 2rem 0 1rem 0;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.staff-attendance__header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.staff-attendance__back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: transparent;
+  color: #3b82f6;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  align-self: flex-start;
+}
+
+.staff-attendance__back-btn:hover {
+  color: #2563eb;
+  gap: 0.75rem;
+}
+
+.staff-attendance__title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.staff-attendance__container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem 2rem 2rem;
+}
+
+/* 月選択 */
+.staff-attendance__month-selector {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.staff-attendance__month-display {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.staff-attendance__month-input {
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  background: white;
+}
+
+.staff-attendance__month-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.staff-attendance__month-label {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+  min-width: 150px;
+  text-align: center;
+}
+
+.staff-attendance__month-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  background: white;
+  color: #374151;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.staff-attendance__month-btn:hover:not(:disabled) {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.staff-attendance__month-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* 統計カード */
+.staff-attendance__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.staff-attendance__stat-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.staff-attendance__stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.5rem;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.staff-attendance__stat-icon--days { background: #3b82f6; }
+.staff-attendance__stat-icon--hours { background: #10b981; }
+.staff-attendance__stat-icon--late { background: #f59e0b; }
+.staff-attendance__stat-icon--absence { background: #ef4444; }
+
+.staff-attendance__stat-info h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  color: #1f2937;
+}
+
+.staff-attendance__stat-info p {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* コンテンツ */
+.staff-attendance__content {
+  background: white;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.staff-attendance__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.staff-attendance__header h2 {
+  margin: 0;
+  color: #1f2937;
+}
+
+.staff-attendance__btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.staff-attendance__btn--secondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.staff-attendance__btn--secondary:hover {
+  background: #e5e7eb;
+}
+
+/* テーブル */
+.staff-attendance__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #6b7280;
+}
+
+.staff-attendance__table-container {
+  overflow-x: auto;
+}
+
+.staff-attendance__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.staff-attendance__table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.staff-attendance__table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.staff-attendance__row:hover {
+  background: #f9fafb;
+}
+
+.staff-attendance__row--weekend {
+  background: #fef3c7;
+}
+
+.staff-attendance__row--late {
+  background: #fef2f2;
+}
+
+.staff-attendance__date-cell {
+  font-weight: 600;
+}
+
+.staff-attendance__date {
+  color: #1f2937;
+}
+
+.staff-attendance__day-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 400;
+}
+
+.staff-attendance__time--late {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.staff-attendance__late-icon {
+  margin-left: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.staff-attendance__note {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.staff-attendance__no-note {
+  color: #d1d5db;
+}
+
+/* 空データ表示 */
+.staff-attendance__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #6b7280;
+}
+
+.staff-attendance__empty i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #d1d5db;
+}
+
+.staff-attendance__empty p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .staff-attendance__container {
+    padding: 0 1rem 1rem 1rem;
+  }
+
+  .staff-attendance__month-selector {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .staff-attendance__month-display {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .staff-attendance__month-label {
+    min-width: auto;
+    font-size: 1rem;
+  }
+
+  .staff-attendance__month-btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .staff-attendance__stats {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+  .staff-attendance__stat-card {
+    padding: 1rem;
+  }
+
+  .staff-attendance__stat-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.25rem;
+  }
+
+  .staff-attendance__stat-info h3 {
+    font-size: 1.5rem;
+  }
+
+  .staff-attendance__table-container {
+    font-size: 0.875rem;
+  }
+
+  .staff-attendance__table th,
+  .staff-attendance__table td {
+    padding: 0.75rem 0.5rem;
+  }
+}
