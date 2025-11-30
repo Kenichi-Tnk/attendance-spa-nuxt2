@@ -476,7 +476,7 @@ export default {
     },
 
     viewStaffDetail(staff) {
-      this.$router.push(`/admin/staff/${staff.id}`)
+      this.$router.push(`/admin/staff/${staff.id}/attendance`)
     },
 
     editStaff(staff) {
