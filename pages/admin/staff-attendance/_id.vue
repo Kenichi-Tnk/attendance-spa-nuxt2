@@ -4,11 +4,11 @@
       <div class="staff-attendance__header-content">
         <button
           type="button"
-          @click="$router.push(`/admin/staff/${staffId}`)"
+          @click="$router.push('/admin/staff')"
           class="staff-attendance__back-btn"
         >
           <i class="fas fa-arrow-left"></i>
-          スタッフ詳細に戻る
+          スタッフ一覧に戻る
         </button>
         <h1 class="staff-attendance__title">{{ staffName }}さんの勤怠</h1>
       </div>
@@ -122,8 +122,7 @@
                 <th>退勤時刻</th>
                 <th>休憩時間</th>
                 <th>勤務時間</th>
-                <th>ステータス</th>
-                <th>備考</th>
+                <th>詳細</th>
               </tr>
             </thead>
             <tbody>
@@ -142,22 +141,23 @@
                   </div>
                 </td>
                 <td>
-                  <span :class="getTimeClass(record.check_in_time, record.is_late)">
-                    {{ formatTime(record.check_in_time) }}
-                    <i v-if="record.is_late" class="fas fa-exclamation-triangle staff-attendance__late-icon"></i>
+                  <span :class="getTimeClass(record.check_in, record.status === '遅刻')">
+                    {{ formatTime(record.check_in) }}
+                    <i v-if="record.status === '遅刻'" class="fas fa-exclamation-triangle staff-attendance__late-icon"></i>
                   </span>
                 </td>
-                <td>{{ formatTime(record.check_out_time) }}</td>
-                <td>{{ formatDuration(record.break_time) }}</td>
-                <td>{{ formatDuration(record.work_time) }}</td>
+                <td>{{ formatTime(record.check_out) }}</td>
+                <td>{{ formatHours(record.rest_time) }}</td>
+                <td>{{ formatHours(record.work_time) }}</td>
                 <td>
-                  <StatusBadge :status="record.status" />
-                </td>
-                <td>
-                  <span v-if="record.note" class="staff-attendance__note">
-                    {{ record.note }}
-                  </span>
-                  <span v-else class="staff-attendance__no-note">−</span>
+                  <button 
+                    v-if="record.check_in"
+                    @click="openDetailModal(record)"
+                    class="staff-attendance__detail-btn"
+                  >
+                    <i class="fas fa-edit"></i> 詳細
+                  </button>
+                  <span v-else class="staff-attendance__no-data">−</span>
                 </td>
               </tr>
             </tbody>
@@ -167,6 +167,92 @@
           <div v-if="attendanceRecords.length === 0" class="staff-attendance__empty">
             <i class="fas fa-calendar-times"></i>
             <p>{{ formatMonthLabel(selectedMonth) }}の勤怠記録はありません</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 詳細編集モーダル -->
+      <div v-if="showDetailModal" class="modal-overlay" @click="closeDetailModal">
+        <div class="modal-content" @click.stop>
+          <div class="modal-header">
+            <h3>勤怠詳細 - {{ formatDate(editingRecord.date) }}({{ getDayLabel(editingRecord.date) }})</h3>
+            <button @click="closeDetailModal" class="modal-close">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <form @submit.prevent="saveAttendanceDetail">
+              <div class="form-group">
+                <label>出勤時刻</label>
+                <input 
+                  v-model="editingRecord.check_in" 
+                  type="time" 
+                  class="form-control"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label>退勤時刻</label>
+                <input 
+                  v-model="editingRecord.check_out" 
+                  type="time" 
+                  class="form-control"
+                />
+              </div>
+
+              <div class="form-section">
+                <h4>休憩時間</h4>
+                <div 
+                  v-for="(rest, index) in editingRecord.rests" 
+                  :key="index"
+                  class="rest-item"
+                >
+                  <div class="rest-inputs">
+                    <div class="form-group">
+                      <label>開始</label>
+                      <input 
+                        v-model="rest.rest_start" 
+                        type="time" 
+                        class="form-control"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>終了</label>
+                      <input 
+                        v-model="rest.rest_end" 
+                        type="time" 
+                        class="form-control"
+                      />
+                    </div>
+                    <button 
+                      type="button"
+                      @click="removeRest(index)"
+                      class="btn-remove-rest"
+                    >
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+                <button 
+                  type="button"
+                  @click="addRest"
+                  class="btn-add-rest"
+                >
+                  <i class="fas fa-plus"></i> 休憩時間を追加
+                </button>
+              </div>
+
+              <div class="modal-actions">
+                <button type="button" @click="closeDetailModal" class="btn-cancel">
+                  キャンセル
+                </button>
+                <button type="submit" class="btn-save">
+                  <i class="fas fa-save"></i> 保存
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -191,7 +277,15 @@ export default {
         lateCount: 0,
         absenceCount: 0
       },
-      isLoading: false
+      isLoading: false,
+      showDetailModal: false,
+      editingRecord: {
+        id: null,
+        date: '',
+        check_in: '',
+        check_out: '',
+        rests: []
+      }
     }
   },
 
@@ -223,16 +317,26 @@ export default {
 
     async loadStaffInfo() {
       try {
-        const response = await this.$axios.get(`/api/staff/${this.staffId}`, {
+        // スタッフ一覧から該当スタッフを検索
+        const response = await this.$axios.get('/api/staff', {
           headers: {
             Authorization: `Bearer ${this.$store.getters['auth/token']}`
           }
         })
-        this.staffName = response.data.name
+        
+        // ページネーション対応: data配列から該当スタッフを検索
+        const staff = response.data.data.find(s => s.id === parseInt(this.staffId))
+        
+        if (staff) {
+          this.staffName = staff.name
+        } else {
+          console.warn(`スタッフID ${this.staffId} が見つかりませんでした`)
+          this.staffName = 'スタッフ情報取得中...'
+        }
       } catch (error) {
         console.error('スタッフ情報取得エラー:', error)
-        // ダミーデータ
-        this.staffName = '山田太郎'
+        // エラー時はダミーデータ
+        this.staffName = 'スタッフ'
       }
     },
 
@@ -257,15 +361,9 @@ export default {
           absenceCount: 0
         }
       } catch (error) {
-        console.error('月次勤怠データ取得エラー:', error)
-
-        // 開発中: ダミーデータ
+        // API未実装時はダミーデータを表示
         this.attendanceRecords = this.generateDummyData()
         this.calculateStatistics()
-
-        if (this.$toast) {
-          this.$toast.warning('デモデータを表示しています（API未実装）')
-        }
       } finally {
         this.isLoading = false
       }
@@ -299,12 +397,12 @@ export default {
     },
 
     calculateStatistics() {
-      this.statistics.workDays = this.attendanceRecords.filter(r => r.check_in_time).length
+      this.statistics.workDays = this.attendanceRecords.filter(r => r.check_in).length
       this.statistics.totalHours = Math.floor(
         this.attendanceRecords.reduce((sum, r) => sum + (r.work_time || 0), 0) / 60
       )
       this.statistics.lateCount = this.attendanceRecords.filter(r => r.is_late).length
-      this.statistics.absenceCount = this.attendanceRecords.filter(r => !r.check_in_time).length
+      this.statistics.absenceCount = this.attendanceRecords.filter(r => !r.check_in).length
     },
 
     handleMonthChange() {
@@ -353,6 +451,13 @@ export default {
       return timeString.substring(0, 5)
     },
 
+    formatHours(hours) {
+      if (!hours || hours === 0) return '−'
+      const h = Math.floor(hours)
+      const m = Math.round((hours - h) * 60)
+      return `${h}:${String(m).padStart(2, '0')}`
+    },
+
     formatDuration(minutes) {
       if (!minutes || minutes === 0) return '−'
       const hours = Math.floor(minutes / 60)
@@ -383,6 +488,91 @@ export default {
       } else {
         alert('CSV出力機能は開発中です')
       }
+    },
+
+    async openDetailModal(record) {
+      // 詳細データを取得
+      try {
+        const response = await this.$axios.get(`/api/attendance/${record.id}`, {
+          headers: {
+            Authorization: `Bearer ${this.$store.getters['auth/token']}`
+          }
+        })
+
+        this.editingRecord = {
+          id: response.data.id,
+          date: response.data.date,
+          check_in: this.formatTimeForInput(response.data.check_in),
+          check_out: this.formatTimeForInput(response.data.check_out),
+          rests: response.data.rests.map(rest => ({
+            id: rest.id,
+            rest_start: this.formatTimeForInput(rest.rest_start),
+            rest_end: this.formatTimeForInput(rest.rest_end)
+          }))
+        }
+
+        this.showDetailModal = true
+      } catch (error) {
+        console.error('詳細データ取得エラー:', error)
+        if (this.$toast) {
+          this.$toast.error('詳細データの取得に失敗しました')
+        }
+      }
+    },
+
+    closeDetailModal() {
+      this.showDetailModal = false
+      this.editingRecord = {
+        id: null,
+        date: '',
+        check_in: '',
+        check_out: '',
+        rests: []
+      }
+    },
+
+    addRest() {
+      this.editingRecord.rests.push({
+        id: null,
+        rest_start: '',
+        rest_end: ''
+      })
+    },
+
+    removeRest(index) {
+      this.editingRecord.rests.splice(index, 1)
+    },
+
+    async saveAttendanceDetail() {
+      try {
+        await this.$axios.put(`/api/admin/attendance/${this.editingRecord.id}`, {
+          check_in: this.editingRecord.check_in,
+          check_out: this.editingRecord.check_out,
+          rests: this.editingRecord.rests
+        }, {
+          headers: {
+            Authorization: `Bearer ${this.$store.getters['auth/token']}`
+          }
+        })
+
+        if (this.$toast) {
+          this.$toast.success('勤怠情報を更新しました')
+        }
+
+        this.closeDetailModal()
+        await this.loadAttendanceData()
+      } catch (error) {
+        console.error('勤怠更新エラー:', error)
+        if (this.$toast) {
+          this.$toast.error('勤怠情報の更新に失敗しました')
+        }
+      }
+    },
+
+    formatTimeForInput(timeString) {
+      if (!timeString) return ''
+      // "HH:mm" or "HH:mm:ss" format to "HH:mm"
+      return timeString.substring(0, 5)
     }
   }
 }

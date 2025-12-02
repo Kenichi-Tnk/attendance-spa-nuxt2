@@ -58,6 +58,13 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // 管理者専用スタッフ管理
+    Route::middleware(['admin'])->prefix('admin')->group(function () {
+        Route::get('/dashboard', [StaffController::class, 'getDashboardData']); // ダッシュボードデータ取得
+        Route::get('/staff/{id}/attendance/monthly', [StaffController::class, 'getMonthlyAttendance']); // 月次勤怠取得
+        Route::get('/attendance/daily', [AttendanceController::class, 'getDailyAttendance']); // 日次勤怠一覧
+        Route::put('/attendance/{id}', [AttendanceController::class, 'adminUpdate']); // 管理者による勤怠更新
+    });
+
     Route::middleware(['admin'])->prefix('staff')->group(function () {
         Route::get('/', [StaffController::class, 'index']); // スタッフ一覧
         Route::get('/statistics', [StaffController::class, 'statistics']); // 統計情報

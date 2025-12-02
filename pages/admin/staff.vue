@@ -116,7 +116,6 @@
                 <th>メールアドレス</th>
                 <th>役割</th>
                 <th>登録日</th>
-                <th>最終ログイン</th>
                 <th>操作</th>
               </tr>
             </thead>
@@ -141,7 +140,6 @@
                   </span>
                 </td>
                 <td>{{ formatDate(staff.created_at) }}</td>
-                <td>{{ staff.last_login_at ? formatDate(staff.last_login_at) : '未ログイン' }}</td>
                 <td class="admin-staff__actions-cell">
                   <button
                     type="button"
@@ -151,15 +149,7 @@
                     title="詳細"
                   >
                     <i class="fas fa-eye"></i>
-                  </button>
-                  <button
-                    type="button"
-                    class="admin-staff__action-btn admin-staff__action-btn--edit"
-                    @click="editStaff(staff)"
-                    :aria-label="`編集 ${staff.name}`"
-                    title="編集"
-                  >
-                    <i class="fas fa-edit"></i>
+                    <span>詳細</span>
                   </button>
                   <button
                     type="button"
@@ -170,6 +160,7 @@
                     title="削除"
                   >
                     <i class="fas fa-trash"></i>
+                    <span>削除</span>
                   </button>
                 </td>
               </tr>
@@ -476,16 +467,7 @@ export default {
     },
 
     viewStaffDetail(staff) {
-      this.$router.push(`/admin/staff/${staff.id}/attendance`)
-    },
-
-    editStaff(staff) {
-      // 編集機能の実装
-      if (this.$toast) {
-        this.$toast.info('編集機能は開発中です')
-      } else {
-        alert('編集機能は開発中です')
-      }
+      this.$router.push(`/admin/staff-attendance/${staff.id}`)
     },
 
     async deleteStaff(staff) {

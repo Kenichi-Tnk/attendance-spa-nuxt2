@@ -38,6 +38,11 @@ export default {
             text: '勤務完了',
             classes: 'status-badge--attendance-completed',
             icon: 'fas fa-check-circle'
+          },
+          absent: {
+            text: '勤務外',
+            classes: 'status-badge--attendance-absent',
+            icon: 'fas fa-user-times'
           }
         },
         request: {

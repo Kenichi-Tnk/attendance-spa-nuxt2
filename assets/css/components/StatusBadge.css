@@ -23,6 +23,11 @@
     color: #1e40af;
 }
 
+.status-badge--attendance-absent {
+    background-color: #f3f4f6;
+    color: #6b7280;
+}
+
 /* 申請ステータス */
 .status-badge--request-pending {
     background-color: #fef3c7;

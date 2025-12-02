@@ -31,13 +31,6 @@
         :clickable="true"
         @click="$router.push('/admin/correction-requests')"
       />
-      
-      <StatCard
-        :value="stats.lateToday"
-        label="本日遅刻者"
-        icon="fas fa-exclamation-triangle"
-        color="red"
-      />
     </div>
     
     <!-- 管理メニュー -->
@@ -65,17 +58,6 @@
       </nuxt-link>
       
       <nuxt-link
-        to="/admin/attendance/monthly"
-        class="admin-dashboard__menu-card"
-      >
-        <div class="admin-dashboard__menu-content">
-          <i class="fas fa-calendar-alt admin-dashboard__menu-icon admin-dashboard__menu-icon--monthly"></i>
-          <h3 class="admin-dashboard__menu-title">月次勤怠一覧</h3>
-        </div>
-        <p class="admin-dashboard__menu-desc">スタッフ毎の月次勤怠を確認</p>
-      </nuxt-link>
-      
-      <nuxt-link
         to="/admin/correction-requests"
         class="admin-dashboard__menu-card"
       >
@@ -84,28 +66,6 @@
           <h3 class="admin-dashboard__menu-title">修正申請管理</h3>
         </div>
         <p class="admin-dashboard__menu-desc">スタッフからの修正申請を管理</p>
-      </nuxt-link>
-      
-      <nuxt-link
-        to="/admin/reports"
-        class="admin-dashboard__menu-card"
-      >
-        <div class="admin-dashboard__menu-content">
-          <i class="fas fa-chart-bar admin-dashboard__menu-icon admin-dashboard__menu-icon--reports"></i>
-          <h3 class="admin-dashboard__menu-title">レポート</h3>
-        </div>
-        <p class="admin-dashboard__menu-desc">勤怠データの分析とレポート</p>
-      </nuxt-link>
-      
-      <nuxt-link
-        to="/admin/settings"
-        class="admin-dashboard__menu-card"
-      >
-        <div class="admin-dashboard__menu-content">
-          <i class="fas fa-cog admin-dashboard__menu-icon admin-dashboard__menu-icon--settings"></i>
-          <h3 class="admin-dashboard__menu-title">システム設定</h3>
-        </div>
-        <p class="admin-dashboard__menu-desc">勤怠管理システムの設定</p>
       </nuxt-link>
     </div>
     
@@ -140,37 +100,11 @@ export default {
   data() {
     return {
       stats: {
-        totalStaff: 25,
-        presentToday: 18,
-        pendingRequests: 5,
-        lateToday: 2
+        totalStaff: 0,
+        presentToday: 0,
+        pendingRequests: 0
       },
-      recentActivities: [
-        {
-          id: 1,
-          icon: 'fas fa-user-plus',
-          message: '田中太郎さんが出勤しました',
-          time: '2分前'
-        },
-        {
-          id: 2,
-          icon: 'fas fa-edit',
-          message: '佐藤花子さんが修正申請を提出しました',
-          time: '15分前'
-        },
-        {
-          id: 3,
-          icon: 'fas fa-user-minus',
-          message: '鈴木一郎さんが退勤しました',
-          time: '30分前'
-        },
-        {
-          id: 4,
-          icon: 'fas fa-check',
-          message: '勤怠修正申請を承認しました',
-          time: '1時間前'
-        }
-      ]
+      recentActivities: []
     }
   },
   
@@ -187,10 +121,19 @@ export default {
   methods: {
     async loadDashboardData() {
       try {
-        // TODO: API呼び出しでダッシュボードデータを取得
-        await new Promise(resolve => setTimeout(resolve, 500))
+        const response = await this.$axios.get('/api/admin/dashboard', {
+          headers: {
+            Authorization: `Bearer ${this.$store.getters['auth/token']}`
+          }
+        })
+
+        this.stats = response.data.stats
+        this.recentActivities = response.data.recentActivities || []
       } catch (error) {
         console.error('ダッシュボードデータ取得エラー:', error)
+        if (this.$toast) {
+          this.$toast.error('ダッシュボードデータの取得に失敗しました')
+        }
       }
     }
   }

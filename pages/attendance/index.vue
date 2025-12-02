@@ -103,14 +103,13 @@ export default {
     async loadAttendanceData() {
       try {
         this.isLoading = true
-        console.log('Loading attendance data from API...')
         
         // 実際のAPI呼び出しで勤怠データを取得
         const params = {
           page: this.currentPage
         }
         
-        // 選択された月でフィルタリング（オプション）
+        // 選択された月でフィルタリング
         if (this.selectedMonth) {
           const [year, month] = this.selectedMonth.split('-')
           params.year = year
@@ -118,33 +117,23 @@ export default {
         }
         
         const response = await this.$axios.$get('/api/attendance', { params })
-        console.log('API Response:', response)
         
         // Laravel pagination形式のレスポンスを処理
-        this.attendanceRecords = response.data.map(record => {
-          console.log('Processing record:', record)
-          
-          const processedRecord = {
-            id: record.id,
-            date: record.date,
-            clockIn: this.formatTimeSimple(record.check_in),
-            clockOut: this.formatTimeSimple(record.check_out),
-            workHours: this.calculateWorkHours(record),
-            breakTime: this.calculateBreakTime(record),
-            rests: record.rests || []
-          }
-          
-          console.log('Processed record:', processedRecord)
-          return processedRecord
-        })
+        this.attendanceRecords = response.data.map(record => ({
+          id: record.id,
+          date: record.date,
+          clockIn: this.formatTimeSimple(record.check_in),
+          clockOut: this.formatTimeSimple(record.check_out),
+          workHours: this.calculateWorkHours(record),
+          breakTime: this.calculateBreakTime(record),
+          rests: record.rests || [],
+          status: this.determineStatus(record)
+        }))
         
         this.totalItems = response.total || response.data.length
         this.totalPages = response.last_page || Math.ceil(this.totalItems / 15)
-        
-        console.log('Processed records:', this.attendanceRecords.length)
       } catch (error) {
         console.error('勤怠データ取得エラー:', error)
-        // Toast機能が利用できない場合はコンソールのみ
         if (this.$toast) {
           this.$toast.error('勤怠データの取得に失敗しました')
         }
@@ -211,46 +200,24 @@ export default {
     
     calculateWorkHours(record) {
       if (!record.check_in || !record.check_out) {
-        console.log('Missing check_in or check_out:', record)
         return null
       }
       
-      console.log('Calculating work hours for:', record)
-      
-      // 日付文字列から正しい日付オブジェクトを作成
-      // record.dateはISO形式（例：2024-11-06）、時刻は H:i:s形式（例：09:30:00）
-      const dateStr = record.date.split('T')[0] // ISO文字列の場合はT以前を取得
-      
-      console.log('Date string:', dateStr)
-      console.log('Check in time:', record.check_in)
-      console.log('Check out time:', record.check_out)
-      
-      // 日付と時刻を結合してISO形式の文字列を作成
+      const dateStr = record.date.split('T')[0]
       const checkInDateTime = `${dateStr}T${record.check_in}`
       const checkOutDateTime = `${dateStr}T${record.check_out}`
-      
-      console.log('CheckIn DateTime:', checkInDateTime)
-      console.log('CheckOut DateTime:', checkOutDateTime)
       
       const checkIn = new Date(checkInDateTime)
       const checkOut = new Date(checkOutDateTime)
       
-      console.log('CheckIn Date Object:', checkIn)
-      console.log('CheckOut Date Object:', checkOut)
-      console.log('CheckIn valid:', !isNaN(checkIn.getTime()))
-      console.log('CheckOut valid:', !isNaN(checkOut.getTime()))
-      
       if (isNaN(checkIn.getTime()) || isNaN(checkOut.getTime())) {
-        console.error('Invalid date objects')
         return '0:00'
       }
       
       let workMilliseconds = checkOut - checkIn
-      console.log('Base work milliseconds:', workMilliseconds)
       
       // 休憩時間を差し引く
       if (record.rests && record.rests.length > 0) {
-        console.log('Rests data:', record.rests)
         const totalBreakMilliseconds = record.rests.reduce((total, rest) => {
           if (rest.rest_start && rest.rest_end) {
             const restStartDateTime = `${dateStr}T${rest.rest_start}`
@@ -258,29 +225,20 @@ export default {
             const restStart = new Date(restStartDateTime)
             const restEnd = new Date(restEndDateTime)
             
-            console.log('Rest period:', restStartDateTime, 'to', restEndDateTime)
-            
             if (!isNaN(restStart.getTime()) && !isNaN(restEnd.getTime())) {
-              const breakDuration = restEnd - restStart
-              console.log('Break duration milliseconds:', breakDuration)
-              return total + breakDuration
+              return total + (restEnd - restStart)
             }
           }
           return total
         }, 0)
         
-        console.log('Total break milliseconds:', totalBreakMilliseconds)
         workMilliseconds -= totalBreakMilliseconds
       }
-      
-      console.log('Final work milliseconds:', workMilliseconds)
       
       if (workMilliseconds <= 0) return '0:00'
       
       const hours = Math.floor(workMilliseconds / (1000 * 60 * 60))
       const minutes = Math.floor((workMilliseconds % (1000 * 60 * 60)) / (1000 * 60))
-      
-      console.log('Calculated hours:', hours, 'minutes:', minutes)
       
       return `${hours}:${String(minutes).padStart(2, '0')}`
     },
@@ -300,8 +258,7 @@ export default {
           const restEnd = new Date(restEndDateTime)
           
           if (!isNaN(restStart.getTime()) && !isNaN(restEnd.getTime())) {
-            const breakDuration = restEnd - restStart
-            return total + breakDuration
+            return total + (restEnd - restStart)
           }
         }
         return total
@@ -313,6 +270,12 @@ export default {
       const minutes = Math.floor((totalBreakMilliseconds % (1000 * 60 * 60)) / (1000 * 60))
 
       return `${hours}:${String(minutes).padStart(2, '0')}`
+    },
+
+    determineStatus(record) {
+      if (!record.check_in) return 'absent'
+      if (!record.check_out) return 'working'
+      return 'completed'
     }
   }
 }

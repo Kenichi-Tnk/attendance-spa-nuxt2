@@ -23,9 +23,9 @@ return [
 
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['Accept', 'Authorization', 'Content-Type', 'X-Requested-With', 'X-CSRF-TOKEN'],
+    'allowed_headers' => ['Accept', 'Authorization', 'Content-Type', 'X-Requested-With', 'X-CSRF-TOKEN', 'X-XSRF-TOKEN'],
 
-    'exposed_headers' => ['X-CSRF-TOKEN'],
+    'exposed_headers' => ['X-CSRF-TOKEN', 'X-XSRF-TOKEN'],
 
     'max_age' => 86400,
 
