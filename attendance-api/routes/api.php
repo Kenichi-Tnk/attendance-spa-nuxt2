@@ -62,6 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/dashboard', [StaffController::class, 'getDashboardData']); // ダッシュボードデータ取得
         Route::get('/staff/{id}/attendance/monthly', [StaffController::class, 'getMonthlyAttendance']); // 月次勤怠取得
         Route::get('/attendance/daily', [AttendanceController::class, 'getDailyAttendance']); // 日次勤怠一覧
+        Route::get('/attendance/daily/{userId}', [AttendanceController::class, 'getDailyAttendanceDetail']); // 日次勤怠詳細
         Route::put('/attendance/{id}', [AttendanceController::class, 'adminUpdate']); // 管理者による勤怠更新
     });
 

@@ -385,6 +385,40 @@ class AttendanceController extends Controller
     }
 
     /**
+     * Get daily attendance detail for specific user (Admin only)
+     */
+    public function getDailyAttendanceDetail(Request $request, $userId)
+    {
+        $date = $request->input('date', now()->toDateString());
+
+        $attendance = Attendance::where('user_id', $userId)
+            ->where('date', $date)
+            ->with('rests')
+            ->first();
+
+        if (!$attendance) {
+            return response()->json([
+                'message' => 'Attendance record not found'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json([
+            'id' => $attendance->id,
+            'user_id' => $attendance->user_id,
+            'date' => $attendance->date->format('Y-m-d'),
+            'check_in' => $attendance->check_in ? $attendance->check_in->format('H:i:s') : null,
+            'check_out' => $attendance->check_out ? $attendance->check_out->format('H:i:s') : null,
+            'rests' => $attendance->rests->map(function ($rest) {
+                return [
+                    'id' => $rest->id,
+                    'rest_start' => $rest->rest_start ? $rest->rest_start->format('H:i:s') : null,
+                    'rest_end' => $rest->rest_end ? $rest->rest_end->format('H:i:s') : null,
+                ];
+            })
+        ], Response::HTTP_OK);
+    }
+
+    /**
      * Admin update attendance record (Admin only)
      */
     public function adminUpdate(Request $request, $id)

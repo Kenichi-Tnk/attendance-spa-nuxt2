@@ -49,49 +49,6 @@
         </button>
       </div>
 
-      <!-- 月次統計サマリー -->
-      <div class="staff-attendance__stats">
-        <div class="staff-attendance__stat-card">
-          <div class="staff-attendance__stat-icon staff-attendance__stat-icon--days">
-            <i class="fas fa-calendar-check"></i>
-          </div>
-          <div class="staff-attendance__stat-info">
-            <h3>{{ statistics.workDays }}</h3>
-            <p>出勤日数</p>
-          </div>
-        </div>
-
-        <div class="staff-attendance__stat-card">
-          <div class="staff-attendance__stat-icon staff-attendance__stat-icon--hours">
-            <i class="fas fa-clock"></i>
-          </div>
-          <div class="staff-attendance__stat-info">
-            <h3>{{ statistics.totalHours }}</h3>
-            <p>総勤務時間</p>
-          </div>
-        </div>
-
-        <div class="staff-attendance__stat-card">
-          <div class="staff-attendance__stat-icon staff-attendance__stat-icon--late">
-            <i class="fas fa-exclamation-triangle"></i>
-          </div>
-          <div class="staff-attendance__stat-info">
-            <h3>{{ statistics.lateCount }}</h3>
-            <p>遅刻回数</p>
-          </div>
-        </div>
-
-        <div class="staff-attendance__stat-card">
-          <div class="staff-attendance__stat-icon staff-attendance__stat-icon--absence">
-            <i class="fas fa-user-times"></i>
-          </div>
-          <div class="staff-attendance__stat-info">
-            <h3>{{ statistics.absenceCount }}</h3>
-            <p>欠勤日数</p>
-          </div>
-        </div>
-      </div>
-
       <!-- 勤怠一覧テーブル -->
       <div class="staff-attendance__content">
         <div class="staff-attendance__header">
@@ -473,8 +430,8 @@ export default {
     },
 
     getTimeClass(timeString, isLate) {
-      if (!timeString) return ''
-      return isLate ? 'staff-attendance__time--late' : ''
+      // 赤字表示を無効化
+      return ''
     },
 
     isWeekend(dateString) {

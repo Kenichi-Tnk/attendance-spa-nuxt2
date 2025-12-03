@@ -238,18 +238,6 @@
   border-bottom: 1px solid #e5e7eb;
 }
 
-.staff-attendance__row:hover {
-  background: #f9fafb;
-}
-
-.staff-attendance__row--weekend {
-  background: #fef3c7;
-}
-
-.staff-attendance__row--late {
-  background: #fef2f2;
-}
-
 .staff-attendance__date-cell {
   font-weight: 600;
 }
@@ -262,11 +250,6 @@
   font-size: 0.75rem;
   color: #6b7280;
   font-weight: 400;
-}
-
-.staff-attendance__time--late {
-  color: #ef4444;
-  font-weight: 600;
 }
 
 .staff-attendance__late-icon {

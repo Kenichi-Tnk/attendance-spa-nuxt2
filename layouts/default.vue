@@ -30,9 +30,6 @@
             <NuxtLink v-if="$store.getters['auth/isAdmin']" to="/admin/staff" class="default-layout__nav-link">
               スタッフ一覧
             </NuxtLink>
-            <NuxtLink v-if="$store.getters['auth/isAdmin']" to="/admin" class="default-layout__nav-link">
-              管理者画面
-            </NuxtLink>
           </div>
 
           <!-- ユーザーメニュー -->
