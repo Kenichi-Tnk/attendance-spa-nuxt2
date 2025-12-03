@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/check-out', [AttendanceController::class, 'checkOut']);
         Route::post('/start-rest', [AttendanceController::class, 'startRest']);
         Route::post('/end-rest', [AttendanceController::class, 'endRest']);
+        Route::get('/monthly-summary', [AttendanceController::class, 'getMonthlySummary']);
         Route::get('/', [AttendanceController::class, 'index']);
         Route::get('/{id}', [AttendanceController::class, 'show']);
     });

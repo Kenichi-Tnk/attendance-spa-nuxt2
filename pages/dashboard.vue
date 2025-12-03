@@ -72,11 +72,12 @@ export default {
   data() {
     return {
       monthlyStats: {
-        workDays: 20,
-        totalHours: '160.5h',
-        averageHours: '8.0h',
-        pendingRequests: 2
-      }
+        workDays: 0,
+        totalHours: '0.0h',
+        averageHours: '0.0h',
+        pendingRequests: 0
+      },
+      isLoadingStats: false
     }
   },
   
@@ -87,8 +88,35 @@ export default {
   },
   
   async mounted() {
-    // TimeClock.vueで既にfetchStatusを実行しているため、ここでは不要
-    // await this.$store.dispatch('attendance/fetchTodayAttendance')
+    await this.loadMonthlySummary()
+  },
+
+  methods: {
+    async loadMonthlySummary() {
+      try {
+        this.isLoadingStats = true
+
+        const response = await this.$axios.get('/api/attendance/monthly-summary', {
+          headers: {
+            Authorization: `Bearer ${this.$store.getters['auth/token']}`
+          }
+        })
+
+        this.monthlyStats = {
+          workDays: response.data.workDays,
+          totalHours: response.data.totalHours,
+          averageHours: response.data.averageHours,
+          pendingRequests: response.data.pendingRequests
+        }
+      } catch (error) {
+        console.error('月次サマリー取得エラー:', error)
+        if (this.$toast) {
+          this.$toast.error('月次サマリーの取得に失敗しました')
+        }
+      } finally {
+        this.isLoadingStats = false
+      }
+    }
   }
 }
 </script>

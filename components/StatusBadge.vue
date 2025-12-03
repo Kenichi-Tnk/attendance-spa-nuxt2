@@ -52,7 +52,7 @@ export default {
             icon: 'fas fa-hourglass-half'
           },
           approved: {
-            text: '承認済み',
+            text: '承認済',
             classes: 'status-badge--request-approved',
             icon: 'fas fa-check-circle'
           },

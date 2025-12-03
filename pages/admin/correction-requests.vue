@@ -19,19 +19,9 @@
           >
             <option value="">全て</option>
             <option value="pending">承認待ち</option>
-            <option value="approved">承認済み</option>
+            <option value="approved">承認済</option>
             <option value="rejected">却下</option>
           </select>
-        </div>
-        
-        <div class="admin-corrections__filter-group">
-          <label class="admin-corrections__filter-label">申請日</label>
-          <input 
-            v-model="selectedDate"
-            type="date" 
-            class="admin-corrections__filter-input"
-            @change="filterRequests"
-          >
         </div>
       </div>
 
@@ -60,7 +50,7 @@
                 <h3 class="admin-corrections__card-title">{{ request.user.name }}</h3>
                 <p class="admin-corrections__card-date">{{ formatDate(request.date) }}</p>
               </div>
-              <StatusBadge :status="request.status" />
+              <StatusBadge :status="request.status" type="request" />
             </div>
 
             <!-- 修正内容 -->
@@ -134,7 +124,6 @@ export default {
       requests: [],
       filteredRequests: [],
       selectedStatus: '',
-      selectedDate: '',
       isLoading: false,
       processing: false
     }
@@ -299,13 +288,6 @@ export default {
       
       if (this.selectedStatus) {
         filtered = filtered.filter(request => request.status === this.selectedStatus)
-      }
-      
-      if (this.selectedDate) {
-        filtered = filtered.filter(request => {
-          const requestDate = new Date(request.date).toISOString().split('T')[0]
-          return requestDate === this.selectedDate
-        })
       }
       
       this.filteredRequests = filtered

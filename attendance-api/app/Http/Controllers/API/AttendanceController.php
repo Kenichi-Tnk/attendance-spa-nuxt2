@@ -259,6 +259,78 @@ class AttendanceController extends Controller
     }
 
     /**
+     * Get monthly summary for current user
+     */
+    public function getMonthlySummary(Request $request)
+    {
+        $user = $request->user();
+
+        // デフォルトは今月
+        $year = $request->input('year', now()->year);
+        $month = $request->input('month', now()->month);
+
+        $startDate = Carbon::create($year, $month, 1)->startOfDay();
+        $endDate = Carbon::create($year, $month, 1)->endOfMonth()->endOfDay();
+
+        // 今月の勤怠データを取得
+        $attendances = Attendance::where('user_id', $user->id)
+            ->whereBetween('date', [$startDate, $endDate])
+            ->where('check_out', '!=', null) // 退勤済みのみ
+            ->with('rests')
+            ->get();
+
+        // 出勤日数
+        $workDays = $attendances->count();
+
+        // 総労働時間と休憩時間を計算（分）
+        $totalWorkMinutes = 0;
+        $totalBreakMinutes = 0;
+
+        foreach ($attendances as $attendance) {
+            if ($attendance->check_in && $attendance->check_out) {
+                // 休憩時間を計算
+                $breakMinutes = 0;
+                foreach ($attendance->rests as $rest) {
+                    if ($rest->rest_start && $rest->rest_end) {
+                        $breakMinutes += $rest->rest_start->diffInMinutes($rest->rest_end);
+                    }
+                }
+                $totalBreakMinutes += $breakMinutes;
+
+                // 勤務時間を計算（総時間 - 休憩時間）
+                $totalMinutes = $attendance->check_in->diffInMinutes($attendance->check_out);
+                $workMinutes = $totalMinutes - $breakMinutes;
+                $totalWorkMinutes += $workMinutes;
+            }
+        }
+
+        // 総労働時間を時間に変換
+        $totalHours = floor($totalWorkMinutes / 60);
+        $totalMinutes = $totalWorkMinutes % 60;
+        $totalHoursFormatted = sprintf('%d.%dh', $totalHours, round($totalMinutes / 60 * 10));
+
+        // 平均労働時間
+        $averageMinutes = $workDays > 0 ? $totalWorkMinutes / $workDays : 0;
+        $averageHours = floor($averageMinutes / 60);
+        $averageMinutesRemainder = $averageMinutes % 60;
+        $averageHoursFormatted = sprintf('%d.%dh', $averageHours, round($averageMinutesRemainder / 60 * 10));
+
+        // 承認待ち申請数
+        $pendingRequests = \App\Models\AttendanceCorrect::where('user_id', $user->id)
+            ->where('status', 'pending')
+            ->count();
+
+        return response()->json([
+            'workDays' => $workDays,
+            'totalHours' => $totalHoursFormatted,
+            'averageHours' => $averageHoursFormatted,
+            'pendingRequests' => $pendingRequests,
+            'year' => $year,
+            'month' => $month
+        ], Response::HTTP_OK);
+    }
+
+    /**
      * Get specific attendance record
      */
     public function show(Request $request, $id)

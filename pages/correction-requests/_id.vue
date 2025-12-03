@@ -27,7 +27,7 @@
           </div>
           <div class="detail-item">
             <span class="label">ステータス</span>
-            <StatusBadge :status="correctionRequest.status" />
+            <StatusBadge :status="correctionRequest.status" type="request" />
           </div>
         </div>
       </div>
@@ -223,9 +223,66 @@ export default {
       return date.toLocaleString('ja-JP')
     },
     
+    extractTimeOnly(timeString) {
+      if (!timeString) return ''
+      
+      try {
+        if (typeof timeString === 'string') {
+          // "2025-11-17T09:15:00.000000Z" のような形式
+          if (timeString.includes('T')) {
+            const timePart = timeString.split('T')[1]
+            if (timePart) {
+              return timePart.split('.')[0] // ミリ秒を除去
+            }
+          }
+          // "2025-11-17 09:15:00" のような形式
+          if (timeString.includes(' ')) {
+            const timePart = timeString.split(' ')[1]
+            if (timePart) {
+              return timePart
+            }
+          }
+          // "09:15:00" のような時刻のみの場合
+          return timeString
+        }
+        return timeString
+      } catch (error) {
+        console.error('時刻抽出エラー:', error, timeString)
+        return ''
+      }
+    },
+    
     formatTime(timeString) {
       if (!timeString) return ''
-      return timeString.substring(0, 5)
+      
+      try {
+        // ISO形式の日時文字列から時刻部分を抽出
+        if (typeof timeString === 'string') {
+          // "2025-11-17T09:15:00.000000Z" のような形式の場合
+          if (timeString.includes('T')) {
+            const timePart = timeString.split('T')[1]
+            if (timePart) {
+              return timePart.substring(0, 5)
+            }
+          }
+          // "2025-11-17 09:15:00" のような形式の場合
+          if (timeString.includes(' ')) {
+            const timePart = timeString.split(' ')[1]
+            if (timePart) {
+              return timePart.substring(0, 5)
+            }
+          }
+          // "09:15:00" のような時刻のみの場合
+          if (timeString.includes(':')) {
+            return timeString.substring(0, 5)
+          }
+        }
+        
+        return timeString.substring(0, 5)
+      } catch (error) {
+        console.error('時刻フォーマットエラー:', error, timeString)
+        return ''
+      }
     },
     
     calculateWorkHours(attendance) {
@@ -233,9 +290,23 @@ export default {
         return '−'
       }
       
-      const dateStr = attendance.date.split('T')[0]
-      const startTime = new Date(`${dateStr}T${attendance.check_in}`)
-      const endTime = new Date(`${dateStr}T${attendance.check_out}`)
+      // 日付文字列を取得
+      let dateStr = attendance.date
+      if (typeof dateStr === 'string') {
+        // ISO形式の場合は日付部分のみ抽出
+        if (dateStr.includes('T')) {
+          dateStr = dateStr.split('T')[0]
+        } else if (dateStr.includes(' ')) {
+          dateStr = dateStr.split(' ')[0]
+        }
+      }
+      
+      // 時刻部分を抽出
+      const checkIn = this.extractTimeOnly(attendance.check_in)
+      const checkOut = this.extractTimeOnly(attendance.check_out)
+      
+      const startTime = new Date(`${dateStr}T${checkIn}`)
+      const endTime = new Date(`${dateStr}T${checkOut}`)
       
       if (isNaN(startTime.getTime()) || isNaN(endTime.getTime())) {
         return '−'
@@ -247,8 +318,8 @@ export default {
       if (attendance.rests && attendance.rests.length > 0) {
         const totalBreakMilliseconds = attendance.rests.reduce((total, rest) => {
           if (rest.rest_start && rest.rest_end) {
-            const restStart = new Date(`${dateStr}T${rest.rest_start}`)
-            const restEnd = new Date(`${dateStr}T${rest.rest_end}`)
+            const restStart = new Date(`${dateStr}T${this.extractTimeOnly(rest.rest_start)}`)
+            const restEnd = new Date(`${dateStr}T${this.extractTimeOnly(rest.rest_end)}`)
             
             if (!isNaN(restStart.getTime()) && !isNaN(restEnd.getTime())) {
               return total + (restEnd - restStart)

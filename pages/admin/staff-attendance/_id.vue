@@ -440,10 +440,67 @@ export default {
     },
 
     exportToCSV() {
-      if (this.$toast) {
-        this.$toast.info('CSV出力機能は開発中です')
-      } else {
-        alert('CSV出力機能は開発中です')
+      if (this.attendanceRecords.length === 0) {
+        if (this.$toast) {
+          this.$toast.warning('出力するデータがありません')
+        } else {
+          alert('出力するデータがありません')
+        }
+        return
+      }
+
+      // CSVヘッダー
+      const headers = ['日付', '曜日', '出勤時刻', '退勤時刻', '休憩時間', '勤務時間']
+      
+      // CSVデータ作成
+      const rows = this.attendanceRecords.map(record => {
+        const date = this.formatDate(record.date)
+        const day = this.getDayLabel(record.date)
+        const checkIn = record.check_in || '−'
+        const checkOut = record.check_out || '−'
+        const restTime = this.formatHours(record.rest_time)
+        const workTime = this.formatHours(record.work_time)
+        
+        return [date, day, checkIn, checkOut, restTime, workTime]
+      })
+
+      // CSV文字列作成（ダブルクォートでエスケープ）
+      const escapeCsv = (value) => {
+        const str = String(value)
+        if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+          return `"${str.replace(/"/g, '""')}"`
+        }
+        return str
+      }
+
+      const csvContent = [
+        headers.map(escapeCsv).join(','),
+        ...rows.map(row => row.map(escapeCsv).join(','))
+      ].join('\r\n')
+
+      // BOMを追加（Excelで文字化けしないように）
+      const bom = '\uFEFF'
+      const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' })
+      
+      // ファイル名生成（スタッフ名_年月.csv）
+      const monthStr = this.selectedMonth.replace('-', '年') + '月'
+      const filename = `${this.staffName}_${monthStr}_勤怠データ.csv`
+      
+      // ダウンロード
+      const link = document.createElement('a')
+      if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob)
+        link.setAttribute('href', url)
+        link.setAttribute('download', filename)
+        link.style.visibility = 'hidden'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        URL.revokeObjectURL(url)
+        
+        if (this.$toast) {
+          this.$toast.success('CSVファイルをダウンロードしました')
+        }
       }
     },
 

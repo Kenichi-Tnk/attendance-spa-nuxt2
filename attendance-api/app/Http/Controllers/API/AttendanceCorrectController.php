@@ -139,8 +139,27 @@ class AttendanceCorrectController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
+        // フォーマット済みデータを返す
         return response()->json([
-            'correction' => $correction
+            'correction' => [
+                'id' => $correction->id,
+                'user_id' => $correction->user_id,
+                'date' => $correction->date,
+                'check_in' => $correction->check_in ? $correction->check_in->format('H:i:s') : null,
+                'check_out' => $correction->check_out ? $correction->check_out->format('H:i:s') : null,
+                'reason' => $correction->reason,
+                'status' => $correction->status,
+                'reject_reason' => $correction->reject_reason,
+                'created_at' => $correction->created_at,
+                'updated_at' => $correction->updated_at,
+                'rests' => $correction->rests->map(function ($rest) {
+                    return [
+                        'id' => $rest->id,
+                        'rest_start' => $rest->rest_start ? $rest->rest_start->format('H:i:s') : null,
+                        'rest_end' => $rest->rest_end ? $rest->rest_end->format('H:i:s') : null,
+                    ];
+                })
+            ]
         ], Response::HTTP_OK);
     }
 
@@ -320,8 +339,23 @@ class AttendanceCorrectController extends Controller
             ], Response::HTTP_OK);
         }
 
+        // フォーマット済みデータを返す
         return response()->json([
-            'original_attendance' => $originalAttendance
+            'original_attendance' => [
+                'id' => $originalAttendance->id,
+                'user_id' => $originalAttendance->user_id,
+                'date' => $originalAttendance->date->format('Y-m-d'),
+                'check_in' => $originalAttendance->check_in ? $originalAttendance->check_in->format('H:i:s') : null,
+                'check_out' => $originalAttendance->check_out ? $originalAttendance->check_out->format('H:i:s') : null,
+                'rests' => $originalAttendance->rests->map(function ($rest) {
+                    return [
+                        'id' => $rest->id,
+                        'attendance_id' => $rest->attendance_id,
+                        'rest_start' => $rest->rest_start ? $rest->rest_start->format('H:i:s') : null,
+                        'rest_end' => $rest->rest_end ? $rest->rest_end->format('H:i:s') : null,
+                    ];
+                })
+            ]
         ], Response::HTTP_OK);
     }
 }

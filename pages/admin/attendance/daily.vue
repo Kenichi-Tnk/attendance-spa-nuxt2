@@ -594,12 +594,75 @@ export default {
     },
 
     exportToCSV() {
-      // CSV出力機能
-      if (this.$toast) {
-        this.$toast.info('CSV出力機能は開発中です')
-      } else {
-        alert('CSV出力機能は開発中です')
+      if (this.attendanceRecords.length === 0) {
+        if (this.$toast) {
+          this.$toast.warning('出力するデータがありません')
+        }
+        return
       }
+
+      // CSVエスケープ関数
+      const escapeCsv = (value) => {
+        const str = String(value)
+        if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+          return `"${str.replace(/"/g, '""')}"`
+        }
+        return str
+      }
+
+      // CSVヘッダー
+      const headers = ['スタッフ名', 'スタッフID', '出勤時刻', '退勤時刻', '休憩時間', '勤務時間', 'ステータス']
+
+      // CSVデータ行
+      const rows = this.attendanceRecords.map(record => {
+        return [
+          record.user_name,
+          record.user_id,
+          this.formatTime(record.check_in_time),
+          this.formatTime(record.check_out_time),
+          this.formatDuration(record.break_time),
+          this.formatDuration(record.work_time),
+          this.getStatusLabel(record.status)
+        ]
+      })
+
+      // CSV文字列生成
+      const csvContent = [
+        headers.map(escapeCsv).join(','),
+        ...rows.map(row => row.map(escapeCsv).join(','))
+      ].join('\r\n')
+
+      // BOM付きCSV（Excel対応）
+      const bom = '\uFEFF'
+      const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' })
+
+      // ファイル名生成
+      const dateLabel = this.formatDateLabel(this.selectedDate).replace(/[\/\\:*?"<>|]/g, '_')
+      const filename = `${dateLabel}_日次勤怠データ.csv`
+
+      // ダウンロード
+      const link = document.createElement('a')
+      const url = URL.createObjectURL(blob)
+      link.setAttribute('href', url)
+      link.setAttribute('download', filename)
+      link.style.visibility = 'hidden'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+
+      if (this.$toast) {
+        this.$toast.success('CSVファイルをダウンロードしました')
+      }
+    },
+
+    getStatusLabel(status) {
+      const labels = {
+        working: '勤務中',
+        completed: '退勤済み',
+        absent: '未出勤'
+      }
+      return labels[status] || status
     }
   }
 }
