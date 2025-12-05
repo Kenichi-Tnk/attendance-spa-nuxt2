@@ -14,20 +14,35 @@ export const getters = {
   
   workStartTime: (state) => {
     if (!state.workStartTime) return null
-    // HH:MM:SS形式をHH:MM形式に変換
-    return state.workStartTime.substring(0, 5)
+    
+    // UTC時刻をJST(日本時間)に変換
+    const date = new Date(state.workStartTime)
+    const hours = String(date.getHours()).padStart(2, '0')
+    const minutes = String(date.getMinutes()).padStart(2, '0')
+    
+    return `${hours}:${minutes}`
   },
   
   workEndTime: (state) => {
     if (!state.workEndTime) return null
-    // HH:MM:SS形式をHH:MM形式に変換
-    return state.workEndTime.substring(0, 5)
+    
+    // UTC時刻をJST(日本時間)に変換
+    const date = new Date(state.workEndTime)
+    const hours = String(date.getHours()).padStart(2, '0')
+    const minutes = String(date.getMinutes()).padStart(2, '0')
+    
+    return `${hours}:${minutes}`
   },
   
   breakStartTime: (state) => {
     if (!state.breakStartTime) return null
-    // HH:MM:SS形式をHH:MM形式に変換
-    return state.breakStartTime.substring(0, 5)
+    
+    // UTC時刻をJST(日本時間)に変換
+    const date = new Date(state.breakStartTime)
+    const hours = String(date.getHours()).padStart(2, '0')
+    const minutes = String(date.getMinutes()).padStart(2, '0')
+    
+    return `${hours}:${minutes}`
   },
   
   isWorking: (state) => {
@@ -35,21 +50,12 @@ export const getters = {
   },
   
   totalWorkTime: (state) => {
-    if (!state.workStartTime) return null
+    // 退勤していない場合はnullを返す（勤務中は表示しない）
+    if (!state.workStartTime || !state.workEndTime) return null
     
-    // 今日の日付を取得
-    const today = new Date().toISOString().split('T')[0]
-    
-    // 開始時刻をDateオブジェクトに変換（ISO形式で）
-    const startTime = new Date(`${today}T${state.workStartTime}`)
-    
-    // 終了時刻の処理（退勤していない場合は現在時刻を使用）
-    let endTime
-    if (state.workEndTime) {
-      endTime = new Date(`${today}T${state.workEndTime}`)
-    } else {
-      endTime = new Date() // 現在時刻
-    }
+    // UTC時刻をDateオブジェクトに変換
+    const startTime = new Date(state.workStartTime)
+    const endTime = new Date(state.workEndTime)
     
     // 日時パースが失敗した場合の処理
     if (isNaN(startTime.getTime()) || isNaN(endTime.getTime())) {

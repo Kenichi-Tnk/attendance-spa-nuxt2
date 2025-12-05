@@ -9,15 +9,18 @@
     <div class="attendance-index__filter-section">
       <h2 class="attendance-index__filter-title">絞り込み</h2>
       <div class="attendance-index__filter-grid">
-        <FormInput
-          v-model="selectedMonth"
-          type="month"
-          label="年月"
-          :required="false"
-        />
+        <div class="form-input">
+          <label for="month-filter" class="form-input__label">年月</label>
+          <input
+            id="month-filter"
+            v-model="selectedMonth"
+            type="month"
+            class="form-input__field"
+          />
+        </div>
         <div class="attendance-index__search-container">
           <button
-            @click="loadAttendanceData"
+            @click="loadAttendanceData(true)"
             :disabled="isLoading"
             class="attendance-index__search-btn"
           >
@@ -100,9 +103,14 @@ export default {
   },
   
   methods: {
-    async loadAttendanceData() {
+    async loadAttendanceData(resetPage = false) {
       try {
         this.isLoading = true
+        
+        // 検索ボタンを押したときはページを1にリセット
+        if (resetPage) {
+          this.currentPage = 1
+        }
         
         // 実際のAPI呼び出しで勤怠データを取得
         const params = {
