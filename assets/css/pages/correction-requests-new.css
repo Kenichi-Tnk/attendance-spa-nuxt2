@@ -88,7 +88,10 @@
 
 .error-message {
     color: #ef4444;
-    font-size: 14px;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+    min-height: 18px;
 }
 
 .char-count {
@@ -141,10 +144,14 @@
 }
 
 .rest-item__fields {
-    display: grid;
-    grid-template-columns: 1fr 1fr auto;
+    display: flex;
     gap: 16px;
-    align-items: end;
+    align-items: flex-start;
+}
+
+.rest-item__fields .form-group {
+    flex: 1;
+    margin-bottom: 0;
 }
 
 .rest-item__remove-btn {
@@ -157,9 +164,11 @@
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    height: fit-content;
+    height: 38px;
+    margin-top: 24px;
     font-size: 14px;
     transition: background-color 0.2s;
+    flex-shrink: 0;
 }
 
 .rest-item__remove-btn .btn-text {

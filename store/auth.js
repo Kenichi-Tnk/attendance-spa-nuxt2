@@ -63,7 +63,18 @@ export const actions = {
     } catch (error) {
       console.error('Login error:', error)
       console.error('Error response:', error.response)
-      const message = error.response?.data?.message || 'ログインに失敗しました'
+      
+      // エラーメッセージを日本語化
+      let message = 'ログインに失敗しました'
+      if (error.response?.data?.message) {
+        const apiMessage = error.response.data.message
+        if (apiMessage === 'Invalid credentials') {
+          message = 'メールアドレスまたはパスワードが正しくありません'
+        } else {
+          message = apiMessage
+        }
+      }
+      
       return { success: false, error: message }
     } finally {
       commit('SET_LOADING', false)
@@ -113,7 +124,7 @@ export const actions = {
       console.error('Network error:', error.code)
       console.error('Request timeout:', error.code === 'ECONNABORTED')
       
-      let message = error.response?.data?.message || '登録に失敗しました'
+      let message = '登録に失敗しました'
       
       // ネットワークエラーの特別な処理
       if (error.code === 'ECONNABORTED') {
@@ -125,8 +136,27 @@ export const actions = {
       // バリデーションエラーがある場合は詳細を表示
       if (error.response?.data?.errors) {
         const errors = error.response.data.errors
-        const errorMessages = Object.values(errors).flat()
+        const errorMessages = []
+        
+        // エラーメッセージを日本語化
+        for (const [field, messages] of Object.entries(errors)) {
+          messages.forEach(msg => {
+            if (msg.includes('email') && msg.includes('already been taken')) {
+              errorMessages.push('このメールアドレスは既に登録されています')
+            } else if (msg.includes('password') && msg.includes('confirmation does not match')) {
+              errorMessages.push('パスワードが一致しません')
+            } else if (msg.includes('required')) {
+              const fieldName = field === 'name' ? '名前' : field === 'email' ? 'メールアドレス' : field === 'password' ? 'パスワード' : field
+              errorMessages.push(`${fieldName}は必須項目です`)
+            } else {
+              errorMessages.push(msg)
+            }
+          })
+        }
+        
         message = errorMessages.join(', ')
+      } else if (error.response?.data?.message) {
+        message = error.response.data.message
       }
       
       return { success: false, error: message }

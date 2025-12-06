@@ -24,7 +24,7 @@
                         <i class="fas fa-info-circle"></i>
                         勤怠一覧から選択された日付です
                     </div>
-                    <div v-if="errors.date" class="error-message">{{ errors.date }}</div>
+                    <div v-if="errors.date" class="error-message">{{ getErrorMessage(errors.date) }}</div>
                 </div>
 
                 <!-- 現在の勤怠データ表示 -->
@@ -99,7 +99,7 @@
                             @blur="onTimeBlur('check_in')"
                             @focus="onTimeFocus('check_in')"
                         />
-                        <div v-if="errors.check_in" class="error-message">{{ errors.check_in }}</div>
+                        <div v-if="errors.check_in" class="error-message">{{ getErrorMessage(errors.check_in) }}</div>
                     </div>
 
                     <div class="form-group">
@@ -114,7 +114,7 @@
                             @blur="onTimeBlur('check_out')"
                             @focus="onTimeFocus('check_out')"
                         />
-                        <div v-if="errors.check_out" class="error-message">{{ errors.check_out }}</div>
+                        <div v-if="errors.check_out" class="error-message">{{ getErrorMessage(errors.check_out) }}</div>
                     </div>
                 </div>
 
@@ -134,8 +134,8 @@
                                     @focus="onRestFocus('rest_start', index)"
                                     @blur="onRestBlur('rest_start', index)"
                                 />
-                                <div v-if="errors[`rests.${index}.rest_start`]" class="invalid-feedback">
-                                    {{ errors[`rests.${index}.rest_start`][0] }}
+                                <div v-if="errors[`rests.${index}.rest_start`]" class="error-message">
+                                    {{ getErrorMessage(errors[`rests.${index}.rest_start`]) }}
                                 </div>
                             </div>
                             <div class="form-group">
@@ -148,8 +148,8 @@
                                     @focus="onRestFocus('rest_end', index)"
                                     @blur="onRestBlur('rest_end', index)"
                                 />
-                                <div v-if="errors[`rests.${index}.rest_end`]" class="invalid-feedback">
-                                    {{ errors[`rests.${index}.rest_end`][0] }}
+                                <div v-if="errors[`rests.${index}.rest_end`]" class="error-message">
+                                    {{ getErrorMessage(errors[`rests.${index}.rest_end`]) }}
                                 </div>
                             </div>
                             <button
@@ -187,7 +187,7 @@
                         rows="4"
                         maxlength="500"
                     ></textarea>
-                    <div v-if="errors.reason" class="error-message">{{ errors.reason }}</div>
+                    <div v-if="errors.reason" class="error-message">{{ getErrorMessage(errors.reason) }}</div>
                     <div v-if="!hasPendingRequest" class="char-count">{{ form.reason.length }}/500</div>
                 </div>
 
@@ -408,6 +408,17 @@ export default {
                 this.isSubmitting = true
                 this.errors = {}
 
+                // フロントエンドバリデーション
+                const validationErrors = this.validateForm()
+                if (Object.keys(validationErrors).length > 0) {
+                    this.errors = validationErrors
+                    this.isSubmitting = false
+                    if (this.$toast) {
+                        this.$toast.error('入力内容に誤りがあります')
+                    }
+                    return
+                }
+
                 const requestData = {
                     date: this.form.date,
                     check_in: this.form.check_in,
@@ -442,10 +453,80 @@ export default {
                 console.error('申請提出エラー:', error)
 
                 if (error.response?.data?.errors) {
-                    this.errors = error.response.data.errors
+                    // バリデーションエラーを日本語化
+                    const apiErrors = error.response.data.errors
+                    this.errors = {}
+                    
+                    for (const [field, messages] of Object.entries(apiErrors)) {
+                        const translatedMessages = messages.map(msg => {
+                            // 日付関連
+                            if (msg.includes('date') && msg.includes('required')) {
+                                return '対象日は必須項目です'
+                            }
+                            if (msg.includes('date') && msg.includes('valid')) {
+                                return '有効な日付を入力してください'
+                            }
+                            if (msg.includes('date') && msg.includes('future')) {
+                                return '未来の日付は選択できません'
+                            }
+                            
+                            // 時刻関連
+                            if (msg.includes('check_in') && msg.includes('required')) {
+                                return '出勤時刻は必須項目です'
+                            }
+                            if (msg.includes('check_in') && msg.includes('format')) {
+                                return '出勤時刻はHH:MM形式で入力してください'
+                            }
+                            if (msg.includes('check_out') && msg.includes('after')) {
+                                return '退勤時刻は出勤時刻より後の時刻を入力してください'
+                            }
+                            if (msg.includes('check_out') && msg.includes('format')) {
+                                return '退勤時刻はHH:MM形式で入力してください'
+                            }
+                            
+                            // 休憩時間関連
+                            if (msg.includes('rest_start') && msg.includes('required')) {
+                                return '休憩開始時刻は必須項目です'
+                            }
+                            if (msg.includes('rest_end') && msg.includes('required')) {
+                                return '休憩終了時刻は必須項目です'
+                            }
+                            if (msg.includes('rest_end') && msg.includes('after')) {
+                                return '休憩終了時刻は休憩開始時刻より後の時刻を入力してください'
+                            }
+                            
+                            // 理由関連
+                            if (msg.includes('reason') && msg.includes('required')) {
+                                return '申請理由は必須項目です'
+                            }
+                            if (msg.includes('reason') && msg.includes('max')) {
+                                return '申請理由は500文字以内で入力してください'
+                            }
+                            
+                            // その他
+                            if (msg.includes('already exists') || msg.includes('pending request')) {
+                                return 'この日付は既に申請中です'
+                            }
+                            
+                            return msg
+                        })
+                        
+                        this.errors[field] = translatedMessages
+                    }
                 }
 
-                const message = error.response?.data?.message || '申請の提出に失敗しました'
+                let message = '申請の提出に失敗しました'
+                if (error.response?.data?.message) {
+                    const apiMessage = error.response.data.message
+                    if (apiMessage.includes('already exists') || apiMessage.includes('pending request')) {
+                        message = 'この日付は既に申請中です'
+                    } else if (apiMessage.includes('not found')) {
+                        message = '対象の勤怠データが見つかりません'
+                    } else {
+                        message = apiMessage
+                    }
+                }
+                
                 if (this.$toast) {
                     this.$toast.error(message)
                 }
@@ -487,6 +568,154 @@ export default {
             }
             this.currentAttendance = null
             this.errors = {}
+        },
+
+        validateForm() {
+            const errors = {}
+
+            // 対象日のチェック
+            if (!this.form.date) {
+                errors.date = ['対象日は必須項目です']
+            }
+
+            // 出勤時刻のチェック
+            if (!this.form.check_in) {
+                errors.check_in = ['出勤時刻は必須項目です']
+            }
+
+            // 退勤時刻のチェック（退勤時刻が入力されている場合）
+            if (this.form.check_out && this.form.check_in) {
+                if (this.form.check_out <= this.form.check_in) {
+                    errors.check_out = ['退勤時刻は出勤時刻より後の時刻を入力してください']
+                }
+            }
+
+            // 申請理由のチェック
+            if (!this.form.reason || this.form.reason.trim() === '') {
+                errors.reason = ['申請理由は必須項目です']
+            } else if (this.form.reason.length > 500) {
+                errors.reason = ['申請理由は500文字以内で入力してください']
+            }
+
+            // 休憩時間のチェック
+            this.form.rests.forEach((rest, index) => {
+                // 開始時刻と終了時刻が両方入力されているか、両方空であること
+                const hasStart = rest.rest_start && rest.rest_start.trim() !== ''
+                const hasEnd = rest.rest_end && rest.rest_end.trim() !== ''
+
+                if (hasStart && !hasEnd) {
+                    errors[`rests.${index}.rest_end`] = ['休憩終了時刻は必須項目です']
+                } else if (!hasStart && hasEnd) {
+                    errors[`rests.${index}.rest_start`] = ['休憩開始時刻は必須項目です']
+                } else if (hasStart && hasEnd) {
+                    // 両方入力されている場合は時刻の前後関係をチェック
+                    if (rest.rest_end <= rest.rest_start) {
+                        errors[`rests.${index}.rest_end`] = ['休憩終了時刻は休憩開始時刻より後の時刻を入力してください']
+                    }
+                    
+                    // 休憩時間が勤務時間内に収まっているかチェック
+                    if (this.form.check_in && rest.rest_start < this.form.check_in) {
+                        errors[`rests.${index}.rest_start`] = ['休憩開始時刻は出勤時刻より後の時刻を入力してください']
+                    }
+                    
+                    if (this.form.check_out && rest.rest_start > this.form.check_out) {
+                        errors[`rests.${index}.rest_start`] = ['休憩開始時刻は退勤時刻より前の時刻を入力してください']
+                    }
+                    
+                    if (this.form.check_out && rest.rest_end > this.form.check_out) {
+                        errors[`rests.${index}.rest_end`] = ['休憩終了時刻は退勤時刻より前の時刻を入力してください']
+                    }
+                }
+            })
+
+            return errors
+        },
+
+        getErrorMessage(error) {
+            // エラーが配列の場合は最初のメッセージを取得
+            if (Array.isArray(error)) {
+                return error.length > 0 ? this.translateErrorMessage(error[0]) : ''
+            }
+            // エラーが文字列の場合はそのまま翻訳
+            return this.translateErrorMessage(error)
+        },
+
+        translateErrorMessage(msg) {
+            if (!msg) return ''
+            
+            // 既に日本語の場合はそのまま返す
+            if (/[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uff9f\u4e00-\u9faf\u3400-\u4dbf]/.test(msg)) {
+                return msg
+            }
+            
+            // 英語メッセージを日本語に変換
+            const lowerMsg = msg.toLowerCase()
+            
+            // check_in (出勤時刻)
+            if (lowerMsg.includes('check in') && lowerMsg.includes('required')) {
+                return '出勤時刻は必須項目です'
+            }
+            if (lowerMsg.includes('check in') && lowerMsg.includes('format')) {
+                return '出勤時刻はHH:MM形式で入力してください'
+            }
+            
+            // check_out (退勤時刻)
+            if (lowerMsg.includes('check out') && lowerMsg.includes('required')) {
+                return '退勤時刻は必須項目です'
+            }
+            if (lowerMsg.includes('check out') && (lowerMsg.includes('after') || lowerMsg.includes('greater'))) {
+                return '退勤時刻は出勤時刻より後の時刻を入力してください'
+            }
+            if (lowerMsg.includes('check out') && lowerMsg.includes('format')) {
+                return '退勤時刻はHH:MM形式で入力してください'
+            }
+            
+            // date (日付)
+            if (lowerMsg.includes('date') && lowerMsg.includes('required')) {
+                return '対象日は必須項目です'
+            }
+            if (lowerMsg.includes('date') && (lowerMsg.includes('valid') || lowerMsg.includes('format'))) {
+                return '有効な日付を入力してください'
+            }
+            if (lowerMsg.includes('date') && (lowerMsg.includes('future') || lowerMsg.includes('before'))) {
+                return '未来の日付は選択できません'
+            }
+            
+            // reason (理由)
+            if (lowerMsg.includes('reason') && lowerMsg.includes('required')) {
+                return '申請理由は必須項目です'
+            }
+            if (lowerMsg.includes('reason') && lowerMsg.includes('max')) {
+                return '申請理由は500文字以内で入力してください'
+            }
+            
+            // rest (休憩)
+            if (lowerMsg.includes('rest') && lowerMsg.includes('start') && lowerMsg.includes('required')) {
+                return '休憩開始時刻は必須項目です'
+            }
+            if (lowerMsg.includes('rest') && lowerMsg.includes('end') && lowerMsg.includes('required')) {
+                return '休憩終了時刻は必須項目です'
+            }
+            if (lowerMsg.includes('rest') && lowerMsg.includes('end') && (lowerMsg.includes('after') || lowerMsg.includes('greater'))) {
+                return '休憩終了時刻は休憩開始時刻より後の時刻を入力してください'
+            }
+            if (lowerMsg.includes('rest') && lowerMsg.includes('start') && lowerMsg.includes('check in')) {
+                return '休憩開始時刻は出勤時刻より後の時刻を入力してください'
+            }
+            if (lowerMsg.includes('rest') && lowerMsg.includes('start') && lowerMsg.includes('check out')) {
+                return '休憩開始時刻は退勤時刻より前の時刻を入力してください'
+            }
+            if (lowerMsg.includes('rest') && lowerMsg.includes('end') && lowerMsg.includes('check out')) {
+                return '休憩終了時刻は退勤時刻より前の時刻を入力してください'
+            }
+            
+            // その他
+            if (lowerMsg.includes('already') || lowerMsg.includes('pending')) {
+                return 'この日付は既に申請中です'
+            }
+            
+            // 翻訳できない場合は元のメッセージを返す
+            return msg
         },
 
     formatTime(timeString) {

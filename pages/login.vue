@@ -9,51 +9,71 @@
       {{ errorMessage }}
     </div>
     
-    <form @submit.prevent="handleLogin">
-      <div class="auth__form-container">
-        <!-- メールアドレス -->
-        <div class="auth__field-group">
-          <label for="email" class="auth__field-label">
-            メールアドレス
-          </label>
-          <input
-            id="email"
-            v-model="form.email"
-            type="email"
-            required
-            class="auth__field-input"
-            placeholder="email@example.com"
-          />
+    <ValidationObserver v-slot="{ handleSubmit, invalid }">
+      <form @submit.prevent="handleSubmit(handleLogin)">
+        <div class="auth__form-container">
+          <!-- メールアドレス -->
+          <div class="auth__field-group">
+            <label for="email" class="auth__field-label">
+              メールアドレス
+            </label>
+            <ValidationProvider
+              v-slot="{ errors }"
+              name="email"
+              rules="required|email"
+            >
+              <input
+                id="email"
+                v-model="form.email"
+                type="email"
+                class="auth__field-input"
+                :class="{ 'auth__field-input--error': errors.length > 0 }"
+                placeholder="email@example.com"
+              />
+              <span v-if="errors.length > 0" class="auth__field-error">
+                {{ errors[0] }}
+              </span>
+            </ValidationProvider>
+          </div>
+          
+          <!-- パスワード -->
+          <div class="auth__field-group">
+            <label for="password" class="auth__field-label">
+              パスワード
+            </label>
+            <ValidationProvider
+              v-slot="{ errors }"
+              name="password"
+              rules="required|min:8"
+            >
+              <input
+                id="password"
+                v-model="form.password"
+                type="password"
+                class="auth__field-input"
+                :class="{ 'auth__field-input--error': errors.length > 0 }"
+                placeholder="パスワード"
+              />
+              <span v-if="errors.length > 0" class="auth__field-error">
+                {{ errors[0] }}
+              </span>
+            </ValidationProvider>
+          </div>
+          
+          <!-- ログインボタン -->
+          <div>
+            <button
+              type="submit"
+              :disabled="$store.getters['auth/isLoading'] || invalid"
+              class="auth__btn auth__btn--primary"
+            >
+              <span v-if="$store.getters['auth/isLoading']">ログイン中...</span>
+              <span v-else>ログイン</span>
+            </button>
+          </div>
         </div>
-        
-        <!-- パスワード -->
-        <div class="auth__field-group">
-          <label for="password" class="auth__field-label">
-            パスワード
-          </label>
-          <input
-            id="password"
-            v-model="form.password"
-            type="password"
-            required
-            class="auth__field-input"
-            placeholder="パスワード"
-          />
-        </div>
-        
-        <!-- ログインボタン -->
-        <div>
-          <button
-            type="submit"
-            :disabled="$store.getters['auth/isLoading']"
-            class="auth__btn auth__btn--primary"
-          >
-            <span v-if="$store.getters['auth/isLoading']">ログイン中...</span>
-            <span v-else>ログイン</span>
-          </button>
-        </div>
-      </div>
-    </form>
+      </form>
+    </ValidationObserver>
     
     <!-- 登録リンク -->
     <div class="auth__link-section">
@@ -63,15 +83,6 @@
           新規登録
         </NuxtLink>
       </p>
-    </div>
-    
-    <!-- デモ用認証情報 -->
-    <div class="login__demo-section">
-      <h3 class="login__demo-title">デモ用ログイン情報</h3>
-      <div class="login__demo-content">
-        <p><strong>一般ユーザー:</strong> user@example.com / password</p>
-        <p><strong>管理者:</strong> admin@example.com / password</p>
-      </div>
     </div>
   </div>
 </template>
@@ -119,32 +130,4 @@ export default {
 
 <style scoped>
 @import '@/assets/css/pages/auth.css';
-
-/* Login-specific styles */
-.login__demo-section {
-  margin-top: 1.5rem;
-  padding: 1rem;
-  background-color: #eff6ff;
-  border: 1px solid #bfdbfe;
-  border-radius: 0.375rem;
-}
-
-.login__demo-title {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #1e40af;
-  margin-bottom: 0.5rem;
-}
-
-.login__demo-content {
-  font-size: 0.75rem;
-  color: #1d4ed8;
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.login__demo-content p {
-  margin: 0;
-}
 </style>
