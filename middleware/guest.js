@@ -1,7 +1,7 @@
-export default function ({ store, redirect }) {
-  // 認証状態の復元
+export default async function ({ store, redirect }) {
+  // 認証状態の復元（完了を待つ）
   if (process.client && !store.getters['auth/isAuthenticated']) {
-    store.dispatch('auth/restoreAuth')
+    await store.dispatch('auth/restoreAuth')
   }
   
   // 認証済みの場合はダッシュボードにリダイレクト

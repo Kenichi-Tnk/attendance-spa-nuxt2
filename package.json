@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "nuxt",
+    "dev": "NODE_OPTIONS='--no-deprecation' nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
     "generate": "nuxt generate"
@@ -19,6 +19,7 @@
     "webpack": "^4.46.0"
   },
   "devDependencies": {
+    "@nuxtjs/proxy": "^2.1.0",
     "@nuxtjs/tailwindcss": "^4.2.1",
     "postcss": "^8.4.4"
   }

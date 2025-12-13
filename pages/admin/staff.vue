@@ -53,17 +53,6 @@
       <div class="admin-staff__content">
         <div class="admin-staff__header">
           <h2>スタッフ一覧</h2>
-          <div class="admin-staff__actions">
-            <button
-              type="button"
-              @click="showCreateModal = true"
-              class="admin-staff__btn admin-staff__btn--primary"
-              aria-label="スタッフを招待"
-            >
-              <i class="fas fa-user-plus"></i>
-              スタッフを招待
-            </button>
-          </div>
         </div>
 
         <!-- 検索・フィルター -->
@@ -179,84 +168,6 @@
         </div>
       </div>
     </div>
-
-    <!-- 新規スタッフ作成モーダル -->
-    <div v-if="showCreateModal" class="admin-staff__modal-overlay" @click="closeCreateModal">
-      <div class="admin-staff__modal" @click.stop>
-        <div class="admin-staff__modal-header">
-          <h3>スタッフ招待</h3>
-          <button @click="closeCreateModal" class="admin-staff__modal-close">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-        
-        <div class="admin-staff__modal-description">
-          <p>新しいスタッフを招待します。招待メールが送信され、スタッフは初回ログイン時にパスワードを設定します。</p>
-        </div>
-        
-        <form @submit.prevent="createStaff" class="admin-staff__form">
-          <div class="admin-staff__form-group">
-            <label for="name" class="admin-staff__label">名前 *</label>
-            <input
-              id="name"
-              v-model="newStaff.name"
-              type="text"
-              required
-              class="admin-staff__input"
-              placeholder="スタッフの名前を入力"
-            />
-          </div>
-          
-          <div class="admin-staff__form-group">
-            <label for="email" class="admin-staff__label">メールアドレス *</label>
-            <input
-              id="email"
-              v-model="newStaff.email"
-              type="email"
-              required
-              class="admin-staff__input"
-              placeholder="example@company.com"
-            />
-            <small class="admin-staff__help-text">
-              このメールアドレスに招待メールが送信されます
-            </small>
-          </div>
-          
-          <div class="admin-staff__form-group">
-            <label for="role" class="admin-staff__label">役割 *</label>
-            <select
-              id="role"
-              v-model="newStaff.role"
-              required
-              class="admin-staff__input"
-            >
-              <option value="">選択してください</option>
-              <option value="user">一般ユーザー</option>
-              <option value="admin">管理者</option>
-            </select>
-          </div>
-          
-          <div class="admin-staff__form-actions">
-            <button
-              type="button"
-              @click="closeCreateModal"
-              class="admin-staff__btn admin-staff__btn--secondary"
-            >
-              キャンセル
-            </button>
-            <button
-              type="submit"
-              :disabled="isCreating"
-              class="admin-staff__btn admin-staff__btn--primary"
-            >
-              <i v-if="isCreating" class="fas fa-spinner fa-spin"></i>
-              <i v-else class="fas fa-paper-plane"></i>
-              {{ isCreating ? '招待中...' : '招待を送信' }}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -284,14 +195,7 @@ export default {
       searchQuery: '',
       roleFilter: '',
       verifiedFilter: '',
-      searchTimeout: null,
-      showCreateModal: false,
-      isCreating: false,
-      newStaff: {
-        name: '',
-        email: '',
-        role: ''
-      }
+      searchTimeout: null
     }
   },
 
@@ -420,50 +324,6 @@ export default {
     formatDate(dateString) {
       if (!dateString) return '未設定'
       return new Date(dateString).toLocaleDateString('ja-JP')
-    },
-
-    closeCreateModal() {
-      this.showCreateModal = false
-      this.newStaff = {
-        name: '',
-        email: '',
-        role: ''
-      }
-    },
-
-    async createStaff() {
-      try {
-        this.isCreating = true
-        
-        await this.$axios.post('/api/staff', this.newStaff, {
-          headers: {
-            Authorization: `Bearer ${this.$store.getters['auth/token']}`
-          }
-        })
-
-        if (this.$toast) {
-          this.$toast.success('スタッフ招待を送信しました')
-        } else {
-          alert('スタッフ招待を送信しました')
-        }
-        
-        this.closeCreateModal()
-        await Promise.all([
-          this.fetchStaffList(),
-          this.fetchStatistics()
-        ])
-      } catch (error) {
-        console.error('スタッフ作成エラー:', error)
-        const errorMessage = error.response?.data?.message || 'スタッフ招待の送信に失敗しました'
-        
-        if (this.$toast) {
-          this.$toast.error(errorMessage)
-        } else {
-          alert(errorMessage)
-        }
-      } finally {
-        this.isCreating = false
-      }
     },
 
     viewStaffDetail(staff) {

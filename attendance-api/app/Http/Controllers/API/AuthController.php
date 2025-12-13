@@ -162,14 +162,14 @@ class AuthController extends Controller
     {
         if ($request->user()->hasVerifiedEmail()) {
             return response()->json([
-                'message' => 'Email already verified'
+                'message' => 'メールアドレスは既に認証済みです'
             ], Response::HTTP_OK);
         }
 
         $request->user()->sendEmailVerificationNotification();
 
         return response()->json([
-            'message' => 'Verification email sent'
+            'message' => '確認メールを送信しました'
         ], Response::HTTP_OK);
     }
 

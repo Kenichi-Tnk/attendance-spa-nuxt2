@@ -165,53 +165,6 @@ class StaffController extends Controller
     }
 
     /**
-     * Invite new staff member (Admin only)
-     * スタッフを招待し、招待メールを送信
-     */
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'role' => 'required|in:user,admin'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'バリデーションエラー',
-                'errors' => $validator->errors()
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        // 仮パスワードで作成（初回ログイン時に変更必須）
-        $temporaryPassword = 'temp_' . uniqid();
-
-        $staff = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($temporaryPassword),
-            'role' => $request->role,
-            'password_change_required' => true, // 初回ログイン時にパスワード変更必須
-            'invited_at' => now() // 招待日時を記録
-        ]);
-
-        // TODO: 招待メール送信機能を実装
-        // $staff->sendInvitationEmail($temporaryPassword);
-
-        return response()->json([
-            'message' => 'スタッフを招待しました。招待メールを送信しました。',
-            'user' => [
-                'id' => $staff->id,
-                'name' => $staff->name,
-                'email' => $staff->email,
-                'role' => $staff->role,
-                'invited_at' => $staff->created_at
-            ],
-            'temporary_password' => $temporaryPassword // 開発用（本番では削除）
-        ], Response::HTTP_CREATED);
-    }
-
-    /**
      * Update staff member (Admin only)
      */
     public function update(Request $request, $id)

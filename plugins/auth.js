@@ -29,6 +29,7 @@ export default function ({ store, $axios }) {
   $axios.onResponse(response => {
     console.log('Response interceptor - Response received:', response.status)
     console.log('Response interceptor - Response time:', new Date().toISOString())
+    console.log('Response interceptor - Response data:', response.data)
     return response
   })
 

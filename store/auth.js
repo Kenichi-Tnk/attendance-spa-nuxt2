@@ -103,7 +103,7 @@ export const actions = {
       
       console.log('Registration response:', response)
       
-      // 登録と同時にログイン
+      // 登録と同時にログイン（メール認証は未完了）
       localStorage.setItem('auth-token', response.token)
       localStorage.setItem('auth-user', JSON.stringify(response.user))
       
@@ -112,7 +112,11 @@ export const actions = {
       commit('SET_USER', response.user)
       commit('SET_TOKEN', response.token)
       
-      return { success: true, message: response.message }
+      return { 
+        success: true, 
+        message: response.message,
+        shouldRedirectToVerify: true // メール認証ページへのリダイレクトフラグ
+      }
     } catch (error) {
       const errorTime = Date.now()
       console.error('Registration error at:', new Date(errorTime).toISOString())
@@ -186,21 +190,40 @@ export const actions = {
     }
   },
   
-  // 認証状態の復元（ページリロード時）
-  restoreAuth({ commit }) {
-    const token = localStorage.getItem('auth-token')
-    const user = localStorage.getItem('auth-user')
-    
-    if (token && user) {
-      try {
+  // 認証状態の復元(ページリロード時)
+  async restoreAuth({ commit, dispatch }) {
+    try {
+      const token = localStorage.getItem('auth-token')
+      const user = localStorage.getItem('auth-user')
+      
+      console.log('restoreAuth - token:', token ? 'exists' : 'null')
+      console.log('restoreAuth - user:', user ? 'exists' : 'null')
+      
+      if (token && user) {
         this.$axios.setToken(token, 'Bearer')
         commit('SET_TOKEN', token)
         commit('SET_USER', JSON.parse(user))
-      } catch (error) {
-        localStorage.removeItem('auth-token')
-        localStorage.removeItem('auth-user')
-        this.$axios.setToken(false)
+        console.log('restoreAuth - Authentication restored from localStorage')
+        
+        // サーバーから最新のユーザー情報を取得
+        try {
+          console.log('restoreAuth - Fetching latest user data from server...')
+          const updatedUser = await dispatch('fetchUser')
+          if (updatedUser) {
+            localStorage.setItem('auth-user', JSON.stringify(updatedUser))
+            console.log('restoreAuth - User data updated from server:', updatedUser.email_verified_at ? 'verified' : 'not verified')
+          }
+        } catch (error) {
+          console.log('restoreAuth - Failed to fetch user from server, using cached data')
+        }
+      } else {
+        console.log('restoreAuth - No stored credentials found')
       }
+    } catch (error) {
+      console.error('restoreAuth - Error:', error)
+      localStorage.removeItem('auth-token')
+      localStorage.removeItem('auth-user')
+      this.$axios.setToken(false)
     }
   },
   
@@ -208,8 +231,17 @@ export const actions = {
   async fetchUser({ commit }) {
     try {
       const response = await this.$axios.$get('/api/user')
-      commit('SET_USER', response.user)
-      return response.user
+      
+      // レスポンスが { user: {...} } または直接ユーザーオブジェクトの場合に対応
+      const user = response?.user || response
+      
+      if (user && user.id) {
+        commit('SET_USER', user)
+        return user
+      } else {
+        console.error('fetchUser - No valid user in response')
+        return null
+      }
     } catch (error) {
       // 認証エラーの場合はログアウト
       if (error.response?.status === 401) {

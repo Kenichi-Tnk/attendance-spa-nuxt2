@@ -6,14 +6,14 @@
           メール認証が必要です
         </h2>
         <p class="auth__subtitle">
-          登録されたメールアドレスに認証リンクを送信しました
+          ご登録ありがとうございます。メールアドレスの認証を完了してください
         </p>
       </div>
 
       <div class="verify-email__actions">
         <div class="verify-email__description">
           <p>
-            認証メールが届いていない場合は、下記ボタンから再送信できます
+            下記のボタンをクリックして、認証メールを送信してください
           </p>
         </div>
 
@@ -24,21 +24,12 @@
             class="auth__btn auth__btn--primary"
           >
             <span v-if="isLoading">送信中...</span>
-            <span v-else>認証メールを再送信</span>
+            <span v-else>確認メールを送信</span>
           </button>
         </div>
 
         <div v-if="message" class="verify-email__message">
           <p :class="message.includes('エラー') ? 'verify-email__message--error' : 'verify-email__message--success'">{{ message }}</p>
-        </div>
-
-        <div class="verify-email__message">
-          <button
-            @click="$store.dispatch('auth/logout')"
-            class="auth__btn--link"
-          >
-            ログアウト
-          </button>
         </div>
       </div>
     </div>
@@ -64,8 +55,7 @@ export default {
         this.isLoading = true
         this.message = ''
 
-        const response = await this.$axios.$post('/email/verification-notification')
-
+        const response = await this.$axios.$post('/api/email/verification-notification')
         this.message = response.message || '認証メールを再送信しました'
       } catch (error) {
         console.error('メール再送信エラー:', error)

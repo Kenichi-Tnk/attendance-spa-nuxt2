@@ -70,7 +70,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware(['admin'])->prefix('staff')->group(function () {
         Route::get('/', [StaffController::class, 'index']); // スタッフ一覧
         Route::get('/statistics', [StaffController::class, 'statistics']); // 統計情報
-        Route::post('/', [StaffController::class, 'store']); // スタッフ新規作成
         Route::put('/{id}', [StaffController::class, 'update']); // スタッフ更新
         Route::delete('/{id}', [StaffController::class, 'destroy']); // スタッフ削除
         Route::post('/{id}/verify-email', [StaffController::class, 'verifyEmail']); // メール認証

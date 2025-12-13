@@ -171,6 +171,14 @@ export default {
         
         if (result.success) {
           this.successMessage = result.message
+          
+          // メール認証ページへリダイレクト
+          if (result.shouldRedirectToVerify) {
+            setTimeout(() => {
+              this.$router.push('/verify-email')
+            }, 1500) // 1.5秒後にリダイレクト（成功メッセージを表示してから）
+          }
+          
           // フォームをクリア
           this.form = {
             name: '',
