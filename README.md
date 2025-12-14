@@ -1,4 +1,4 @@
- 勤怠管理システム SPA (Nuxt.js 2)
+勤怠管理システム SPA (Nuxt.js 2)
 
 ![Nuxt.js](https://img.shields.io/badge/Nuxt.js-2.18.1-00C58E.svg)
 ![Laravel](https://img.shields.io/badge/Laravel-8.x-FF2D20.svg)
@@ -27,8 +27,9 @@ Laravel バックエンド API と連携した勤怠管理システムを提供�
 
 - **認証・認可**
   - ユーザー登録・ログイン
-  - メール認証
-  - JWT による認証管理
+  - メール認証（登録後の自動送信、認証完了後の自動リダイレクト）
+  - Laravel Sanctum による API 認証
+  - 役割ベースのアクセス制御（user / admin）
 - **勤怠管理**
 
   - 出勤・退勤打刻
@@ -59,6 +60,7 @@ Laravel バックエンド API と連携した勤怠管理システムを提供�
 - **Vue.js 2.x** - プログレッシブ JavaScript フレームワーク
 - **Vuex** - Vue.js の状態管理ライブラリ
 - **Axios** - HTTP クライアント
+- **@nuxtjs/proxy** - CORS 回避のためのプロキシモジュール
 - **Tailwind CSS** - ユーティリティファーストの CSS フレームワーク
 
 ### バックエンド
@@ -73,6 +75,7 @@ Laravel バックエンド API と連携した勤怠管理システムを提供�
 - **Node.js LTS**
 - **Composer** - PHP パッケージマネージャー
 - **npm** - Node.js パッケージマネージャー
+- **MailHog** - 開発用 SMTP サーバー（メール認証テスト用）
 
 ## 📋 必要な環境
 
@@ -90,6 +93,7 @@ Laravel バックエンド API と連携した勤怠管理システムを提供�
 
 - **macOS** / **Linux** / **Windows 10/11**
 - **Git** v2.x 以上
+- **MailHog** - メール送信テスト用（オプション）
 - モダンブラウザ (Chrome, Firefox, Safari, Edge)
 
 ## 🔧 セットアップ手順
@@ -177,9 +181,18 @@ composer install
 cp .env.example .env
 ```
 
-`.env` ファイルを編集し、データベース接続情報を設定：
+`.env` ファイルを編集し、データベース接続情報とメール設定を行います：
 
 ```env
+# アプリケーション設定
+APP_NAME="Attendance SPA"
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://localhost:8000
+FRONTEND_URL=http://localhost:3000
+
+# データベース設定
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
@@ -187,9 +200,15 @@ DB_DATABASE=attendance_spa
 DB_USERNAME=your_username
 DB_PASSWORD=your_password
 
-APP_KEY=
-JWT_SECRET=your_jwt_secret
-APP_URL=http://localhost:8000
+# メール設定（MailHog使用）
+MAIL_MAILER=smtp
+MAIL_HOST=127.0.0.1
+MAIL_PORT=1025
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=null
+MAIL_FROM_ADDRESS="noreply@attendance-spa.test"
+MAIL_FROM_NAME="${APP_NAME}"
 ```
 
 #### 2.3. アプリケーションキーの生成
@@ -211,7 +230,45 @@ php artisan migrate
 php artisan db:seed
 ```
 
-#### 2.5. Laravel 開発サーバーの起動
+#### 2.5. MailHog のセットアップ（メール認証テスト用）
+
+MailHog は開発環境でメール送信をテストするためのツールです。
+
+**macOS (Homebrew)**:
+
+```bash
+brew install mailhog
+mailhog
+# SMTP: localhost:1025
+# Web UI: http://localhost:8025
+```
+
+**Linux**:
+
+```bash
+# バイナリをダウンロード
+wget https://github.com/mailhog/MailHog/releases/download/v1.0.1/MailHog_linux_amd64
+chmod +x MailHog_linux_amd64
+sudo mv MailHog_linux_amd64 /usr/local/bin/mailhog
+
+# 起動
+mailhog
+```
+
+**Windows**:
+
+- [MailHog Releases](https://github.com/mailhog/MailHog/releases) からダウンロード
+- `MailHog.exe` を実行
+
+**Docker を使用する場合**:
+
+```bash
+docker run -d -p 1025:1025 -p 8025:8025 mailhog/mailhog
+```
+
+メール受信確認: http://localhost:8025 で Web UI にアクセス
+
+#### 2.6. Laravel 開発サーバーの起動
 
 ```bash
 php artisan serve
@@ -258,23 +315,63 @@ npm run dev
 
 アプリケーションが http://localhost:3000 で起動します。
 
-### 4. テスト用アカウント（オプション）
+### 4. テスト用アカウントの作成（開発環境のみ）
 
-システムをすぐにテストしたい場合は、以下のシーダーを実行してテストデータを作成できます：
+開発・テスト用のユーザーアカウントをシーダーで作成できます：
 
 ```bash
 cd attendance-api
-php artisan db:seed --class=UserSeeder
+php artisan db:seed --class=DevelopmentSeeder
 ```
 
-**テスト用アカウント**:
+**作成されるアカウント**:
 
-- **一般ユーザー**:
-  - メール: `attendance-test@example.com`
-  - パスワード: `password123`
-- **管理者ユーザー**:
-  - メール: `admin@example.com`
-  - パスワード: `password123`
+| 用途                   | メールアドレス                | パスワード | 役割         | メール認証  |
+| ---------------------- | ----------------------------- | ---------- | ------------ | ----------- |
+| **勤怠機能テスト用**   | `admin@test.local`            | `password` | 管理者       | ✅ 認証済み |
+| **勤怠機能テスト用**   | `user@test.local`             | `password` | 一般ユーザー | ✅ 認証済み |
+| **メール認証テスト用** | `unverified-admin@test.local` | `password` | 管理者       | ❌ 未認証   |
+| **メール認証テスト用** | `unverified-user@test.local`  | `password` | 一般ユーザー | ❌ 未認証   |
+
+**用途別の使い分け**:
+
+1. **勤怠機能をすぐにテストしたい場合**
+
+   - `admin@test.local` または `user@test.local` でログイン
+   - メール認証済みなので、すぐに全機能が使えます
+
+2. **メール認証フローをテストしたい場合**
+   - `unverified-admin@test.local` または `unverified-user@test.local` でログイン
+   - メール認証画面に遷移するので、認証フロー全体をテストできます
+   - MailHog (http://localhost:8025) で認証メールを確認
+
+**⚠️ 重要な注意事項**:
+
+- これらのアカウントは**開発環境専用**です
+- シーダーは本番環境では実行できないよう保護されています
+- 本番環境では必ず安全なパスワードで新規アカウントを作成してください
+
+**手動でユーザーを作成する場合**:
+
+シーダーを使わずに手動でアカウントを作成することもできます：
+
+1. ブラウザで http://localhost:3000 にアクセス
+2. 「新規登録」からアカウントを作成
+3. MailHog (http://localhost:8025) で認証メールを確認
+4. メール内のリンクをクリックしてメール認証を完了
+
+管理者権限の付与（必要な場合）:
+
+```bash
+cd attendance-api
+php artisan tinker
+
+# Tinker コンソールで実行
+$user = \App\Models\User::where('email', 'your-email@example.com')->first();
+$user->role = 'admin';
+$user->save();
+exit
+```
 
 ## 📁 プロジェクト構成
 
@@ -294,6 +391,8 @@ attendance-spa-nuxt2/
 ├── assets/                     # コンパイル前アセット
 │   └── css/                   # カスタム CSS ファイル
 ├── components/                # Vue コンポーネント
+├── docs/                      # ドキュメント
+│   └── er-diagram.drawio     # ER図 (Draw.io形式)
 ├── layouts/                   # レイアウトファイル
 ├── middleware/               # Nuxt.js ミドルウェア
 ├── pages/                    # ページコンポーネント（自動ルーティング）
@@ -327,10 +426,12 @@ attendance-spa-nuxt2/
 ### 認証エンドポイント
 
 ```
-POST /api/register          # ユーザー登録
-POST /api/login            # ログイン
-GET  /api/user             # 認証済みユーザー情報取得
-POST /api/logout           # ログアウト
+POST /api/register                          # ユーザー登録
+POST /api/login                            # ログイン
+GET  /api/user                             # 認証済みユーザー情報取得
+POST /api/logout                           # ログアウト
+POST /api/email/verification-notification  # 認証メール送信
+GET  /api/email/verify/{id}/{hash}         # メール認証実行
 ```
 
 ### 勤怠管理エンドポイント
@@ -353,7 +454,44 @@ POST   /api/correction-requests/{id}/approve  # 承認 (管理者のみ)
 POST   /api/correction-requests/{id}/reject   # 却下 (管理者のみ)
 ```
 
-## 💻 使用方法
+## � データベース構造
+
+### ER 図
+
+データベースのエンティティ関連図は `docs/er-diagram.drawio` にあります。
+
+**確認方法**:
+
+1. [Draw.io](https://app.diagrams.net/) をブラウザで開く
+2. 「Open Existing Diagram」を選択
+3. `docs/er-diagram.drawio` ファイルを開く
+
+### テーブル一覧
+
+| テーブル名                   | 説明                       | 主要カラム                                       |
+| ---------------------------- | -------------------------- | ------------------------------------------------ |
+| **users**                    | ユーザー情報               | id, name, email, role, email_verified_at         |
+| **attendances**              | 勤怠記録                   | id, user_id, date, check_in, check_out           |
+| **rests**                    | 休憩時間                   | id, attendance_id, rest_start, rest_end          |
+| **attendance_corrects**      | 勤怠修正申請               | id, user_id, date, status, reason, reject_reason |
+| **attendance_correct_rests** | 修正申請の休憩時間         | id, attendance_correct_id, rest_start, rest_end  |
+| **personal_access_tokens**   | API 認証トークン (Sanctum) | id, tokenable_type, tokenable_id, token          |
+
+### 主要なリレーション
+
+- `users` → `attendances` (1:多)
+- `attendances` → `rests` (1:多)
+- `users` → `attendance_corrects` (1:多)
+- `attendance_corrects` → `attendance_correct_rests` (1:多)
+
+### 制約
+
+- `attendances`: UNIQUE(user_id, date) - 1 ユーザー 1 日に 1 レコードのみ
+- `users.email`: UNIQUE - メールアドレスは一意
+- `users.role`: ENUM('user', 'admin') - ロールは 2 種類
+- `attendance_corrects.status`: ENUM('pending', 'approved', 'rejected')
+
+## �💻 使用方法
 
 ### 1. アプリケーションへのアクセス
 
@@ -469,9 +607,22 @@ git push origin develop             # プッシュ
 
 **解決方法**:
 
-- Laravel API サーバーが正常に起動しているか確認
-- `attendance-api/config/cors.php` の設定を確認
-- ブラウザのキャッシュをクリア
+このプロジェクトでは **@nuxtjs/proxy** を使用して CORS 問題を回避しています。
+
+- Laravel API サーバーが正常に起動しているか確認 (`http://localhost:8000`)
+- Nuxt.js サーバーが正常に起動しているか確認 (`http://localhost:3000`)
+- `nuxt.config.js` のプロキシ設定を確認:
+  ```javascript
+  proxy: {
+    '/api/': {
+      target: 'http://localhost:8000',
+      pathRewrite: { '^/api/': '/api/' },
+      changeOrigin: false,
+    }
+  }
+  ```
+- ブラウザのキャッシュをクリアして再読み込み
+- 両方のサーバーを再起動
 
 #### 2. 認証エラー (419 CSRF Token Mismatch)
 
