@@ -103,7 +103,7 @@ Laravel バックエンド API と連携した勤怠管理システムを提供�
 #### 1. リポジトリのクローン
 
 ```bash
-git clone <repository-url>
+git clone git@github.com:Kenichi-Tnk/attendance-spa-nuxt2.git
 cd attendance-spa-nuxt2
 ```
 
