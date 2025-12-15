@@ -458,7 +458,7 @@ POST   /api/correction-requests/{id}/reject   # 却下 (管理者のみ)
 
 ### ER 図
 
-データベースのエンティティ関連図は `docs/er-diagram.drawio` にあります。
+![ER図](docs/er-diagram.svg)
 
 **確認方法**:
 
