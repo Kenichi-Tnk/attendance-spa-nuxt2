@@ -460,11 +460,6 @@ POST   /api/correction-requests/{id}/reject   # 却下 (管理者のみ)
 
 ![ER図](docs/er-diagram.svg)
 
-**確認方法**:
-
-1. [Draw.io](https://app.diagrams.net/) をブラウザで開く
-2. 「Open Existing Diagram」を選択
-3. `docs/er-diagram.drawio` ファイルを開く
 
 ### テーブル一覧
 
