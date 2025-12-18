@@ -1,0 +1,192 @@
+/* 統計カードコンテナ */
+.stat-card {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 1.5rem;
+    transition: all 0.2s ease-in-out;
+}
+
+/* ボーダーバリエーション */
+.stat-card--border-left {
+    border-left: 4px solid;
+}
+
+.stat-card--border-top {
+    border-top: 4px solid;
+}
+
+/* カラーバリエーション（ボーダー） */
+.stat-card--blue { border-color: #3b82f6; }
+.stat-card--green { border-color: #10b981; }
+.stat-card--yellow { border-color: #f59e0b; }
+.stat-card--red { border-color: #ef4444; }
+.stat-card--purple { border-color: #8b5cf6; }
+.stat-card--gray { border-color: #6b7280; }
+.stat-card--indigo { border-color: #6366f1; }
+
+/* インタラクション状態 */
+.stat-card--clickable {
+    cursor: pointer;
+}
+
+.stat-card--clickable:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.stat-card--loading {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: .5;
+    }
+}
+
+/* メインコンテンツ */
+.stat-card__content {
+    display: flex;
+    align-items: center;
+}
+
+/* アイコンコンテナ */
+.stat-card__icon-container {
+    flex-shrink: 0;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin-right: 1rem;
+}
+
+/* アイコンカラーバリエーション */
+.stat-card__icon-container--blue {
+    background-color: #dbeafe;
+    color: #2563eb;
+}
+
+.stat-card__icon-container--green {
+    background-color: #d1fae5;
+    color: #059669;
+}
+
+.stat-card__icon-container--yellow {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.stat-card__icon-container--red {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+.stat-card__icon-container--purple {
+    background-color: #ede9fe;
+    color: #7c3aed;
+}
+
+.stat-card__icon-container--gray {
+    background-color: #f3f4f6;
+    color: #4b5563;
+}
+
+.stat-card__icon-container--indigo {
+    background-color: #e0e7ff;
+    color: #4f46e5;
+}
+
+.stat-card__icon {
+    font-size: 1.5rem;
+}
+
+/* データ部分 */
+.stat-card__data {
+    flex: 1;
+    min-width: 0;
+}
+
+.stat-card__value-container {
+    display: flex;
+    align-items: baseline;
+}
+
+.stat-card__value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.stat-card__value--gray {
+    color: #1f2937;
+}
+
+.stat-card__value--normal {
+    color: #111827;
+}
+
+.stat-card__unit {
+    margin-left: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.stat-card__label {
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin-top: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 変化量 */
+.stat-card__change {
+    display: flex;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.stat-card__change-icon {
+    font-size: 0.75rem;
+    margin-right: 0.25rem;
+}
+
+.stat-card__change-value {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.stat-card__change-value--positive {
+    color: #059669;
+}
+
+.stat-card__change-value--negative {
+    color: #dc2626;
+}
+
+.stat-card__change-value--neutral {
+    color: #4b5563;
+}
+
+.stat-card__change-period {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-left: 0.25rem;
+}
+
+/* 追加コンテンツ */
+.stat-card__extra {
+    flex-shrink: 0;
+    margin-left: 1rem;
+}
+
+/* ボトムコンテンツ */
+.stat-card__bottom {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f3f4f6;
+}

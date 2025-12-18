@@ -24,10 +24,15 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
+    '@/assets/css/layouts/auth.css',
+    '@/assets/css/layouts/default.css',
+    '@/assets/css/components/TimeClock.css'
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    { src: '~/plugins/auth.js', mode: 'client' },
+    { src: '~/plugins/vee-validate.js', mode: 'client' }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -43,12 +48,30 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    '@nuxtjs/proxy',
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: process.env.API_BASE_URL || 'http://localhost:8000/api',
+    // プロキシ経由でAPIにアクセス（CORS回避）
+    proxy: true,
+    timeout: 10000,
+    retry: { retries: 0 },
+    credentials: true,
+  },
+
+  // プロキシ設定
+  proxy: {
+    '/api/': {
+      target: 'http://localhost:8000',
+      pathRewrite: { '^/api/': '/api/' },
+      changeOrigin: false,
+    }
+  },
+
+  // Public runtime configuration
+  publicRuntimeConfig: {
+    dev: process.env.NODE_ENV === 'development'
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

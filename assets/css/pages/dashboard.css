@@ -1,0 +1,304 @@
+/* Dashboard Page Styles */
+
+/* =======================
+   Container & Layout
+   ======================= */
+.dashboard__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.dashboard__header {
+  margin-bottom: 2rem;
+}
+
+.dashboard__title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.dashboard__subtitle {
+  color: #4b5563;
+  margin-top: 0.5rem;
+}
+
+/* =======================
+   Clock-in Section
+   ======================= */
+.dashboard__clock-section {
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.dashboard__clock-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.dashboard__clock-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .dashboard__clock-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.dashboard__clock-button-container {
+  text-align: center;
+}
+
+.dashboard__clock-in-btn {
+  width: 100%;
+  background-color: #2563eb;
+  color: #ffffff;
+  font-weight: 700;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  font-size: 1.125rem;
+  transition: background-color 0.15s ease-in-out;
+  border: none;
+  cursor: pointer;
+}
+
+.dashboard__clock-in-btn:hover:not(:disabled) {
+  background-color: #1d4ed8;
+}
+
+.dashboard__clock-in-btn:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.dashboard__clock-out-btn {
+  width: 100%;
+  background-color: #dc2626;
+  color: #ffffff;
+  font-weight: 700;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  font-size: 1.125rem;
+  transition: background-color 0.15s ease-in-out;
+  border: none;
+  cursor: pointer;
+}
+
+.dashboard__clock-out-btn:hover:not(:disabled) {
+  background-color: #b91c1c;
+}
+
+.dashboard__clock-out-btn:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.dashboard__clock-help-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}
+
+/* =======================
+   Status Section
+   ======================= */
+.dashboard__status-section {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+}
+
+.dashboard__status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dashboard__status-label {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.dashboard__status-working {
+  color: #059669;
+  font-weight: 600;
+}
+
+.dashboard__status-not-working {
+  color: #4b5563;
+}
+
+.dashboard__start-time {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.dashboard__start-time-value {
+  font-weight: 600;
+}
+
+/* =======================
+   Quick Actions Grid
+   ======================= */
+.dashboard__actions-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .dashboard__actions-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.dashboard__action-card {
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+  transition: box-shadow 0.15s ease-in-out;
+  text-decoration: none;
+  color: inherit;
+}
+
+.dashboard__action-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  text-decoration: none;
+  color: inherit;
+}
+
+.dashboard__action-card--attendance {
+  border-left: 4px solid #3b82f6;
+}
+
+.dashboard__action-card--correction {
+  border-left: 4px solid #eab308;
+}
+
+.dashboard__action-card--requests {
+  border-left: 4px solid #10b981;
+}
+
+.dashboard__action-content {
+  display: flex;
+  align-items: center;
+}
+
+.dashboard__action-icon {
+  font-size: 2rem;
+  margin-right: 1rem;
+}
+
+.dashboard__action-icon--attendance {
+  color: #3b82f6;
+}
+
+.dashboard__action-icon--correction {
+  color: #eab308;
+}
+
+.dashboard__action-icon--requests {
+  color: #10b981;
+}
+
+.dashboard__action-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.dashboard__action-desc {
+  color: #4b5563;
+  font-size: 0.875rem;
+}
+
+/* =======================
+   Monthly Summary Section
+   ======================= */
+.dashboard__summary-section {
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+}
+
+.dashboard__summary-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.dashboard__summary-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .dashboard__summary-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.dashboard__stat-card {
+  text-align: center;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.dashboard__stat-card--work-days {
+  background-color: #dbeafe;
+}
+
+.dashboard__stat-card--total-hours {
+  background-color: #d1fae5;
+}
+
+.dashboard__stat-card--average-hours {
+  background-color: #fef3c7;
+}
+
+.dashboard__stat-card--pending {
+  background-color: #fee2e2;
+}
+
+.dashboard__stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.dashboard__stat-value--work-days {
+  color: #2563eb;
+}
+
+.dashboard__stat-value--total-hours {
+  color: #059669;
+}
+
+.dashboard__stat-value--average-hours {
+  color: #d97706;
+}
+
+.dashboard__stat-value--pending {
+  color: #dc2626;
+}
+
+.dashboard__stat-label {
+  font-size: 0.875rem;
+  color: #4b5563;
+}

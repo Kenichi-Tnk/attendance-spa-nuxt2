@@ -1,0 +1,81 @@
+/* ページヘッダーコンテナ */
+.page-header {
+    margin-bottom: 2rem;
+}
+
+/* パンくずリスト */
+.page-header__breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 1rem;
+}
+
+.page-header__breadcrumb-link {
+    color: #6b7280;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+.page-header__breadcrumb-link:hover {
+    color: #2563eb;
+}
+
+.page-header__breadcrumb-current {
+    color: #111827;
+    font-weight: 500;
+}
+
+.page-header__breadcrumb-separator {
+    color: #d1d5db;
+}
+
+/* ヘッダーコンテンツ */
+.page-header__content {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.page-header__main {
+    flex: 1;
+}
+
+.page-header__title-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.page-header__icon {
+    font-size: 1.5rem;
+    margin-right: 0.75rem;
+}
+
+.page-header__title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+.page-header__subtitle {
+    color: #4b5563;
+    margin-top: 0.5rem;
+}
+
+.page-header__info {
+    margin-top: 0.75rem;
+}
+
+.page-header__actions {
+    flex-shrink: 0;
+    margin-left: 1.5rem;
+}
+
+/* 区切り線 */
+.page-header__divider {
+    border-bottom: 1px solid #e5e7eb;
+    margin-top: 1.5rem;
+}

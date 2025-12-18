@@ -1,0 +1,330 @@
+/* 管理者向け補正申請管理ページのスタイル */
+.admin-corrections {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  padding-bottom: 2rem;
+}
+
+.admin-corrections__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* フィルターセクション */
+.admin-corrections__filters {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.admin-corrections__filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 200px;
+}
+
+.admin-corrections__filter-label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.admin-corrections__filter-select,
+.admin-corrections__filter-input {
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.admin-corrections__filter-select:focus,
+.admin-corrections__filter-input:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* 申請一覧 */
+.admin-corrections__list {
+  min-height: 400px;
+}
+
+.admin-corrections__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #6b7280;
+}
+
+.admin-corrections__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #6b7280;
+  text-align: center;
+}
+
+.admin-corrections__empty i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.admin-corrections__grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+}
+
+/* 申請カード */
+.admin-corrections__card {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.admin-corrections__card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.admin-corrections__card--pending {
+  border-color: #fbbf24;
+  background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);
+}
+
+.admin-corrections__card--approved {
+  border-color: #10b981;
+  background: linear-gradient(135deg, #ecfdf5 0%, #ffffff 100%);
+}
+
+.admin-corrections__card--rejected {
+  border-color: #ef4444;
+  background: linear-gradient(135deg, #fef2f2 0%, #ffffff 100%);
+}
+
+/* カードヘッダー */
+.admin-corrections__card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.admin-corrections__card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 0.25rem 0;
+}
+
+.admin-corrections__card-date {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+/* カードボディ */
+.admin-corrections__card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* 時刻変更表示 */
+.admin-corrections__time-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.admin-corrections__time-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-corrections__time-item label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.admin-corrections__time-change {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: #f9fafb;
+  border-radius: 0.5rem;
+}
+
+.admin-corrections__time-original {
+  padding: 0.25rem 0.75rem;
+  background: #fee2e2;
+  color: #dc2626;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-weight: 600;
+}
+
+.admin-corrections__time-corrected {
+  padding: 0.25rem 0.75rem;
+  background: #dcfce7;
+  color: #16a34a;
+  border-radius: 0.25rem;
+  font-family: monospace;
+  font-weight: 600;
+}
+
+.admin-corrections__time-change i {
+  color: #6b7280;
+}
+
+/* 修正理由 */
+.admin-corrections__reason {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-corrections__reason label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.admin-corrections__reason p {
+  padding: 0.75rem;
+  background: #f9fafb;
+  border-radius: 0.5rem;
+  border-left: 4px solid #6366f1;
+  margin: 0;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+/* アクションボタン */
+.admin-corrections__actions {
+  display: flex;
+  gap: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.admin-corrections__btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.admin-corrections__btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-corrections__btn--approve {
+  background: #10b981;
+  color: white;
+}
+
+.admin-corrections__btn--approve:hover:not(:disabled) {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+.admin-corrections__btn--reject {
+  background: #ef4444;
+  color: white;
+}
+
+.admin-corrections__btn--reject:hover:not(:disabled) {
+  background: #dc2626;
+  transform: translateY(-1px);
+}
+
+/* 処理済み情報 */
+.admin-corrections__processed {
+  padding: 0.75rem;
+  background: #f9fafb;
+  border-radius: 0.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.admin-corrections__processed p {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.admin-corrections__processed i {
+  font-size: 1rem;
+}
+
+.admin-corrections__processed-date {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+/* レスポンシブ */
+@media (max-width: 768px) {
+  .admin-corrections__container {
+    padding: 1rem;
+  }
+
+  .admin-corrections__filters {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .admin-corrections__filter-group {
+    min-width: auto;
+  }
+
+  .admin-corrections__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-corrections__actions {
+    flex-direction: column;
+  }
+
+  .admin-corrections__time-change {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-corrections__time-change i {
+    align-self: center;
+    transform: rotate(90deg);
+  }
+}

@@ -1,0 +1,125 @@
+/* コンテナスタイル */
+.spinner-container--overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 50;
+}
+
+.spinner-container--center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner-container--center-block {
+    min-height: 8rem;
+}
+
+.spinner-container--inline {
+    display: inline-flex;
+    align-items: center;
+}
+
+.spinner-container--block {
+    display: flex;
+    flex-direction: column;
+}
+
+/* スピナーのスタイル */
+.spinner {
+    animation: spin 1s linear infinite;
+    border-radius: 50%;
+    border-width: 2px;
+    border-style: solid;
+    border-color: transparent;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* サイズバリエーション */
+.spinner--small {
+    height: 1rem;
+    width: 1rem;
+}
+
+.spinner--medium {
+    height: 2rem;
+    width: 2rem;
+}
+
+.spinner--large {
+    height: 3rem;
+    width: 3rem;
+}
+
+/* カラーバリエーション */
+.spinner--blue {
+    border-top-color: #2563eb;
+    border-right-color: #2563eb;
+}
+
+.spinner--green {
+    border-top-color: #16a34a;
+    border-right-color: #16a34a;
+}
+
+.spinner--yellow {
+    border-top-color: #ca8a04;
+    border-right-color: #ca8a04;
+}
+
+.spinner--red {
+    border-top-color: #dc2626;
+    border-right-color: #dc2626;
+}
+
+.spinner--purple {
+    border-top-color: #9333ea;
+    border-right-color: #9333ea;
+}
+
+.spinner--gray {
+    border-top-color: #4b5563;
+    border-right-color: #4b5563;
+}
+
+.spinner--white {
+    border-top-color: #ffffff;
+    border-right-color: #ffffff;
+}
+
+/* メッセージスタイル */
+.spinner-message {
+    font-size: 0.875rem;
+    color: #4b5563;
+}
+
+.spinner-message--inline {
+    margin-left: 0.75rem;
+}
+
+.spinner-message--block {
+    margin-top: 0.75rem;
+    text-align: center;
+}
+
+.spinner-message--overlay {
+    color: #ffffff;
+}
+
+/* スロットスタイル */
+.spinner-slot {
+    margin-top: 1rem;
+}

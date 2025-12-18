@@ -1,0 +1,163 @@
+/* Admin Dashboard Page Styles */
+
+/* =======================
+   Container & Layout
+   ======================= */
+.admin-dashboard__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+/* =======================
+   Statistics Grid
+   ======================= */
+.admin-dashboard__stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .admin-dashboard__stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* =======================
+   Management Menu Grid
+   ======================= */
+.admin-dashboard__menu-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .admin-dashboard__menu-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .admin-dashboard__menu-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.admin-dashboard__menu-card {
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+  transition: box-shadow 0.15s ease-in-out;
+  text-decoration: none;
+  color: inherit;
+}
+
+.admin-dashboard__menu-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  text-decoration: none;
+  color: inherit;
+}
+
+.admin-dashboard__menu-content {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.admin-dashboard__menu-icon {
+  font-size: 2rem;
+  margin-right: 1rem;
+}
+
+.admin-dashboard__menu-icon--daily {
+  color: #3b82f6;
+}
+
+.admin-dashboard__menu-icon--staff {
+  color: #10b981;
+}
+
+.admin-dashboard__menu-icon--monthly {
+  color: #8b5cf6;
+}
+
+.admin-dashboard__menu-icon--requests {
+  color: #f59e0b;
+}
+
+.admin-dashboard__menu-icon--reports {
+  color: #6366f1;
+}
+
+.admin-dashboard__menu-icon--settings {
+  color: #6b7280;
+}
+
+.admin-dashboard__menu-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.admin-dashboard__menu-desc {
+  color: #4b5563;
+  font-size: 0.875rem;
+}
+
+/* =======================
+   Recent Activity Section
+   ======================= */
+.admin-dashboard__activity-section {
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  padding: 1.5rem;
+}
+
+.admin-dashboard__activity-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.admin-dashboard__activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.admin-dashboard__activity-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+}
+
+.admin-dashboard__activity-icon {
+  color: #6b7280;
+  margin-right: 0.75rem;
+  font-size: 1rem;
+}
+
+.admin-dashboard__activity-content {
+  flex: 1;
+}
+
+.admin-dashboard__activity-message {
+  font-size: 0.875rem;
+  color: #1f2937;
+}
+
+.admin-dashboard__activity-time {
+  font-size: 0.75rem;
+  color: #6b7280;
+}

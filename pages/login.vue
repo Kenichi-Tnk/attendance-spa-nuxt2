@@ -1,77 +1,88 @@
 <template>
   <div>
-    <h2 class="text-center text-2xl font-bold text-gray-900 mb-6">
+    <h2 class="auth__title">
       ログイン
     </h2>
     
     <!-- エラーメッセージ -->
-    <div v-if="errorMessage" class="mb-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+    <div v-if="errorMessage" class="auth__message auth__message--error">
       {{ errorMessage }}
     </div>
     
-    <form @submit.prevent="handleLogin">
-      <div class="space-y-6">
-        <!-- メールアドレス -->
-        <div>
-          <label for="email" class="block text-sm font-medium text-gray-700">
-            メールアドレス
-          </label>
-          <input
-            id="email"
-            v-model="form.email"
-            type="email"
-            required
-            class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            placeholder="email@example.com"
-          />
+    <ValidationObserver v-slot="{ handleSubmit, invalid }">
+      <form @submit.prevent="handleSubmit(handleLogin)">
+        <div class="auth__form-container">
+          <!-- メールアドレス -->
+          <div class="auth__field-group">
+            <label for="email" class="auth__field-label">
+              メールアドレス
+            </label>
+            <ValidationProvider
+              v-slot="{ errors }"
+              name="email"
+              rules="required|email"
+            >
+              <input
+                id="email"
+                v-model="form.email"
+                type="email"
+                class="auth__field-input"
+                :class="{ 'auth__field-input--error': errors.length > 0 }"
+                placeholder="email@example.com"
+              />
+              <span v-if="errors.length > 0" class="auth__field-error">
+                {{ errors[0] }}
+              </span>
+            </ValidationProvider>
+          </div>
+          
+          <!-- パスワード -->
+          <div class="auth__field-group">
+            <label for="password" class="auth__field-label">
+              パスワード
+            </label>
+            <ValidationProvider
+              v-slot="{ errors }"
+              name="password"
+              rules="required|min:8"
+            >
+              <input
+                id="password"
+                v-model="form.password"
+                type="password"
+                class="auth__field-input"
+                :class="{ 'auth__field-input--error': errors.length > 0 }"
+                placeholder="パスワード"
+              />
+              <span v-if="errors.length > 0" class="auth__field-error">
+                {{ errors[0] }}
+              </span>
+            </ValidationProvider>
+          </div>
+          
+          <!-- ログインボタン -->
+          <div>
+            <button
+              type="submit"
+              :disabled="$store.getters['auth/isLoading'] || invalid"
+              class="auth__btn auth__btn--primary"
+            >
+              <span v-if="$store.getters['auth/isLoading']">ログイン中...</span>
+              <span v-else>ログイン</span>
+            </button>
+          </div>
         </div>
-        
-        <!-- パスワード -->
-        <div>
-          <label for="password" class="block text-sm font-medium text-gray-700">
-            パスワード
-          </label>
-          <input
-            id="password"
-            v-model="form.password"
-            type="password"
-            required
-            class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            placeholder="パスワード"
-          />
-        </div>
-        
-        <!-- ログインボタン -->
-        <div>
-          <button
-            type="submit"
-            :disabled="$store.getters['auth/isLoading']"
-            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span v-if="$store.getters['auth/isLoading']">ログイン中...</span>
-            <span v-else>ログイン</span>
-          </button>
-        </div>
-      </div>
-    </form>
+      </form>
+    </ValidationObserver>
     
     <!-- 登録リンク -->
-    <div class="mt-6 text-center">
-      <p class="text-sm text-gray-600">
+    <div class="auth__link-section">
+      <p class="auth__link-text">
         アカウントをお持ちでない方は
-        <NuxtLink to="/register" class="font-medium text-indigo-600 hover:text-indigo-500">
+        <NuxtLink to="/register" class="auth__link">
           新規登録
         </NuxtLink>
       </p>
-    </div>
-    
-    <!-- デモ用認証情報 -->
-    <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
-      <h3 class="text-sm font-medium text-blue-800 mb-2">デモ用ログイン情報</h3>
-      <div class="text-xs text-blue-700 space-y-1">
-        <p><strong>一般ユーザー:</strong> user@example.com / password</p>
-        <p><strong>管理者:</strong> admin@example.com / password</p>
-      </div>
     </div>
   </div>
 </template>
@@ -94,21 +105,41 @@ export default {
   methods: {
     async handleLogin() {
       this.errorMessage = ''
+      console.log('Login form data:', this.form)
       
       try {
         const result = await this.$store.dispatch('auth/login', this.form)
+        console.log('Login result:', result)
         
         if (result.success) {
+          console.log('Login successful, auth state:', {
+            token: this.$store.state.auth.token,
+            user: this.$store.state.auth.user,
+            isAuthenticated: this.$store.state.auth.isAuthenticated
+          })
+          
+          // 認証状態が完全にセットされるまで待つ
+          await this.$nextTick()
+          
           // リダイレクト先の取得
           const redirectTo = this.$route.query.redirect || '/'
+          console.log('Redirecting to:', redirectTo)
+          
+          // $router.pushでリダイレクト
           this.$router.push(redirectTo)
         } else {
           this.errorMessage = result.error
+          console.error('Login failed:', result.error)
         }
       } catch (error) {
+        console.error('Login exception:', error)
         this.errorMessage = 'ログインに失敗しました'
       }
     }
   }
 }
 </script>
+
+<style scoped>
+@import '@/assets/css/pages/auth.css';
+</style>

@@ -1,0 +1,444 @@
+
+/* 補正申請新規作成ページ (correction-requests/new.vue) のスタイル */
+
+.correction-request-new {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* =======================
+   Page Header
+   ======================= */
+.correction-request-new__page-header {
+    margin-bottom: 2rem;
+}
+
+.correction-request-new__title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+}
+
+.correction-request-new__subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+}
+
+.correction-request-new__container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+}
+
+.correction-request-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.form-section {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 20px;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #374151;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #374151;
+}
+
+.required {
+    color: #ef4444;
+}
+
+.form-textarea {
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-textarea.error {
+    border-color: #ef4444;
+}
+
+.error-message {
+    color: #ef4444;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+    min-height: 18px;
+}
+
+.char-count {
+    text-align: right;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.current-attendance {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 16px;
+}
+
+.current-attendance__title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #374151;
+}
+
+.current-attendance__data {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.attendance-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.attendance-item .label {
+    font-weight: 500;
+    color: #6b7280;
+}
+
+.attendance-item .value {
+    font-weight: 600;
+    color: #374151;
+}
+
+.rest-item {
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+.rest-item__fields {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.rest-item__fields .form-group {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.rest-item__remove-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    height: 38px;
+    margin-top: 24px;
+    font-size: 14px;
+    transition: background-color 0.2s;
+    flex-shrink: 0;
+}
+
+.rest-item__remove-btn .btn-text {
+    font-size: 12px;
+}
+
+.rest-item__remove-btn:hover {
+    background: #dc2626;
+}
+
+.rest-item__remove-btn:active {
+    transform: translateY(1px);
+}
+
+.add-rest-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #374151;
+}
+
+.add-rest-btn:hover {
+    background: #e5e7eb;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.btn--secondary {
+    background: #f3f4f6;
+    color: #374151;
+    border: 1px solid #d1d5db;
+}
+
+.btn--secondary:hover {
+    background: #e5e7eb;
+}
+
+.btn--primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn--primary:hover:not(:disabled) {
+    background: #2563eb;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* フォーム入力要素のスタイル */
+.form-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-input--readonly {
+    background-color: #f9fafb;
+    color: #6b7280;
+    cursor: default;
+}
+
+.form-input--readonly:focus {
+    border-color: #d1d5db;
+    box-shadow: none;
+}
+
+.form-help-text {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.form-help-text i {
+    color: #3b82f6;
+}
+
+.error-message {
+    color: #ef4444;
+    font-size: 14px;
+    margin-top: 4px;
+}
+/* 申請中の警告メッセージ（旧スタイル - 削除予定） */
+.pending-notice {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px;
+    background: #fef2f2;
+    border: 2px solid #ef4444;
+    border-radius: 8px;
+    color: #dc2626;
+    font-weight: 600;
+    font-size: 16px;
+    margin-top: 24px;
+}
+
+.pending-notice i {
+    font-size: 20px;
+}
+
+/* 承認待ちアラート（新スタイル） */
+.pending-request-alert {
+    display: flex;
+    gap: 16px;
+    padding: 24px;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 2px solid #f59e0b;
+    border-radius: 12px;
+    margin: 24px 0;
+    box-shadow: 0 4px 6px rgba(245, 158, 11, 0.1);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.pending-request-alert__icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f59e0b;
+    color: white;
+    border-radius: 50%;
+    font-size: 24px;
+}
+
+.pending-request-alert__content {
+    flex: 1;
+}
+
+.pending-request-alert__title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #92400e;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pending-request-alert__message {
+    color: #78350f;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.pending-request-alert__info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 13px;
+}
+
+.pending-request-alert__info .info-label {
+    font-weight: 600;
+    color: #92400e;
+}
+
+.pending-request-alert__info .info-value {
+    color: #78350f;
+    font-family: monospace;
+}
+
+.pending-request-alert__info .info-separator {
+    color: #d97706;
+    margin: 0 4px;
+}
+
+.pending-request-alert__actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn--sm {
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+.btn--outline {
+    background: transparent;
+    color: #92400e;
+    border: 2px solid #d97706;
+}
+
+.btn--outline:hover {
+    background: rgba(217, 119, 6, 0.1);
+}
+
+/* 申請中の場合のフォーム無効化スタイル */
+.form-input:disabled,
+.form-textarea:disabled,
+.add-rest-btn:disabled {
+    background-color: #f3f4f6;
+    color: #9ca3af;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.form-input--disabled,
+.form-textarea--disabled {
+    background-color: #f9fafb;
+    border-color: #e5e7eb;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.form-input--disabled::placeholder,
+.form-textarea--disabled::placeholder {
+    color: #d1d5db;
+}
+
+/* 無効化されたフォームグループ全体のスタイル */
+.form-section:has(.form-input:disabled) {
+    opacity: 0.7;
+    pointer-events: none;
+}

@@ -26,102 +26,231 @@ export const mutations = {
   }
 }
 
+export const getters = {
+  isAuthenticated: state => state.isAuthenticated,
+  isLoading: state => state.isLoading,
+  user: state => state.user,
+  token: state => state.token,
+  isEmailVerified: state => state.user?.email_verified_at !== null,
+  isAdmin: state => state.user?.role === 'admin'
+}
+
 export const actions = {
-  // モックログイン（後でAPI接続）
+  // API ログイン
   async login({ commit }, credentials) {
     try {
       commit('SET_LOADING', true)
+      console.log('Attempting login with:', credentials)
       
-      // TODO: 後でAPI呼び出しに置き換え
-      await new Promise(resolve => setTimeout(resolve, 1000)) // API呼び出しのシミュレーション
+      const response = await this.$axios.$post('/api/login', {
+        email: credentials.email,
+        password: credentials.password
+      })
       
-      // モックレスポンス
-      const mockResponse = {
-        user: {
-          id: 1,
-          name: credentials.email === 'admin@example.com' ? '管理者' : '田中健一',
-          email: credentials.email,
-          role: credentials.email === 'admin@example.com' ? 'admin' : 'user',
-          email_verified_at: '2024-01-01T00:00:00.000Z'
-        },
-        token: 'mock-jwt-token-12345'
-      }
+      console.log('Login response:', response)
       
       // 認証情報をlocalStorageに保存
-      localStorage.setItem('auth-token', mockResponse.token)
-      localStorage.setItem('auth-user', JSON.stringify(mockResponse.user))
+      localStorage.setItem('auth-token', response.token)
+      localStorage.setItem('auth-user', JSON.stringify(response.user))
       
-      commit('SET_USER', mockResponse.user)
-      commit('SET_TOKEN', mockResponse.token)
+      // Axiosのデフォルトヘッダーにトークンを設定
+      this.$axios.setToken(response.token, 'Bearer')
       
-      return { success: true, user: mockResponse.user }
+      commit('SET_USER', response.user)
+      commit('SET_TOKEN', response.token)
+      
+      return { success: true, user: response.user }
     } catch (error) {
-      return { success: false, error: 'ログインに失敗しました' }
+      console.error('Login error:', error)
+      console.error('Error response:', error.response)
+      
+      // エラーメッセージを日本語化
+      let message = 'ログインに失敗しました'
+      if (error.response?.data?.message) {
+        const apiMessage = error.response.data.message
+        if (apiMessage === 'Invalid credentials') {
+          message = 'メールアドレスまたはパスワードが正しくありません'
+        } else {
+          message = apiMessage
+        }
+      }
+      
+      return { success: false, error: message }
     } finally {
       commit('SET_LOADING', false)
     }
   },
   
-  // モック登録
+  // API 登録
   async register({ commit }, userData) {
     try {
       commit('SET_LOADING', true)
+      const startTime = Date.now()
+      console.log('Attempting registration with:', userData)
+      console.log('Axios baseURL:', this.$axios.defaults.baseURL)
+      console.log('Start time:', new Date(startTime).toISOString())
       
-      // TODO: 後でAPI呼び出しに置き換え
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      const mockUser = {
-        id: Date.now(),
+      const response = await this.$axios.$post('/api/register', {
         name: userData.name,
         email: userData.email,
-        role: 'user',
-        email_verified_at: null // メール認証前
+        password: userData.password,
+        password_confirmation: userData.password_confirmation
+      })
+      
+      const endTime = Date.now()
+      console.log('Registration completed in:', endTime - startTime, 'ms')
+      console.log('End time:', new Date(endTime).toISOString())
+      
+      console.log('Registration response:', response)
+      
+      // 登録と同時にログイン（メール認証は未完了）
+      localStorage.setItem('auth-token', response.token)
+      localStorage.setItem('auth-user', JSON.stringify(response.user))
+      
+      this.$axios.setToken(response.token, 'Bearer')
+      
+      commit('SET_USER', response.user)
+      commit('SET_TOKEN', response.token)
+      
+      return { 
+        success: true, 
+        message: response.message,
+        shouldRedirectToVerify: true // メール認証ページへのリダイレクトフラグ
+      }
+    } catch (error) {
+      const errorTime = Date.now()
+      console.error('Registration error at:', new Date(errorTime).toISOString())
+      console.error('Registration error:', error)
+      console.error('Error response:', error.response)
+      console.error('Error status:', error.response?.status)
+      console.error('Error data:', error.response?.data)
+      console.error('Validation errors:', error.response?.data?.errors)
+      console.error('Network error:', error.code)
+      console.error('Request timeout:', error.code === 'ECONNABORTED')
+      
+      let message = '登録に失敗しました'
+      
+      // ネットワークエラーの特別な処理
+      if (error.code === 'ECONNABORTED') {
+        message = 'リクエストがタイムアウトしました。もう一度お試しください。'
+      } else if (!error.response) {
+        message = 'ネットワークエラーが発生しました。サーバーに接続できません。'
       }
       
-      return { success: true, message: '登録が完了しました。メール認証を行ってください。' }
-    } catch (error) {
-      return { success: false, error: '登録に失敗しました' }
+      // バリデーションエラーがある場合は詳細を表示
+      if (error.response?.data?.errors) {
+        const errors = error.response.data.errors
+        const errorMessages = []
+        
+        // エラーメッセージを日本語化
+        for (const [field, messages] of Object.entries(errors)) {
+          messages.forEach(msg => {
+            if (msg.includes('email') && msg.includes('already been taken')) {
+              errorMessages.push('このメールアドレスは既に登録されています')
+            } else if (msg.includes('password') && msg.includes('confirmation does not match')) {
+              errorMessages.push('パスワードが一致しません')
+            } else if (msg.includes('required')) {
+              const fieldName = field === 'name' ? '名前' : field === 'email' ? 'メールアドレス' : field === 'password' ? 'パスワード' : field
+              errorMessages.push(`${fieldName}は必須項目です`)
+            } else {
+              errorMessages.push(msg)
+            }
+          })
+        }
+        
+        message = errorMessages.join(', ')
+      } else if (error.response?.data?.message) {
+        message = error.response.data.message
+      }
+      
+      return { success: false, error: message }
     } finally {
       commit('SET_LOADING', false)
     }
   },
   
-  // ログアウト
+  // API ログアウト
   async logout({ commit }) {
     try {
-      // TODO: 後でAPI呼び出しに置き換え
+      const token = localStorage.getItem('auth-token')
+      if (token) {
+        this.$axios.setToken(token, 'Bearer')
+        await this.$axios.$post('/api/logout')
+      }
+    } catch (error) {
+      // ログアウトAPIが失敗してもローカルの認証情報はクリア
+      console.warn('API logout failed:', error)
+    } finally {
       localStorage.removeItem('auth-token')
       localStorage.removeItem('auth-user')
+      this.$axios.setToken(false)
       
       commit('LOGOUT')
       return { success: true }
-    } catch (error) {
-      return { success: false, error: 'ログアウトに失敗しました' }
     }
   },
   
-  // 認証状態の復元（ページリロード時）
-  restoreAuth({ commit }) {
-    const token = localStorage.getItem('auth-token')
-    const user = localStorage.getItem('auth-user')
-    
-    if (token && user) {
-      try {
+  // 認証状態の復元(ページリロード時)
+  async restoreAuth({ commit, dispatch }) {
+    try {
+      const token = localStorage.getItem('auth-token')
+      const user = localStorage.getItem('auth-user')
+      
+      console.log('restoreAuth - token:', token ? 'exists' : 'null')
+      console.log('restoreAuth - user:', user ? 'exists' : 'null')
+      
+      if (token && user) {
+        this.$axios.setToken(token, 'Bearer')
         commit('SET_TOKEN', token)
         commit('SET_USER', JSON.parse(user))
-      } catch (error) {
+        console.log('restoreAuth - Authentication restored from localStorage')
+        
+        // サーバーから最新のユーザー情報を取得
+        try {
+          console.log('restoreAuth - Fetching latest user data from server...')
+          const updatedUser = await dispatch('fetchUser')
+          if (updatedUser) {
+            localStorage.setItem('auth-user', JSON.stringify(updatedUser))
+            console.log('restoreAuth - User data updated from server:', updatedUser.email_verified_at ? 'verified' : 'not verified')
+          }
+        } catch (error) {
+          console.log('restoreAuth - Failed to fetch user from server, using cached data')
+        }
+      } else {
+        console.log('restoreAuth - No stored credentials found')
+      }
+    } catch (error) {
+      console.error('restoreAuth - Error:', error)
+      localStorage.removeItem('auth-token')
+      localStorage.removeItem('auth-user')
+      this.$axios.setToken(false)
+    }
+  },
+  
+  // ユーザー情報を更新
+  async fetchUser({ commit }) {
+    try {
+      const response = await this.$axios.$get('/api/user')
+      
+      // レスポンスが { user: {...} } または直接ユーザーオブジェクトの場合に対応
+      const user = response?.user || response
+      
+      if (user && user.id) {
+        commit('SET_USER', user)
+        return user
+      } else {
+        console.error('fetchUser - No valid user in response')
+        return null
+      }
+    } catch (error) {
+      // 認証エラーの場合はログアウト
+      if (error.response?.status === 401) {
+        commit('LOGOUT')
         localStorage.removeItem('auth-token')
         localStorage.removeItem('auth-user')
+        this.$axios.setToken(false)
       }
+      throw error
     }
   }
-}
-
-export const getters = {
-  isAuthenticated: state => state.isAuthenticated,
-  user: state => state.user,
-  token: state => state.token,
-  isAdmin: state => state.user?.role === 'admin',
-  isEmailVerified: state => !!state.user?.email_verified_at,
-  isLoading: state => state.isLoading
 }
