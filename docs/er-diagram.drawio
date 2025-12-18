@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram name="ER Diagram - Attendance SPA" id="er-diagram-attendance">
-        <mxGraphModel dx="734" dy="652" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#FFFFFF" math="0" shadow="0">
+        <mxGraphModel dx="1110" dy="880" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#FFFFFF" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -223,9 +223,6 @@
                 </mxCell>
                 <mxCell id="notes-4" value="• personal_access_tokens: Laravel Sanctumによる認証トークン管理" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" parent="1" vertex="1">
                     <mxGeometry x="390" y="778" width="680" height="15" as="geometry"/>
-                </mxCell>
-                <mxCell id="2" value="e" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
-                    <mxGeometry x="320" y="310" width="120" height="60" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
