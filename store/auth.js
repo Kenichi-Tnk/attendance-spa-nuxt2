@@ -170,7 +170,7 @@ export const actions = {
   },
   
   // API ログアウト
-  async logout({ commit }) {
+  async logout({ commit, dispatch }) {
     try {
       const token = localStorage.getItem('auth-token')
       if (token) {
@@ -186,6 +186,10 @@ export const actions = {
       this.$axios.setToken(false)
       
       commit('LOGOUT')
+      
+      // 勤怠ストアもリセット
+      dispatch('attendance/resetAttendance', null, { root: true })
+      
       return { success: true }
     }
   },
