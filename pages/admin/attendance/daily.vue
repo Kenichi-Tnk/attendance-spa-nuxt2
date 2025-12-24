@@ -292,6 +292,7 @@
                     class="btn-remove-rest"
                   >
                     <i class="fas fa-trash"></i>
+                    <span>削除</span>
                   </button>
                 </div>
               </div>
