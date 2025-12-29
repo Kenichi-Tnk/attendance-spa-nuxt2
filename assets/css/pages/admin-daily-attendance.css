@@ -670,3 +670,15 @@
     justify-content: center;
   }
 }
+
+/* Error message styles */
+.error-message {
+  color: #dc2626;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.is-invalid {
+  border-color: #dc2626;
+}

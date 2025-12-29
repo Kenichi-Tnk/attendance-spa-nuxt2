@@ -247,9 +247,12 @@
               <input 
                 v-model="editingRecord.check_in" 
                 type="time" 
-                class="form-control"
+                :class="['form-control', { 'is-invalid': errors.check_in }]"
                 required
               />
+              <div v-if="errors.check_in" class="error-message">
+                {{ getErrorMessage(errors.check_in) }}
+              </div>
             </div>
 
             <div class="form-group">
@@ -257,9 +260,12 @@
               <input 
                 v-model="editingRecord.check_out" 
                 type="time" 
-                class="form-control"
+                :class="['form-control', { 'is-invalid': errors.check_out }]"
                 required
               />
+              <div v-if="errors.check_out" class="error-message">
+                {{ getErrorMessage(errors.check_out) }}
+              </div>
             </div>
 
             <div class="form-section">
@@ -275,16 +281,22 @@
                     <input 
                       v-model="rest.rest_start" 
                       type="time" 
-                      class="form-control"
+                      :class="['form-control', { 'is-invalid': errors[`rests.${index}.rest_start`] }]"
                     />
+                    <div v-if="errors[`rests.${index}.rest_start`]" class="error-message">
+                      {{ getErrorMessage(errors[`rests.${index}.rest_start`]) }}
+                    </div>
                   </div>
                   <div class="form-group">
                     <label>終了</label>
                     <input 
                       v-model="rest.rest_end" 
                       type="time" 
-                      class="form-control"
+                      :class="['form-control', { 'is-invalid': errors[`rests.${index}.rest_end`] }]"
                     />
+                    <div v-if="errors[`rests.${index}.rest_end`]" class="error-message">
+                      {{ getErrorMessage(errors[`rests.${index}.rest_end`]) }}
+                    </div>
                   </div>
                   <button 
                     type="button"
@@ -351,7 +363,8 @@ export default {
         check_in: '',
         check_out: '',
         rests: []
-      }
+      },
+      errors: {}
     }
   },
 
@@ -551,6 +564,7 @@ export default {
         check_out: '',
         rests: []
       }
+      this.errors = {}
     },
 
     addRest() {
@@ -565,6 +579,16 @@ export default {
     },
 
     async saveAttendanceDetail() {
+      // バリデーション実行
+      this.errors = this.validateAttendanceForm()
+      
+      if (Object.keys(this.errors).length > 0) {
+        if (this.$toast) {
+          this.$toast.error('入力内容に誤りがあります')
+        }
+        return
+      }
+
       try {
         await this.$axios.put(
           `/api/admin/attendance/${this.editingRecord.attendance_id}`,
@@ -588,10 +612,70 @@ export default {
         await this.loadAttendanceData()
       } catch (error) {
         console.error('勤怠更新エラー:', error)
+        
+        // APIエラーの処理
+        if (error.response?.data?.errors) {
+          const apiErrors = error.response.data.errors
+          this.errors = {}
+          
+          for (const [field, messages] of Object.entries(apiErrors)) {
+            this.errors[field] = messages
+          }
+        }
+        
         if (this.$toast) {
-          this.$toast.error('勤怠情報の更新に失敗しました')
+          const message = error.response?.data?.message || '勤怠情報の更新に失敗しました'
+          this.$toast.error(message)
         }
       }
+    },
+
+    validateAttendanceForm() {
+      const errors = {}
+
+      // 出勤時刻のチェック
+      if (!this.editingRecord.check_in) {
+        errors.check_in = ['出勤時刻は必須項目です']
+      }
+
+      // 退勤時刻のチェック
+      if (!this.editingRecord.check_out) {
+        errors.check_out = ['退勤時刻は必須項目です']
+      } else if (this.editingRecord.check_in && this.editingRecord.check_out <= this.editingRecord.check_in) {
+        errors.check_out = ['退勤時刻は出勤時刻より後の時刻を入力してください']
+      }
+
+      // 休憩時間のチェック
+      this.editingRecord.rests.forEach((rest, index) => {
+        const hasStart = rest.rest_start && rest.rest_start.trim() !== ''
+        const hasEnd = rest.rest_end && rest.rest_end.trim() !== ''
+
+        if (hasStart && !hasEnd) {
+          errors[`rests.${index}.rest_end`] = ['休憩終了時刻は必須項目です']
+        } else if (!hasStart && hasEnd) {
+          errors[`rests.${index}.rest_start`] = ['休憩開始時刻は必須項目です']
+        } else if (hasStart && hasEnd) {
+          // 両方入力されている場合は時刻の前後関係をチェック
+          if (rest.rest_end <= rest.rest_start) {
+            errors[`rests.${index}.rest_end`] = ['休憩終了時刻は休憩開始時刻より後の時刻を入力してください']
+          }
+          
+          // 休憩時間が勤務時間内に収まっているかチェック
+          if (this.editingRecord.check_in && rest.rest_start < this.editingRecord.check_in) {
+            errors[`rests.${index}.rest_start`] = ['休憩開始時刻は出勤時刻より後の時刻を入力してください']
+          }
+          
+          if (this.editingRecord.check_out && rest.rest_start > this.editingRecord.check_out) {
+            errors[`rests.${index}.rest_start`] = ['休憩開始時刻は退勤時刻より前の時刻を入力してください']
+          }
+          
+          if (this.editingRecord.check_out && rest.rest_end > this.editingRecord.check_out) {
+            errors[`rests.${index}.rest_end`] = ['休憩終了時刻は退勤時刻より前の時刻を入力してください']
+          }
+        }
+      })
+
+      return errors
     },
 
     exportToCSV() {
@@ -664,6 +748,15 @@ export default {
         absent: '未出勤'
       }
       return labels[status] || status
+    },
+
+    getErrorMessage(error) {
+      // エラーが配列の場合は最初のメッセージを取得
+      if (Array.isArray(error)) {
+        return error.length > 0 ? error[0] : ''
+      }
+      // エラーが文字列の場合はそのまま返す
+      return error || ''
     }
   }
 }
