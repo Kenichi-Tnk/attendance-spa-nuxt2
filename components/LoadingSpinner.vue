@@ -1,7 +1,7 @@
 <template>
   <div v-if="show" :class="containerClasses">
     <!-- スピナー -->
-    <div :class="spinnerClasses"></div>
+    <div :class="spinnerClasses" />
 
     <!-- メッセージ -->
     <div v-if="message" :class="messageClasses">
@@ -10,7 +10,7 @@
 
     <!-- 追加コンテンツ -->
     <div v-if="$slots.default" class="spinner-slot">
-      <slot></slot>
+      <slot />
     </div>
   </div>
 </template>
@@ -53,7 +53,7 @@ export default {
   },
 
   computed: {
-    containerClasses() {
+    containerClasses () {
       const classes = ['spinner-container']
 
       if (this.overlay) {
@@ -76,14 +76,14 @@ export default {
       return classes.join(' ')
     },
 
-    spinnerClasses() {
+    spinnerClasses () {
       const classes = ['spinner']
       classes.push(`spinner--${this.size}`)
       classes.push(`spinner--${this.color}`)
       return classes.join(' ')
     },
 
-    messageClasses() {
+    messageClasses () {
       const classes = ['spinner-message']
 
       if (this.inline) {

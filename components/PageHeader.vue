@@ -33,27 +33,31 @@
       <div class="page-header__main">
         <!-- アイコン付きタイトル -->
         <div class="page-header__title-container">
-          <i v-if="icon" :class="icon" class="page-header__icon" :style="{ color: iconColor }"></i>
-          <h1 class="page-header__title">{{ title }}</h1>
+          <i v-if="icon" :class="icon" class="page-header__icon" :style="{ color: iconColor }" />
+          <h1 class="page-header__title">
+            {{ title }}
+          </h1>
         </div>
 
         <!-- サブタイトル -->
-        <p v-if="subtitle" class="page-header__subtitle">{{ subtitle }}</p>
+        <p v-if="subtitle" class="page-header__subtitle">
+          {{ subtitle }}
+        </p>
 
         <!-- 追加情報スロット -->
         <div v-if="$slots.info" class="page-header__info">
-          <slot name="info"></slot>
+          <slot name="info" />
         </div>
       </div>
 
       <!-- アクションボタン -->
       <div v-if="$slots.actions" class="page-header__actions">
-        <slot name="actions"></slot>
+        <slot name="actions" />
       </div>
     </div>
 
     <!-- 区切り線 -->
-    <div v-if="showDivider" class="page-header__divider"></div>
+    <div v-if="showDivider" class="page-header__divider" />
   </div>
 </template>
 

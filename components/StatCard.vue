@@ -6,7 +6,7 @@
     <div class="stat-card__content">
       <!-- アイコン -->
       <div v-if="icon" :class="iconClasses">
-        <i :class="icon" class="stat-card__icon"></i>
+        <i :class="icon" class="stat-card__icon" />
       </div>
 
       <!-- コンテンツ -->
@@ -28,7 +28,7 @@
 
         <!-- 変化量（オプション） -->
         <div v-if="change !== null" class="stat-card__change">
-          <i :class="changeIcon" class="stat-card__change-icon"></i>
+          <i :class="changeIcon" class="stat-card__change-icon" />
           <span :class="changeClasses">
             {{ changeText }}
           </span>
@@ -40,13 +40,13 @@
 
       <!-- 追加コンテンツ -->
       <div v-if="$slots.extra" class="stat-card__extra">
-        <slot name="extra"></slot>
+        <slot name="extra" />
       </div>
     </div>
 
     <!-- ボトムコンテンツ -->
     <div v-if="$slots.bottom" class="stat-card__bottom">
-      <slot name="bottom"></slot>
+      <slot name="bottom" />
     </div>
   </div>
 </template>
@@ -108,8 +108,8 @@ export default {
   },
 
   computed: {
-    displayValue() {
-      if (this.loading) return '---'
+    displayValue () {
+      if (this.loading) { return '---' }
 
       if (typeof this.value === 'number') {
         return this.value.toLocaleString()
@@ -117,7 +117,7 @@ export default {
       return this.value
     },
 
-    cardClasses() {
+    cardClasses () {
       const classes = ['stat-card']
 
       // ボーダー
@@ -142,11 +142,11 @@ export default {
       return classes.join(' ')
     },
 
-    iconClasses() {
+    iconClasses () {
       return `stat-card__icon-container stat-card__icon-container--${this.color}`
     },
 
-    valueClasses() {
+    valueClasses () {
       const classes = ['stat-card__value']
       if (this.color === 'gray') {
         classes.push('stat-card__value--gray')
@@ -156,14 +156,14 @@ export default {
       return classes.join(' ')
     },
 
-    changeIcon() {
-      if (this.change === null) return ''
+    changeIcon () {
+      if (this.change === null) { return '' }
       return this.change > 0 ? 'fas fa-arrow-up' : this.change < 0 ? 'fas fa-arrow-down' : 'fas fa-minus'
     },
 
-    changeClasses() {
+    changeClasses () {
       const classes = ['stat-card__change-value']
-      if (this.change === null) return ''
+      if (this.change === null) { return '' }
 
       if (this.change > 0) {
         classes.push('stat-card__change-value--positive')
@@ -176,15 +176,15 @@ export default {
       return classes.join(' ')
     },
 
-    changeText() {
-      if (this.change === null) return ''
+    changeText () {
+      if (this.change === null) { return '' }
       const prefix = this.change > 0 ? '+' : ''
       return `${prefix}${this.change}%`
     }
   },
 
   methods: {
-    handleClick() {
+    handleClick () {
       if (this.clickable) {
         this.$emit('click')
       }

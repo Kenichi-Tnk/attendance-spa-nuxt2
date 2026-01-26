@@ -6,35 +6,35 @@ export default function ({ store, $axios }) {
   }
 
   // リクエストインターセプター
-  $axios.onRequest(config => {
+  $axios.onRequest((config) => {
     // CORS対応
     config.withCredentials = true
-    
+
     const token = store.state.auth.token
     if (token) {
-      config.headers.common['Authorization'] = `Bearer ${token}`
+      config.headers.common.Authorization = `Bearer ${token}`
     }
-    
+
     return config
   })
 
   // レスポンスインターセプター（成功）
-  $axios.onResponse(response => {
+  $axios.onResponse((response) => {
     return response
   })
 
   // レスポンスエラーインターセプター
-  $axios.onError(error => {
+  $axios.onError((error) => {
     if (error.response?.status === 401) {
       // 認証エラーの場合はログアウト
       store.dispatch('auth/logout')
-      
+
       // ログインページにリダイレクト
       if (process.client && window.location.pathname !== '/login') {
         window.location.href = '/login'
       }
     }
-    
+
     return Promise.reject(error)
   })
 }

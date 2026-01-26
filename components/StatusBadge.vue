@@ -1,6 +1,6 @@
 <template>
   <span :class="badgeClasses">
-    <i v-if="icon" :class="icon" class="status-badge__icon"></i>
+    <i v-if="icon" :class="icon" class="status-badge__icon" />
     {{ statusText }}
   </span>
 </template>
@@ -8,7 +8,7 @@
 <script>
 export default {
   name: 'StatusBadge',
-  
+
   props: {
     status: {
       type: String,
@@ -24,9 +24,9 @@ export default {
       default: false
     }
   },
-  
+
   computed: {
-    statusConfig() {
+    statusConfig () {
       const configs = {
         attendance: {
           working: {
@@ -95,25 +95,25 @@ export default {
           }
         }
       }
-      
+
       return configs[this.type]?.[this.status] || {
         text: this.status,
         classes: 'status-badge--default',
         icon: 'fas fa-question-circle'
       }
     },
-    
-    statusText() {
+
+    statusText () {
       return this.statusConfig.text
     },
-    
-    badgeClasses() {
+
+    badgeClasses () {
       const classes = ['status-badge']
       classes.push(this.statusConfig.classes)
       return classes.join(' ')
     },
-    
-    icon() {
+
+    icon () {
       return this.showIcon ? this.statusConfig.icon : null
     }
   }

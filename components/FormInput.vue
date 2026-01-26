@@ -14,7 +14,7 @@
     <div class="form-input__container">
       <!-- プレフィックスアイコン -->
       <div v-if="prefixIcon" class="form-input__icon--prefix">
-        <i :class="prefixIcon" class="form-input__icon"></i>
+        <i :class="prefixIcon" class="form-input__icon" />
       </div>
 
       <!-- テキストエリア -->
@@ -31,7 +31,7 @@
         @input="handleInput"
         @blur="handleBlur"
         @focus="handleFocus"
-      ></textarea>
+      />
 
       <!-- セレクト -->
       <select
@@ -71,7 +71,7 @@
 
       <!-- サフィックスアイコン -->
       <div v-if="suffixIcon" class="form-input__icon--suffix">
-        <i :class="suffixIcon" class="form-input__icon"></i>
+        <i :class="suffixIcon" class="form-input__icon" />
       </div>
 
       <!-- クリアボタン -->
@@ -81,7 +81,7 @@
         class="form-input__clear"
         @click="clearValue"
       >
-        <i class="fas fa-times form-input__clear-icon"></i>
+        <i class="fas fa-times form-input__clear-icon" />
       </button>
     </div>
 
@@ -92,7 +92,7 @@
 
     <!-- エラーメッセージ -->
     <p v-if="error" class="form-input__error">
-      <i class="fas fa-exclamation-circle form-input__error-icon"></i>
+      <i class="fas fa-exclamation-circle form-input__error-icon" />
       {{ error }}
     </p>
   </div>
@@ -207,18 +207,18 @@ export default {
 
   emits: ['update:modelValue', 'focus', 'blur', 'clear'],
 
-  data() {
+  data () {
     return {
       focused: false
     }
   },
 
   computed: {
-    inputId() {
+    inputId () {
       return `input-${this._uid || Math.random().toString(36).substr(2, 9)}`
     },
 
-    labelClasses() {
+    labelClasses () {
       const classes = ['form-input__label']
       if (this.disabled) {
         classes.push('form-input__label--disabled')
@@ -228,15 +228,15 @@ export default {
       return classes.join(' ')
     },
 
-    inputClasses() {
+    inputClasses () {
       const classes = ['form-input__field']
 
       // 基本スタイル
-      if (this.prefixIcon) classes.push('form-input__field--with-prefix')
-      if (this.suffixIcon || this.clearable) classes.push('form-input__field--with-suffix')
+      if (this.prefixIcon) { classes.push('form-input__field--with-prefix') }
+      if (this.suffixIcon || this.clearable) { classes.push('form-input__field--with-suffix') }
 
       // テキストエリア用
-      if (this.type === 'textarea') classes.push('form-input__textarea')
+      if (this.type === 'textarea') { classes.push('form-input__textarea') }
 
       // 状態に応じたスタイル
       if (this.error) {
@@ -262,30 +262,30 @@ export default {
   },
 
   methods: {
-    handleInput(event) {
+    handleInput (event) {
       this.$emit('update:modelValue', event.target.value)
     },
 
-    handleFocus(event) {
+    handleFocus (event) {
       this.focused = true
       this.$emit('focus', event)
     },
 
-    handleBlur(event) {
+    handleBlur (event) {
       this.focused = false
       this.$emit('blur', event)
     },
 
-    clearValue() {
+    clearValue () {
       this.$emit('update:modelValue', '')
       this.$emit('clear')
     },
 
-    getOptionValue(option) {
+    getOptionValue (option) {
       return typeof option === 'object' ? option[this.optionValue] : option
     },
 
-    getOptionLabel(option) {
+    getOptionLabel (option) {
       return typeof option === 'object' ? option[this.optionLabel] : option
     }
   }

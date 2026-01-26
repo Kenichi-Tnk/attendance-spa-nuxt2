@@ -1,17 +1,21 @@
 <template>
   <div class="correction-request-detail">
     <div class="correction-request-detail__page-header">
-      <h1 class="correction-request-detail__title">修正申請詳細</h1>
+      <h1 class="correction-request-detail__title">
+        修正申請詳細
+      </h1>
     </div>
-    
+
     <div v-if="isLoading" class="loading-container">
       <LoadingSpinner />
     </div>
-    
+
     <div v-else-if="correctionRequest" class="correction-request-detail__container">
       <!-- 申請情報 -->
       <div class="detail-section">
-        <h3 class="section-title">申請情報</h3>
+        <h3 class="section-title">
+          申請情報
+        </h3>
         <div class="detail-grid">
           <div class="detail-item">
             <span class="label">申請ID</span>
@@ -34,11 +38,15 @@
 
       <!-- 修正内容 -->
       <div class="detail-section">
-        <h3 class="section-title">修正内容</h3>
+        <h3 class="section-title">
+          修正内容
+        </h3>
         <div class="correction-comparison">
           <!-- 修正前 -->
           <div class="comparison-column">
-            <h4 class="comparison-title">修正前</h4>
+            <h4 class="comparison-title">
+              修正前
+            </h4>
             <div v-if="originalAttendance" class="attendance-data">
               <div class="attendance-item">
                 <span class="label">出勤時刻</span>
@@ -52,7 +60,7 @@
                 <span class="label">労働時間</span>
                 <span class="value">{{ calculateWorkHours(originalAttendance) }}</span>
               </div>
-              
+
               <!-- 休憩時間（修正前） -->
               <div v-if="originalAttendance.rests && originalAttendance.rests.length > 0" class="rest-times">
                 <h5>休憩時間</h5>
@@ -65,12 +73,14 @@
 
           <!-- 矢印 -->
           <div class="comparison-arrow">
-            <i class="fas fa-arrow-right"></i>
+            <i class="fas fa-arrow-right" />
           </div>
 
           <!-- 修正後 -->
           <div class="comparison-column">
-            <h4 class="comparison-title">修正後</h4>
+            <h4 class="comparison-title">
+              修正後
+            </h4>
             <div class="attendance-data">
               <div class="attendance-item">
                 <span class="label">出勤時刻</span>
@@ -84,7 +94,7 @@
                 <span class="label">労働時間</span>
                 <span class="value modified">{{ calculateWorkHours(correctionRequest) }}</span>
               </div>
-              
+
               <!-- 休憩時間（修正後） -->
               <div v-if="correctionRequest.rests && correctionRequest.rests.length > 0" class="rest-times">
                 <h5>休憩時間</h5>
@@ -99,7 +109,9 @@
 
       <!-- 申請理由 -->
       <div class="detail-section">
-        <h3 class="section-title">申請理由</h3>
+        <h3 class="section-title">
+          申請理由
+        </h3>
         <div class="reason-content">
           {{ correctionRequest.reason }}
         </div>
@@ -107,7 +119,9 @@
 
       <!-- 却下理由（却下された場合のみ） -->
       <div v-if="correctionRequest.status === 'rejected' && correctionRequest.reject_reason" class="detail-section">
-        <h3 class="section-title">却下理由</h3>
+        <h3 class="section-title">
+          却下理由
+        </h3>
         <div class="reject-reason-content">
           {{ correctionRequest.reject_reason }}
         </div>
@@ -119,15 +133,15 @@
           to="/correction-requests"
           class="btn btn--secondary"
         >
-          <i class="fas fa-arrow-left"></i>
+          <i class="fas fa-arrow-left" />
           一覧に戻る
         </nuxt-link>
       </div>
     </div>
-    
+
     <div v-else class="error-container">
       <div class="error-content">
-        <i class="fas fa-exclamation-triangle"></i>
+        <i class="fas fa-exclamation-triangle" />
         <h3>申請が見つかりません</h3>
         <p>指定された申請は存在しないか、アクセス権限がありません。</p>
         <nuxt-link
@@ -154,29 +168,29 @@ export default {
     LoadingSpinner
   },
   middleware: ['auth', 'verified'],
-  
-  data() {
+
+  data () {
     return {
       correctionRequest: null,
       originalAttendance: null,
       isLoading: true
     }
   },
-  
-  async mounted() {
+
+  async mounted () {
     await this.loadCorrectionRequest()
   },
-  
+
   methods: {
-    async loadCorrectionRequest() {
+    async loadCorrectionRequest () {
       try {
         this.isLoading = true
         const id = this.$route.params.id
-        
+
         // 申請詳細を取得
         const response = await this.$axios.$get(`/api/correction-requests/${id}`)
         this.correctionRequest = response.correction
-        
+
         // 元の勤怠データを取得
         await this.loadOriginalAttendance()
       } catch (error) {
@@ -188,16 +202,16 @@ export default {
         this.isLoading = false
       }
     },
-    
-    async loadOriginalAttendance() {
+
+    async loadOriginalAttendance () {
       try {
-        if (!this.correctionRequest) return
-        
+        if (!this.correctionRequest) { return }
+
         // APIから修正前の勤怠データを取得
         const response = await this.$axios.$get(
           `/api/correction-requests/${this.correctionRequest.id}/original-attendance`
         )
-        
+
         if (response.original_attendance) {
           this.originalAttendance = response.original_attendance
         }
@@ -207,8 +221,8 @@ export default {
         this.originalAttendance = null
       }
     },
-    
-    formatDate(dateString) {
+
+    formatDate (dateString) {
       const date = new Date(dateString)
       return date.toLocaleDateString('ja-JP', {
         year: 'numeric',
@@ -217,15 +231,15 @@ export default {
         weekday: 'short'
       })
     },
-    
-    formatDateTime(dateTimeString) {
+
+    formatDateTime (dateTimeString) {
       const date = new Date(dateTimeString)
       return date.toLocaleString('ja-JP')
     },
-    
-    extractTimeOnly(timeString) {
-      if (!timeString) return ''
-      
+
+    extractTimeOnly (timeString) {
+      if (!timeString) { return '' }
+
       try {
         if (typeof timeString === 'string') {
           // "2025-11-17T09:15:00.000000Z" のような形式
@@ -251,10 +265,10 @@ export default {
         return ''
       }
     },
-    
-    formatTime(timeString) {
-      if (!timeString) return ''
-      
+
+    formatTime (timeString) {
+      if (!timeString) { return '' }
+
       try {
         // ISO形式の日時文字列から時刻部分を抽出
         if (typeof timeString === 'string') {
@@ -277,19 +291,19 @@ export default {
             return timeString.substring(0, 5)
           }
         }
-        
+
         return timeString.substring(0, 5)
       } catch (error) {
         console.error('時刻フォーマットエラー:', error, timeString)
         return ''
       }
     },
-    
-    calculateWorkHours(attendance) {
+
+    calculateWorkHours (attendance) {
       if (!attendance.check_in || !attendance.check_out) {
         return '−'
       }
-      
+
       // 日付文字列を取得
       let dateStr = attendance.date
       if (typeof dateStr === 'string') {
@@ -300,42 +314,42 @@ export default {
           dateStr = dateStr.split(' ')[0]
         }
       }
-      
+
       // 時刻部分を抽出
       const checkIn = this.extractTimeOnly(attendance.check_in)
       const checkOut = this.extractTimeOnly(attendance.check_out)
-      
+
       const startTime = new Date(`${dateStr}T${checkIn}`)
       const endTime = new Date(`${dateStr}T${checkOut}`)
-      
+
       if (isNaN(startTime.getTime()) || isNaN(endTime.getTime())) {
         return '−'
       }
-      
+
       let workMilliseconds = endTime - startTime
-      
+
       // 休憩時間を差し引く
       if (attendance.rests && attendance.rests.length > 0) {
         const totalBreakMilliseconds = attendance.rests.reduce((total, rest) => {
           if (rest.rest_start && rest.rest_end) {
             const restStart = new Date(`${dateStr}T${this.extractTimeOnly(rest.rest_start)}`)
             const restEnd = new Date(`${dateStr}T${this.extractTimeOnly(rest.rest_end)}`)
-            
+
             if (!isNaN(restStart.getTime()) && !isNaN(restEnd.getTime())) {
               return total + (restEnd - restStart)
             }
           }
           return total
         }, 0)
-        
+
         workMilliseconds -= totalBreakMilliseconds
       }
-      
-      if (workMilliseconds <= 0) return '0:00'
-      
+
+      if (workMilliseconds <= 0) { return '0:00' }
+
       const hours = Math.floor(workMilliseconds / (1000 * 60 * 60))
       const minutes = Math.floor((workMilliseconds % (1000 * 60 * 60)) / (1000 * 60))
-      
+
       return `${hours}:${String(minutes).padStart(2, '0')}`
     }
   }

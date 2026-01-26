@@ -1,8 +1,12 @@
 <template>
   <div class="correction-requests">
     <div class="correction-requests__page-header">
-      <h1 class="correction-requests__title">修正申請一覧</h1>
-      <p class="correction-requests__subtitle">提出した修正申請の状況を確認できます</p>
+      <h1 class="correction-requests__title">
+        修正申請一覧
+      </h1>
+      <p class="correction-requests__subtitle">
+        提出した修正申請の状況を確認できます
+      </p>
     </div>
 
     <!-- ステータスフィルター -->
@@ -11,13 +15,13 @@
         <button
           v-for="filter in statusFilters"
           :key="filter.value"
-          @click="selectedStatus = filter.value"
           :class="[
             'correction-requests__filter-tab',
             { 'correction-requests__filter-tab--active': selectedStatus === filter.value }
           ]"
+          @click="selectedStatus = filter.value"
         >
-          <i :class="filter.icon"></i>
+          <i :class="filter.icon" />
           {{ filter.label }}
           <span v-if="filter.count !== undefined" class="correction-requests__filter-count">
             {{ filter.count }}
@@ -51,7 +55,7 @@
         <!-- 空データ時の表示 -->
         <template #empty>
           <div class="correction-requests__empty">
-            <i class="fas fa-clipboard-list"></i>
+            <i class="fas fa-clipboard-list" />
             <p>修正申請はありません</p>
             <p class="correction-requests__empty-hint">
               修正申請は勤怠一覧から行えます
@@ -60,7 +64,7 @@
               to="/attendance"
               class="correction-requests__empty-link"
             >
-              <i class="fas fa-calendar-alt"></i>
+              <i class="fas fa-calendar-alt" />
               勤怠一覧へ
             </nuxt-link>
           </div>
@@ -81,8 +85,8 @@ export default {
     StatusBadge
   },
   middleware: ['auth', 'verified'],
-  
-  data() {
+
+  data () {
     return {
       correctionRequests: [],
       currentPage: 1,
@@ -97,9 +101,9 @@ export default {
       }
     }
   },
-  
+
   computed: {
-    tableColumns() {
+    tableColumns () {
       return [
         { key: 'date', label: '対象日', type: 'date' },
         { key: 'reason', label: '申請理由', type: 'text' },
@@ -107,8 +111,8 @@ export default {
         { key: 'created_at', label: '申請日時', type: 'datetime' }
       ]
     },
-    
-    statusFilters() {
+
+    statusFilters () {
       return [
         { value: 'all', label: '全て', icon: 'fas fa-list', count: this.statusCounts.all },
         { value: 'pending', label: '承認待ち', icon: 'fas fa-hourglass-half', count: this.statusCounts.pending },
@@ -116,37 +120,37 @@ export default {
         { value: 'rejected', label: '却下', icon: 'fas fa-times-circle', count: this.statusCounts.rejected }
       ]
     },
-    
-    filteredRequests() {
+
+    filteredRequests () {
       if (this.selectedStatus === 'all') {
         return this.correctionRequests
       }
       return this.correctionRequests.filter(request => request.statusValue === this.selectedStatus)
     }
   },
-  
+
   watch: {
-    selectedStatus() {
+    selectedStatus () {
       // ステータス変更時はページを1に戻す
       this.currentPage = 1
     }
   },
-  
-  mounted() {
+
+  mounted () {
     this.loadCorrectionRequests()
   },
-  
+
   methods: {
-    async loadCorrectionRequests() {
+    async loadCorrectionRequests () {
       try {
         this.isLoading = true
-        
+
         const params = {
           page: this.currentPage
         }
-        
+
         const response = await this.$axios.$get('/api/correction-requests', { params })
-        
+
         // データを画面表示用にフォーマット
         this.correctionRequests = response.data.map(request => ({
           id: request.id,
@@ -157,13 +161,13 @@ export default {
           created_at: this.formatDateTime(request.created_at),
           original: request
         }))
-        
+
         // ステータスごとの件数をカウント
         this.statusCounts.all = this.correctionRequests.length
         this.statusCounts.pending = this.correctionRequests.filter(r => r.statusValue === 'pending').length
         this.statusCounts.approved = this.correctionRequests.filter(r => r.statusValue === 'approved').length
         this.statusCounts.rejected = this.correctionRequests.filter(r => r.statusValue === 'rejected').length
-        
+
         this.totalPages = response.last_page || 1
       } catch (error) {
         console.error('申請一覧取得エラー:', error)
@@ -174,14 +178,14 @@ export default {
         this.isLoading = false
       }
     },
-    
-    formatTime(timeString) {
-      if (!timeString) return '−'
+
+    formatTime (timeString) {
+      if (!timeString) { return '−' }
       return timeString.substring(0, 5)
     },
-    
-    formatDateTime(dateTimeString) {
-      if (!dateTimeString) return '−'
+
+    formatDateTime (dateTimeString) {
+      if (!dateTimeString) { return '−' }
       const date = new Date(dateTimeString)
       return date.toLocaleString('ja-JP', {
         month: 'numeric',
@@ -190,8 +194,8 @@ export default {
         minute: '2-digit'
       })
     },
-    
-    formatStatusText(status) {
+
+    formatStatusText (status) {
       const statusMap = {
         pending: '承認待ち',
         approved: '承認済み',
@@ -199,12 +203,12 @@ export default {
       }
       return statusMap[status] || status
     },
-    
-    goToDetail(item) {
+
+    goToDetail (item) {
       this.$router.push(`/correction-requests/${item.id}`)
     },
-    
-    handlePageChange(page) {
+
+    handlePageChange (page) {
       this.currentPage = page
       this.loadCorrectionRequests()
     }

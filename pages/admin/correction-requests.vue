@@ -6,21 +6,29 @@
       icon="fas fa-edit"
       icon-color="#EF4444"
     />
-    
+
     <div class="admin-corrections__container">
       <!-- フィルターセクション -->
       <div class="admin-corrections__filters">
         <div class="admin-corrections__filter-group">
           <label class="admin-corrections__filter-label">ステータス</label>
-          <select 
-            v-model="selectedStatus" 
+          <select
+            v-model="selectedStatus"
             class="admin-corrections__filter-select"
             @change="filterRequests"
           >
-            <option value="">全て</option>
-            <option value="pending">承認待ち</option>
-            <option value="approved">承認済</option>
-            <option value="rejected">却下</option>
+            <option value="">
+              全て
+            </option>
+            <option value="pending">
+              承認待ち
+            </option>
+            <option value="approved">
+              承認済
+            </option>
+            <option value="rejected">
+              却下
+            </option>
           </select>
         </div>
       </div>
@@ -33,7 +41,7 @@
         </div>
 
         <div v-else-if="filteredRequests.length === 0" class="admin-corrections__empty">
-          <i class="fas fa-inbox"></i>
+          <i class="fas fa-inbox" />
           <p>{{ selectedStatus ? 'フィルター条件に一致する' : '' }}申請がありません</p>
         </div>
 
@@ -47,8 +55,12 @@
             <!-- ヘッダー -->
             <div class="admin-corrections__card-header">
               <div class="admin-corrections__card-info">
-                <h3 class="admin-corrections__card-title">{{ request.user.name }}</h3>
-                <p class="admin-corrections__card-date">{{ formatDate(request.date) }}</p>
+                <h3 class="admin-corrections__card-title">
+                  {{ request.user.name }}
+                </h3>
+                <p class="admin-corrections__card-date">
+                  {{ formatDate(request.date) }}
+                </p>
               </div>
               <StatusBadge :status="request.status" type="request" />
             </div>
@@ -80,20 +92,20 @@
               <!-- アクションボタン（承認待ちの場合のみ） -->
               <div v-if="request.status === 'pending'" class="admin-corrections__actions">
                 <button
-                  @click="approveRequest(request.id)"
                   :disabled="processing"
                   class="admin-corrections__btn admin-corrections__btn--approve"
+                  @click="approveRequest(request.id)"
                 >
-                  <i class="fas fa-check"></i>
+                  <i class="fas fa-check" />
                   承認
                 </button>
-                
+
                 <button
-                  @click="rejectRequest(request.id)"
                   :disabled="processing"
                   class="admin-corrections__btn admin-corrections__btn--reject"
+                  @click="rejectRequest(request.id)"
                 >
-                  <i class="fas fa-times"></i>
+                  <i class="fas fa-times" />
                   却下
                 </button>
               </div>
@@ -101,7 +113,7 @@
               <!-- 処理済み情報 -->
               <div v-else class="admin-corrections__processed">
                 <p>
-                  <i :class="request.status === 'approved' ? 'fas fa-check-circle' : 'fas fa-times-circle'"></i>
+                  <i :class="request.status === 'approved' ? 'fas fa-check-circle' : 'fas fa-times-circle'" />
                   {{ request.status === 'approved' ? '承認済み' : '却下済み' }}
                   <span class="admin-corrections__processed-date">{{ formatDateTime(request.updated_at) }}</span>
                 </p>
@@ -118,8 +130,8 @@
 export default {
   name: 'AdminCorrectionRequests',
   middleware: ['auth', 'verified', 'admin'],
-  
-  data() {
+
+  data () {
     return {
       requests: [],
       filteredRequests: [],
@@ -129,12 +141,12 @@ export default {
     }
   },
 
-  async mounted() {
+  async mounted () {
     await this.fetchRequests()
   },
 
   methods: {
-    async fetchRequests() {
+    async fetchRequests () {
       try {
         this.isLoading = true
         const response = await this.$axios.get('/api/correction-requests/admin/all', {
@@ -142,7 +154,7 @@ export default {
             Authorization: `Bearer ${this.$store.getters['auth/token']}`
           }
         })
-        
+
         // APIレスポンスから適切にデータを抽出
         let requestsData = []
         if (response.data && Array.isArray(response.data.data)) {
@@ -152,19 +164,19 @@ export default {
         } else if (response.data && response.data.correction) {
           requestsData = [response.data.correction]
         }
-        
+
         this.requests = requestsData
         this.filterRequests()
       } catch (error) {
         console.error('申請取得エラー:', error)
-        
+
         let errorMessage = '申請データの取得に失敗しました'
         if (error.response && error.response.data && error.response.data.message) {
           errorMessage = error.response.data.message
         } else if (error.message) {
           errorMessage = error.message
         }
-        
+
         // Toast が利用できない場合の代替手段
         if (this.$toast && typeof this.$toast.error === 'function') {
           this.$toast.error(errorMessage)
@@ -176,9 +188,9 @@ export default {
       }
     },
 
-    async approveRequest(requestId) {
-      if (!confirm('この申請を承認しますか？')) return
-      
+    async approveRequest (requestId) {
+      if (!confirm('この申請を承認しますか？')) { return }
+
       try {
         this.processing = true
         await this.$axios.put(`/api/correction-requests/${requestId}/approve`, {}, {
@@ -186,14 +198,14 @@ export default {
             Authorization: `Bearer ${this.$store.getters['auth/token']}`
           }
         })
-        
+
         // Toast が利用できない場合の代替手段
         if (this.$toast && typeof this.$toast.success === 'function') {
           this.$toast.success('申請を承認しました')
         } else {
           alert('申請を承認しました')
         }
-        
+
         // データを再取得して更新
         try {
           await this.fetchRequests()
@@ -204,14 +216,14 @@ export default {
         }
       } catch (error) {
         console.error('承認エラー:', error)
-        
+
         let errorMessage = '承認処理に失敗しました'
         if (error.response && error.response.data && error.response.data.message) {
           errorMessage = error.response.data.message
         } else if (error.message) {
           errorMessage = error.message
         }
-        
+
         // Toast が利用できない場合の代替手段
         if (this.$toast && typeof this.$toast.error === 'function') {
           this.$toast.error(errorMessage)
@@ -223,7 +235,7 @@ export default {
       }
     },
 
-    async rejectRequest(requestId) {
+    async rejectRequest (requestId) {
       const reason = prompt('却下理由を入力してください:')
       if (!reason || reason.trim() === '') {
         // Toast が利用できない場合の代替手段
@@ -234,9 +246,9 @@ export default {
         }
         return
       }
-      
-      if (!confirm('この申請を却下しますか？')) return
-      
+
+      if (!confirm('この申請を却下しますか？')) { return }
+
       try {
         this.processing = true
         await this.$axios.put(`/api/correction-requests/${requestId}/reject`, {
@@ -246,14 +258,14 @@ export default {
             Authorization: `Bearer ${this.$store.getters['auth/token']}`
           }
         })
-        
+
         // Toast が利用できない場合の代替手段
         if (this.$toast && typeof this.$toast.success === 'function') {
           this.$toast.success('申請を却下しました')
         } else {
           alert('申請を却下しました')
         }
-        
+
         // データを再取得して更新
         try {
           await this.fetchRequests()
@@ -264,14 +276,14 @@ export default {
         }
       } catch (error) {
         console.error('却下エラー:', error)
-        
+
         let errorMessage = '却下処理に失敗しました'
         if (error.response && error.response.data && error.response.data.message) {
           errorMessage = error.response.data.message
         } else if (error.message) {
           errorMessage = error.message
         }
-        
+
         // Toast が利用できない場合の代替手段
         if (this.$toast && typeof this.$toast.error === 'function') {
           this.$toast.error(errorMessage)
@@ -283,17 +295,17 @@ export default {
       }
     },
 
-    filterRequests() {
+    filterRequests () {
       let filtered = [...this.requests]
-      
+
       if (this.selectedStatus) {
         filtered = filtered.filter(request => request.status === this.selectedStatus)
       }
-      
+
       this.filteredRequests = filtered
     },
 
-    getStatusClass(status) {
+    getStatusClass (status) {
       return {
         'admin-corrections__card--pending': status === 'pending',
         'admin-corrections__card--approved': status === 'approved',
@@ -301,7 +313,7 @@ export default {
       }
     },
 
-    formatDate(dateString) {
+    formatDate (dateString) {
       return new Date(dateString).toLocaleDateString('ja-JP', {
         year: 'numeric',
         month: 'long',
@@ -310,13 +322,13 @@ export default {
       })
     },
 
-    formatDateTime(dateString) {
+    formatDateTime (dateString) {
       return new Date(dateString).toLocaleString('ja-JP')
     },
 
-    formatTime(timeString) {
-      if (!timeString) return '未設定'
-      
+    formatTime (timeString) {
+      if (!timeString) { return '未設定' }
+
       try {
         // ISO形式の日時文字列から時刻部分を抽出
         if (typeof timeString === 'string' && timeString.includes(':')) {
@@ -325,15 +337,15 @@ export default {
           const [hours, minutes] = timePart.split(':')
           return `${hours}:${minutes}`
         }
-        
+
         // Dateオブジェクトの場合
         const date = new Date(timeString)
         if (isNaN(date.getTime())) {
           return '無効な時刻'
         }
-        
-        return date.toLocaleTimeString('ja-JP', { 
-          hour: '2-digit', 
+
+        return date.toLocaleTimeString('ja-JP', {
+          hour: '2-digit',
           minute: '2-digit'
         })
       } catch (error) {
