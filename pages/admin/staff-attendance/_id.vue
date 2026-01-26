@@ -4,13 +4,15 @@
       <div class="staff-attendance__header-content">
         <button
           type="button"
-          @click="$router.push('/admin/staff')"
           class="staff-attendance__back-btn"
+          @click="$router.push('/admin/staff')"
         >
-          <i class="fas fa-arrow-left"></i>
+          <i class="fas fa-arrow-left" />
           スタッフ一覧に戻る
         </button>
-        <h1 class="staff-attendance__title">{{ staffName }}さんの勤怠</h1>
+        <h1 class="staff-attendance__title">
+          {{ staffName }}さんの勤怠
+        </h1>
       </div>
     </div>
 
@@ -19,11 +21,11 @@
       <div class="staff-attendance__month-selector">
         <button
           type="button"
-          @click="previousMonth"
           class="staff-attendance__month-btn"
           aria-label="前月"
+          @click="previousMonth"
         >
-          <i class="fas fa-chevron-left"></i>
+          <i class="fas fa-chevron-left" />
           前月
         </button>
 
@@ -33,19 +35,19 @@
             type="month"
             class="staff-attendance__month-input"
             @change="handleMonthChange"
-          />
+          >
           <span class="staff-attendance__month-label">{{ formatMonthLabel(selectedMonth) }}</span>
         </div>
 
         <button
           type="button"
-          @click="nextMonth"
           class="staff-attendance__month-btn"
           :disabled="isCurrentMonth"
           aria-label="翌月"
+          @click="nextMonth"
         >
           翌月
-          <i class="fas fa-chevron-right"></i>
+          <i class="fas fa-chevron-right" />
         </button>
       </div>
 
@@ -56,10 +58,10 @@
           <div class="staff-attendance__actions">
             <button
               type="button"
-              @click="exportToCSV"
               class="staff-attendance__btn staff-attendance__btn--secondary"
+              @click="exportToCSV"
             >
-              <i class="fas fa-download"></i>
+              <i class="fas fa-download" />
               CSV出力
             </button>
           </div>
@@ -100,19 +102,19 @@
                 <td>
                   <span :class="getTimeClass(record.check_in, record.status === '遅刻')">
                     {{ formatTime(record.check_in) }}
-                    <i v-if="record.status === '遅刻'" class="fas fa-exclamation-triangle staff-attendance__late-icon"></i>
+                    <i v-if="record.status === '遅刻'" class="fas fa-exclamation-triangle staff-attendance__late-icon" />
                   </span>
                 </td>
                 <td>{{ formatTime(record.check_out) }}</td>
                 <td>{{ formatHours(record.rest_time) }}</td>
                 <td>{{ formatHours(record.work_time) }}</td>
                 <td>
-                  <button 
+                  <button
                     v-if="record.check_in"
-                    @click="openDetailModal(record)"
                     class="staff-attendance__detail-btn"
+                    @click="openDetailModal(record)"
                   >
-                    <i class="fas fa-edit"></i> 詳細
+                    <i class="fas fa-edit" /> 詳細
                   </button>
                   <span v-else class="staff-attendance__no-data">−</span>
                 </td>
@@ -122,7 +124,7 @@
 
           <!-- 空データ時の表示 -->
           <div v-if="attendanceRecords.length === 0" class="staff-attendance__empty">
-            <i class="fas fa-calendar-times"></i>
+            <i class="fas fa-calendar-times" />
             <p>{{ formatMonthLabel(selectedMonth) }}の勤怠記録はありません</p>
           </div>
         </div>
@@ -133,8 +135,8 @@
         <div class="modal-content" @click.stop>
           <div class="modal-header">
             <h3>勤怠詳細 - {{ formatDate(editingRecord.date) }}({{ getDayLabel(editingRecord.date) }})</h3>
-            <button @click="closeDetailModal" class="modal-close">
-              <i class="fas fa-times"></i>
+            <button class="modal-close" @click="closeDetailModal">
+              <i class="fas fa-times" />
             </button>
           </div>
 
@@ -142,34 +144,34 @@
             <!-- 勤務中の場合（閲覧のみ） -->
             <div v-if="!editingRecord.check_out" class="detail-info">
               <div class="info-alert">
-                <i class="fas fa-user-clock"></i>
+                <i class="fas fa-user-clock" />
                 現在勤務中のため、閲覧のみ可能です
               </div>
 
               <div class="form-group">
                 <label>出勤時刻</label>
-                <input 
-                  :value="editingRecord.check_in" 
-                  type="text" 
+                <input
+                  :value="editingRecord.check_in"
+                  type="text"
                   class="form-control"
                   readonly
-                />
+                >
               </div>
 
               <div class="form-group">
                 <label>退勤時刻</label>
-                <input 
+                <input
                   value="勤務中"
-                  type="text" 
+                  type="text"
                   class="form-control"
                   readonly
-                />
+                >
               </div>
 
-              <div class="form-section" v-if="editingRecord.rests && editingRecord.rests.length > 0">
+              <div v-if="editingRecord.rests && editingRecord.rests.length > 0" class="form-section">
                 <h4>休憩時間</h4>
-                <div 
-                  v-for="(rest, index) in editingRecord.rests" 
+                <div
+                  v-for="(rest, index) in editingRecord.rests"
                   :key="index"
                   class="rest-item-readonly"
                 >
@@ -182,83 +184,87 @@
             <form v-else @submit.prevent="saveAttendanceDetail">
               <div class="form-group">
                 <label>出勤時刻</label>
-                <input 
-                  v-model="editingRecord.check_in" 
-                  type="time" 
+                <input
+                  v-model="editingRecord.check_in"
+                  type="time"
                   class="form-control"
                   :class="{ 'is-invalid': errors.check_in }"
-                />
-                <div v-if="errors.check_in" class="error-message">{{ getErrorMessage(errors.check_in) }}</div>
+                >
+                <div v-if="errors.check_in" class="error-message">
+                  {{ getErrorMessage(errors.check_in) }}
+                </div>
               </div>
 
               <div class="form-group">
                 <label>退勤時刻</label>
-                <input 
-                  v-model="editingRecord.check_out" 
-                  type="time" 
+                <input
+                  v-model="editingRecord.check_out"
+                  type="time"
                   class="form-control"
                   :class="{ 'is-invalid': errors.check_out }"
-                />
-                <div v-if="errors.check_out" class="error-message">{{ getErrorMessage(errors.check_out) }}</div>
+                >
+                <div v-if="errors.check_out" class="error-message">
+                  {{ getErrorMessage(errors.check_out) }}
+                </div>
               </div>
 
               <div class="form-section">
                 <h4>休憩時間</h4>
-                <div 
-                  v-for="(rest, index) in editingRecord.rests" 
+                <div
+                  v-for="(rest, index) in editingRecord.rests"
                   :key="index"
                   class="rest-item"
                 >
                   <div class="rest-inputs">
                     <div class="form-group">
                       <label>開始</label>
-                      <input 
-                        v-model="rest.rest_start" 
-                        type="time" 
+                      <input
+                        v-model="rest.rest_start"
+                        type="time"
                         class="form-control"
                         :class="{ 'is-invalid': errors[`rests.${index}.rest_start`] }"
-                      />
+                      >
                       <div v-if="errors[`rests.${index}.rest_start`]" class="error-message">
                         {{ getErrorMessage(errors[`rests.${index}.rest_start`]) }}
                       </div>
                     </div>
                     <div class="form-group">
                       <label>終了</label>
-                      <input 
-                        v-model="rest.rest_end" 
-                        type="time" 
+                      <input
+                        v-model="rest.rest_end"
+                        type="time"
                         class="form-control"
                         :class="{ 'is-invalid': errors[`rests.${index}.rest_end`] }"
-                      />
+                      >
                       <div v-if="errors[`rests.${index}.rest_end`]" class="error-message">
                         {{ getErrorMessage(errors[`rests.${index}.rest_end`]) }}
                       </div>
                     </div>
-                    <button 
+                    <button
                       type="button"
-                      @click="removeRest(index)"
                       class="btn-remove-rest"
+                      @click="removeRest(index)"
                     >
-                      <i class="fas fa-trash"></i>
+                      <i class="fas fa-trash" />
                       削除
                     </button>
                   </div>
                 </div>
-                <button 
+                <button
                   type="button"
-                  @click="addRest"
                   class="btn-add-rest"
+                  @click="addRest"
                 >
-                  <i class="fas fa-plus"></i> 休憩時間を追加
+                  <i class="fas fa-plus" /> 休憩時間を追加
                 </button>
               </div>
 
               <div class="modal-actions">
-                <button type="button" @click="closeDetailModal" class="btn-cancel">
+                <button type="button" class="btn-cancel" @click="closeDetailModal">
                   キャンセル
                 </button>
                 <button type="submit" class="btn-save">
-                  <i class="fas fa-save"></i> 保存
+                  <i class="fas fa-save" /> 保存
                 </button>
               </div>
             </form>
@@ -274,7 +280,7 @@ export default {
   name: 'StaffAttendance',
   middleware: ['auth', 'verified', 'admin'],
 
-  data() {
+  data () {
     return {
       staffId: null,
       staffName: '',
@@ -300,32 +306,32 @@ export default {
   },
 
   computed: {
-    isCurrentMonth() {
+    isCurrentMonth () {
       return this.selectedMonth === this.getCurrentMonthString()
     }
   },
 
   watch: {
-    selectedMonth() {
+    selectedMonth () {
       this.loadAttendanceData()
     }
   },
 
-  async mounted() {
+  async mounted () {
     this.staffId = this.$route.params.id
     await this.loadStaffInfo()
     await this.loadAttendanceData()
   },
 
   methods: {
-    getCurrentMonthString() {
+    getCurrentMonthString () {
       const today = new Date()
       const year = today.getFullYear()
       const month = String(today.getMonth() + 1).padStart(2, '0')
       return `${year}-${month}`
     },
 
-    async loadStaffInfo() {
+    async loadStaffInfo () {
       try {
         // スタッフ一覧から該当スタッフを検索
         const response = await this.$axios.get('/api/staff', {
@@ -333,10 +339,10 @@ export default {
             Authorization: `Bearer ${this.$store.getters['auth/token']}`
           }
         })
-        
+
         // ページネーション対応: data配列から該当スタッフを検索
         const staff = response.data.data.find(s => s.id === parseInt(this.staffId))
-        
+
         if (staff) {
           this.staffName = staff.name
         } else {
@@ -350,7 +356,7 @@ export default {
       }
     },
 
-    async loadAttendanceData() {
+    async loadAttendanceData () {
       try {
         this.isLoading = true
 
@@ -379,7 +385,7 @@ export default {
       }
     },
 
-    generateDummyData() {
+    generateDummyData () {
       const records = []
       const [year, month] = this.selectedMonth.split('-')
       const daysInMonth = new Date(year, month, 0).getDate()
@@ -389,7 +395,7 @@ export default {
         const dayOfWeek = new Date(date).getDay()
 
         // 土日はスキップ
-        if (dayOfWeek === 0 || dayOfWeek === 6) continue
+        if (dayOfWeek === 0 || dayOfWeek === 6) { continue }
 
         records.push({
           date,
@@ -406,7 +412,7 @@ export default {
       return records
     },
 
-    calculateStatistics() {
+    calculateStatistics () {
       this.statistics.workDays = this.attendanceRecords.filter(r => r.check_in).length
       this.statistics.totalHours = Math.floor(
         this.attendanceRecords.reduce((sum, r) => sum + (r.work_time || 0), 0) / 60
@@ -415,11 +421,11 @@ export default {
       this.statistics.absenceCount = this.attendanceRecords.filter(r => !r.check_in).length
     },
 
-    handleMonthChange() {
+    handleMonthChange () {
       // watch で loadAttendanceData が自動実行される
     },
 
-    previousMonth() {
+    previousMonth () {
       const [year, month] = this.selectedMonth.split('-').map(Number)
       const date = new Date(year, month - 2, 1) // month - 1 で現在月、-2で前月
       const newYear = date.getFullYear()
@@ -427,7 +433,7 @@ export default {
       this.selectedMonth = `${newYear}-${newMonth}`
     },
 
-    nextMonth() {
+    nextMonth () {
       if (!this.isCurrentMonth) {
         const [year, month] = this.selectedMonth.split('-').map(Number)
         const date = new Date(year, month, 1) // month で翌月
@@ -437,62 +443,62 @@ export default {
       }
     },
 
-    formatMonthLabel(monthString) {
-      if (!monthString) return ''
+    formatMonthLabel (monthString) {
+      if (!monthString) { return '' }
       const [year, month] = monthString.split('-')
       return `${year}年${parseInt(month)}月`
     },
 
-    formatDate(dateString) {
-      if (!dateString) return ''
+    formatDate (dateString) {
+      if (!dateString) { return '' }
       const date = new Date(dateString)
       return `${date.getMonth() + 1}/${date.getDate()}`
     },
 
-    getDayLabel(dateString) {
-      if (!dateString) return ''
+    getDayLabel (dateString) {
+      if (!dateString) { return '' }
       const days = ['日', '月', '火', '水', '木', '金', '土']
       const date = new Date(dateString)
       return days[date.getDay()]
     },
 
-    formatTime(timeString) {
-      if (!timeString) return '−'
+    formatTime (timeString) {
+      if (!timeString) { return '−' }
       return timeString.substring(0, 5)
     },
 
-    formatHours(hours) {
-      if (!hours || hours === 0) return '−'
+    formatHours (hours) {
+      if (!hours || hours === 0) { return '−' }
       const h = Math.floor(hours)
       const m = Math.round((hours - h) * 60)
       return `${h}:${String(m).padStart(2, '0')}`
     },
 
-    formatDuration(minutes) {
-      if (!minutes || minutes === 0) return '−'
+    formatDuration (minutes) {
+      if (!minutes || minutes === 0) { return '−' }
       const hours = Math.floor(minutes / 60)
       const mins = minutes % 60
       return `${hours}:${String(mins).padStart(2, '0')}`
     },
 
-    getRowClass(record) {
+    getRowClass (record) {
       return {
         'staff-attendance__row--weekend': this.isWeekend(record.date),
         'staff-attendance__row--late': record.is_late
       }
     },
 
-    getTimeClass(timeString, isLate) {
+    getTimeClass (timeString, isLate) {
       // 赤字表示を無効化
       return ''
     },
 
-    isWeekend(dateString) {
+    isWeekend (dateString) {
       const dayOfWeek = new Date(dateString).getDay()
       return dayOfWeek === 0 || dayOfWeek === 6
     },
 
-    exportToCSV() {
+    exportToCSV () {
       if (this.attendanceRecords.length === 0) {
         if (this.$toast) {
           this.$toast.warning('出力するデータがありません')
@@ -504,16 +510,16 @@ export default {
 
       // CSVヘッダー
       const headers = ['日付', '曜日', '出勤時刻', '退勤時刻', '休憩時間', '勤務時間']
-      
+
       // CSVデータ作成
-      const rows = this.attendanceRecords.map(record => {
+      const rows = this.attendanceRecords.map((record) => {
         const date = this.formatDate(record.date)
         const day = this.getDayLabel(record.date)
         const checkIn = record.check_in || '−'
         const checkOut = record.check_out || '−'
         const restTime = this.formatHours(record.rest_time)
         const workTime = this.formatHours(record.work_time)
-        
+
         return [date, day, checkIn, checkOut, restTime, workTime]
       })
 
@@ -534,11 +540,11 @@ export default {
       // BOMを追加（Excelで文字化けしないように）
       const bom = '\uFEFF'
       const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' })
-      
+
       // ファイル名生成（スタッフ名_年月.csv）
       const monthStr = this.selectedMonth.replace('-', '年') + '月'
       const filename = `${this.staffName}_${monthStr}_勤怠データ.csv`
-      
+
       // ダウンロード
       const link = document.createElement('a')
       if (link.download !== undefined) {
@@ -550,14 +556,14 @@ export default {
         link.click()
         document.body.removeChild(link)
         URL.revokeObjectURL(url)
-        
+
         if (this.$toast) {
           this.$toast.success('CSVファイルをダウンロードしました')
         }
       }
     },
 
-    async openDetailModal(record) {
+    async openDetailModal (record) {
       // 詳細データを取得
       try {
         const response = await this.$axios.get(`/api/attendance/${record.id}`, {
@@ -603,7 +609,7 @@ export default {
       }
     },
 
-    closeDetailModal() {
+    closeDetailModal () {
       this.showDetailModal = false
       this.errors = {}
       this.editingRecord = {
@@ -615,7 +621,7 @@ export default {
       }
     },
 
-    addRest() {
+    addRest () {
       this.editingRecord.rests.push({
         id: null,
         rest_start: '',
@@ -623,11 +629,11 @@ export default {
       })
     },
 
-    removeRest(index) {
+    removeRest (index) {
       this.editingRecord.rests.splice(index, 1)
     },
 
-    async saveAttendanceDetail() {
+    async saveAttendanceDetail () {
       try {
         // バリデーションをクリア
         this.errors = {}
@@ -660,17 +666,17 @@ export default {
         await this.loadAttendanceData()
       } catch (error) {
         console.error('勤怠更新エラー:', error)
-        
+
         // APIエラーの処理
         if (error.response?.data?.errors) {
           const apiErrors = error.response.data.errors
           this.errors = {}
-          
+
           for (const [field, messages] of Object.entries(apiErrors)) {
             this.errors[field] = messages
           }
         }
-        
+
         if (this.$toast) {
           const message = error.response?.data?.message || '勤怠情報の更新に失敗しました'
           this.$toast.error(message)
@@ -678,7 +684,7 @@ export default {
       }
     },
 
-    validateAttendanceForm() {
+    validateAttendanceForm () {
       const errors = {}
 
       // 出勤時刻のチェック
@@ -707,16 +713,16 @@ export default {
           if (rest.rest_end <= rest.rest_start) {
             errors[`rests.${index}.rest_end`] = ['休憩終了時刻は休憩開始時刻より後の時刻を入力してください']
           }
-          
+
           // 休憩時間が勤務時間内に収まっているかチェック
           if (this.editingRecord.check_in && rest.rest_start < this.editingRecord.check_in) {
             errors[`rests.${index}.rest_start`] = ['休憩開始時刻は出勤時刻より後の時刻を入力してください']
           }
-          
+
           if (this.editingRecord.check_out && rest.rest_start > this.editingRecord.check_out) {
             errors[`rests.${index}.rest_start`] = ['休憩開始時刻は退勤時刻より前の時刻を入力してください']
           }
-          
+
           if (this.editingRecord.check_out && rest.rest_end > this.editingRecord.check_out) {
             errors[`rests.${index}.rest_end`] = ['休憩終了時刻は退勤時刻より前の時刻を入力してください']
           }
@@ -726,7 +732,7 @@ export default {
       return errors
     },
 
-    getErrorMessage(error) {
+    getErrorMessage (error) {
       // エラーが配列の場合は最初のメッセージを取得
       if (Array.isArray(error)) {
         return error.length > 0 ? error[0] : ''
@@ -735,8 +741,8 @@ export default {
       return error || ''
     },
 
-    formatTimeForInput(timeString) {
-      if (!timeString) return ''
+    formatTimeForInput (timeString) {
+      if (!timeString) { return '' }
       // "HH:mm" or "HH:mm:ss" format to "HH:mm"
       return timeString.substring(0, 5)
     }

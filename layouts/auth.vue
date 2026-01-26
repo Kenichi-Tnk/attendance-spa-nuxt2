@@ -5,7 +5,7 @@
         勤怠管理システム
       </h1>
     </div>
-    
+
     <div class="auth-layout__content-wrapper">
       <div class="auth-layout__content-card">
         <Nuxt />

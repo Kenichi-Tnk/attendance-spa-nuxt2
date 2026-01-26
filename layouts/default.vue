@@ -37,7 +37,7 @@
             <span class="default-layout__user-name">
               {{ $store.getters['auth/user']?.name }}さん
             </span>
-            <button @click="logout" class="default-layout__logout-btn">
+            <button class="default-layout__logout-btn" @click="logout">
               ログアウト
             </button>
           </div>
@@ -55,7 +55,7 @@
 <script>
 export default {
   methods: {
-    async logout() {
+    async logout () {
       const result = await this.$store.dispatch('auth/logout')
       if (result.success) {
         this.$router.push('/login')

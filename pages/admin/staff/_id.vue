@@ -4,13 +4,15 @@
       <div class="staff-detail__header-content">
         <button
           type="button"
-          @click="$router.push('/admin/staff')"
           class="staff-detail__back-btn"
+          @click="$router.push('/admin/staff')"
         >
-          <i class="fas fa-arrow-left"></i>
+          <i class="fas fa-arrow-left" />
           スタッフ一覧に戻る
         </button>
-        <h1 class="staff-detail__title">スタッフ詳細</h1>
+        <h1 class="staff-detail__title">
+          スタッフ詳細
+        </h1>
       </div>
     </div>
 
@@ -25,11 +27,15 @@
         <div class="staff-detail__info-card">
           <div class="staff-detail__info-header">
             <div class="staff-detail__avatar-large">
-              <i class="fas fa-user"></i>
+              <i class="fas fa-user" />
             </div>
             <div class="staff-detail__info-main">
-              <h2 class="staff-detail__name">{{ staff.name }}</h2>
-              <p class="staff-detail__email">{{ staff.email }}</p>
+              <h2 class="staff-detail__name">
+                {{ staff.name }}
+              </h2>
+              <p class="staff-detail__email">
+                {{ staff.email }}
+              </p>
               <div class="staff-detail__badges">
                 <span
                   class="staff-detail__role-badge"
@@ -41,14 +47,14 @@
                   v-if="staff.email_verified_at"
                   class="staff-detail__verified-badge"
                 >
-                  <i class="fas fa-check-circle"></i>
+                  <i class="fas fa-check-circle" />
                   メール認証済み
                 </span>
                 <span
                   v-else
                   class="staff-detail__unverified-badge"
                 >
-                  <i class="fas fa-exclamation-circle"></i>
+                  <i class="fas fa-exclamation-circle" />
                   メール未認証
                 </span>
               </div>
@@ -79,51 +85,59 @@
         <div class="staff-detail__actions">
           <button
             type="button"
-            @click="goToAttendance"
             class="staff-detail__btn staff-detail__btn--primary"
+            @click="goToAttendance"
           >
-            <i class="fas fa-calendar-alt"></i>
+            <i class="fas fa-calendar-alt" />
             {{ staff.name }}さんの勤怠
           </button>
           <button
             type="button"
-            @click="editStaff"
             class="staff-detail__btn staff-detail__btn--secondary"
+            @click="editStaff"
           >
-            <i class="fas fa-edit"></i>
+            <i class="fas fa-edit" />
             編集
           </button>
         </div>
 
         <!-- 統計情報（将来的に追加） -->
         <div class="staff-detail__stats">
-          <h3 class="staff-detail__section-title">勤怠統計（今月）</h3>
+          <h3 class="staff-detail__section-title">
+            勤怠統計（今月）
+          </h3>
           <div class="staff-detail__stats-grid">
             <div class="staff-detail__stat-card">
               <div class="staff-detail__stat-icon staff-detail__stat-icon--days">
-                <i class="fas fa-calendar-check"></i>
+                <i class="fas fa-calendar-check" />
               </div>
               <div class="staff-detail__stat-info">
                 <h4>出勤日数</h4>
-                <p class="staff-detail__stat-value">{{ monthlyStats.workDays }}日</p>
+                <p class="staff-detail__stat-value">
+                  {{ monthlyStats.workDays }}日
+                </p>
               </div>
             </div>
             <div class="staff-detail__stat-card">
               <div class="staff-detail__stat-icon staff-detail__stat-icon--hours">
-                <i class="fas fa-clock"></i>
+                <i class="fas fa-clock" />
               </div>
               <div class="staff-detail__stat-info">
                 <h4>総勤務時間</h4>
-                <p class="staff-detail__stat-value">{{ monthlyStats.totalHours }}時間</p>
+                <p class="staff-detail__stat-value">
+                  {{ monthlyStats.totalHours }}時間
+                </p>
               </div>
             </div>
             <div class="staff-detail__stat-card">
               <div class="staff-detail__stat-icon staff-detail__stat-icon--late">
-                <i class="fas fa-exclamation-triangle"></i>
+                <i class="fas fa-exclamation-triangle" />
               </div>
               <div class="staff-detail__stat-info">
                 <h4>遅刻回数</h4>
-                <p class="staff-detail__stat-value">{{ monthlyStats.lateCount }}回</p>
+                <p class="staff-detail__stat-value">
+                  {{ monthlyStats.lateCount }}回
+                </p>
               </div>
             </div>
           </div>
@@ -131,12 +145,12 @@
       </template>
 
       <div v-else class="staff-detail__error">
-        <i class="fas fa-exclamation-circle"></i>
+        <i class="fas fa-exclamation-circle" />
         <p>スタッフ情報が見つかりませんでした</p>
         <button
           type="button"
-          @click="$router.push('/admin/staff')"
           class="staff-detail__btn staff-detail__btn--secondary"
+          @click="$router.push('/admin/staff')"
         >
           スタッフ一覧に戻る
         </button>
@@ -150,7 +164,7 @@ export default {
   name: 'StaffDetail',
   middleware: ['auth', 'verified', 'admin'],
 
-  data() {
+  data () {
     return {
       staff: null,
       isLoading: false,
@@ -162,12 +176,12 @@ export default {
     }
   },
 
-  async mounted() {
+  async mounted () {
     await this.loadStaffData()
   },
 
   methods: {
-    async loadStaffData() {
+    async loadStaffData () {
       try {
         this.isLoading = true
         const staffId = this.$route.params.id
@@ -182,7 +196,7 @@ export default {
         await this.loadMonthlyStats()
       } catch (error) {
         console.error('スタッフ情報取得エラー:', error)
-        
+
         // 開発中: ダミーデータ
         this.staff = {
           id: this.$route.params.id,
@@ -208,7 +222,7 @@ export default {
       }
     },
 
-    async loadMonthlyStats() {
+    async loadMonthlyStats () {
       try {
         const response = await this.$axios.get(`/api/staff/${this.staff.id}/stats/monthly`, {
           headers: {
@@ -223,8 +237,8 @@ export default {
       }
     },
 
-    formatDate(dateString) {
-      if (!dateString) return '未設定'
+    formatDate (dateString) {
+      if (!dateString) { return '未設定' }
       const date = new Date(dateString)
       return date.toLocaleDateString('ja-JP', {
         year: 'numeric',
@@ -233,11 +247,11 @@ export default {
       })
     },
 
-    goToAttendance() {
+    goToAttendance () {
       this.$router.push(`/admin/staff/${this.staff.id}/attendance`)
     },
 
-    editStaff() {
+    editStaff () {
       if (this.$toast) {
         this.$toast.info('編集機能は開発中です')
       } else {

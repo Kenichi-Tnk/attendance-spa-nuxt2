@@ -3,12 +3,12 @@
     <h2 class="auth__title">
       ログイン
     </h2>
-    
+
     <!-- エラーメッセージ -->
     <div v-if="errorMessage" class="auth__message auth__message--error">
       {{ errorMessage }}
     </div>
-    
+
     <ValidationObserver v-slot="{ handleSubmit, invalid }">
       <form @submit.prevent="handleSubmit(handleLogin)">
         <div class="auth__form-container">
@@ -29,13 +29,13 @@
                 class="auth__field-input"
                 :class="{ 'auth__field-input--error': errors.length > 0 }"
                 placeholder="email@example.com"
-              />
+              >
               <span v-if="errors.length > 0" class="auth__field-error">
                 {{ errors[0] }}
               </span>
             </ValidationProvider>
           </div>
-          
+
           <!-- パスワード -->
           <div class="auth__field-group">
             <label for="password" class="auth__field-label">
@@ -53,13 +53,13 @@
                 class="auth__field-input"
                 :class="{ 'auth__field-input--error': errors.length > 0 }"
                 placeholder="パスワード"
-              />
+              >
               <span v-if="errors.length > 0" class="auth__field-error">
                 {{ errors[0] }}
               </span>
             </ValidationProvider>
           </div>
-          
+
           <!-- ログインボタン -->
           <div>
             <button
@@ -74,7 +74,7 @@
         </div>
       </form>
     </ValidationObserver>
-    
+
     <!-- 登録リンク -->
     <div class="auth__link-section">
       <p class="auth__link-text">
@@ -91,8 +91,8 @@
 export default {
   layout: 'auth',
   middleware: 'guest',
-  
-  data() {
+
+  data () {
     return {
       form: {
         email: '',
@@ -101,21 +101,21 @@ export default {
       errorMessage: ''
     }
   },
-  
+
   methods: {
-    async handleLogin() {
+    async handleLogin () {
       this.errorMessage = ''
-      
+
       try {
         const result = await this.$store.dispatch('auth/login', this.form)
-        
+
         if (result.success) {
           // 認証状態が完全にセットされるまで待つ
           await this.$nextTick()
-          
+
           // リダイレクト先の取得
           const redirectTo = this.$route.query.redirect || '/'
-          
+
           // $router.pushでリダイレクト
           this.$router.push(redirectTo)
         } else {

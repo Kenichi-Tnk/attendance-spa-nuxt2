@@ -45,7 +45,7 @@ extend('not_future', {
 extend('after_time', {
   params: ['target'],
   validate: (value, { target }) => {
-    if (!value || !target) return true
+    if (!value || !target) { return true }
     const [valueHour, valueMin] = value.split(':').map(Number)
     const [targetHour, targetMin] = target.split(':').map(Number)
     const valueMinutes = valueHour * 60 + valueMin

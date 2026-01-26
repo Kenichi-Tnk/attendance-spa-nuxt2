@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h2 class="auth__title">新規登録</h2>
+    <h2 class="auth__title">
+      新規登録
+    </h2>
 
     <!-- 成功メッセージ -->
     <div v-if="successMessage" class="auth__message auth__message--success">
@@ -30,7 +32,7 @@
                 class="auth__field-input"
                 :class="{ 'auth__field-input--error': errors.length > 0 }"
                 placeholder="田中太郎"
-              />
+              >
               <span v-if="errors.length > 0" class="auth__field-error">
                 {{ errors[0] }}
               </span>
@@ -54,7 +56,7 @@
                 class="auth__field-input"
                 :class="{ 'auth__field-input--error': errors.length > 0 }"
                 placeholder="email@example.com"
-              />
+              >
               <span v-if="errors.length > 0" class="auth__field-error">
                 {{ errors[0] }}
               </span>
@@ -77,7 +79,7 @@
                 class="auth__field-input"
                 :class="{ 'auth__field-input--error': errors.length > 0 }"
                 placeholder="パスワード（8文字以上）"
-              />
+              >
               <span v-if="errors.length > 0" class="auth__field-error">
                 {{ errors[0] }}
               </span>
@@ -101,7 +103,7 @@
                 class="auth__field-input"
                 :class="{ 'auth__field-input--error': errors.length > 0 }"
                 placeholder="パスワード（確認）"
-              />
+              >
               <span v-if="errors.length > 0" class="auth__field-error">
                 {{ errors[0] }}
               </span>
@@ -127,7 +129,9 @@
     <div class="auth__link-section">
       <p class="auth__link-text">
         すでにアカウントをお持ちの方は
-        <NuxtLink to="/login" class="auth__link"> ログイン </NuxtLink>
+        <NuxtLink to="/login" class="auth__link">
+          ログイン
+        </NuxtLink>
       </p>
     </div>
   </div>
@@ -135,58 +139,58 @@
 
 <script>
 export default {
-  layout: "auth",
-  middleware: "guest",
+  layout: 'auth',
+  middleware: 'guest',
 
-  data() {
+  data () {
     return {
       form: {
-        name: "",
-        email: "",
-        password: "",
-        password_confirmation: "",
+        name: '',
+        email: '',
+        password: '',
+        password_confirmation: ''
       },
-      errorMessage: "",
-      successMessage: "",
-    };
+      errorMessage: '',
+      successMessage: ''
+    }
   },
 
   methods: {
-    async handleRegister() {
-      this.errorMessage = "";
-      this.successMessage = "";
+    async handleRegister () {
+      this.errorMessage = ''
+      this.successMessage = ''
 
       try {
-        const result = await this.$store.dispatch("auth/register", this.form);
+        const result = await this.$store.dispatch('auth/register', this.form)
 
         if (result.success) {
-          this.successMessage = result.message;
+          this.successMessage = result.message
 
           // メール認証ページへリダイレクト
           if (result.shouldRedirectToVerify) {
             setTimeout(() => {
-              this.$router.push("/verify-email");
-            }, 1500); // 1.5秒後にリダイレクト（成功メッセージを表示してから）
+              this.$router.push('/verify-email')
+            }, 1500) // 1.5秒後にリダイレクト（成功メッセージを表示してから）
           }
 
           // フォームをクリア
           this.form = {
-            name: "",
-            email: "",
-            password: "",
-            password_confirmation: "",
-          };
+            name: '',
+            email: '',
+            password: '',
+            password_confirmation: ''
+          }
         } else {
-          this.errorMessage = result.error;
-          console.error("Registration failed:", result.error);
+          this.errorMessage = result.error
+          console.error('Registration failed:', result.error)
         }
       } catch (error) {
-        console.error("Registration exception:", error);
-        this.errorMessage = "登録に失敗しました";
+        console.error('Registration exception:', error)
+        this.errorMessage = '登録に失敗しました'
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style scoped>

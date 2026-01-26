@@ -19,9 +19,9 @@
 
         <div>
           <button
-            @click="resendVerificationEmail"
             :disabled="isLoading"
             class="auth__btn auth__btn--primary"
+            @click="resendVerificationEmail"
           >
             <span v-if="isLoading">送信中...</span>
             <span v-else>確認メールを送信</span>
@@ -29,7 +29,9 @@
         </div>
 
         <div v-if="message" class="verify-email__message">
-          <p :class="message.includes('エラー') ? 'verify-email__message--error' : 'verify-email__message--success'">{{ message }}</p>
+          <p :class="message.includes('エラー') ? 'verify-email__message--error' : 'verify-email__message--success'">
+            {{ message }}
+          </p>
         </div>
       </div>
     </div>
@@ -42,7 +44,7 @@ export default {
   layout: 'auth',
   middleware: ['auth'],
 
-  data() {
+  data () {
     return {
       isLoading: false,
       message: ''
@@ -50,7 +52,7 @@ export default {
   },
 
   methods: {
-    async resendVerificationEmail() {
+    async resendVerificationEmail () {
       try {
         this.isLoading = true
         this.message = ''

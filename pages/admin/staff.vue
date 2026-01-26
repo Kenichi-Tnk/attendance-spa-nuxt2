@@ -1,8 +1,12 @@
 <template>
   <div class="admin-staff">
     <div class="admin-staff__page-header">
-      <h1 class="admin-staff__title">スタッフ管理</h1>
-      <p class="admin-staff__subtitle">登録されているスタッフ情報を管理</p>
+      <h1 class="admin-staff__title">
+        スタッフ管理
+      </h1>
+      <p class="admin-staff__subtitle">
+        登録されているスタッフ情報を管理
+      </p>
     </div>
 
     <div class="admin-staff__container">
@@ -10,7 +14,7 @@
       <div class="admin-staff__stats">
         <div class="admin-staff__stat-card">
           <div class="admin-staff__stat-icon admin-staff__stat-icon--total">
-            <i class="fas fa-users"></i>
+            <i class="fas fa-users" />
           </div>
           <div class="admin-staff__stat-info">
             <h3>{{ totalStaff }}</h3>
@@ -20,7 +24,7 @@
 
         <div class="admin-staff__stat-card">
           <div class="admin-staff__stat-icon admin-staff__stat-icon--verified">
-            <i class="fas fa-user-check"></i>
+            <i class="fas fa-user-check" />
           </div>
           <div class="admin-staff__stat-info">
             <h3>{{ verifiedStaff }}</h3>
@@ -30,7 +34,7 @@
 
         <div class="admin-staff__stat-card">
           <div class="admin-staff__stat-icon admin-staff__stat-icon--unverified">
-            <i class="fas fa-user-clock"></i>
+            <i class="fas fa-user-clock" />
           </div>
           <div class="admin-staff__stat-info">
             <h3>{{ unverifiedStaff }}</h3>
@@ -40,7 +44,7 @@
 
         <div class="admin-staff__stat-card">
           <div class="admin-staff__stat-icon admin-staff__stat-icon--admin">
-            <i class="fas fa-user-shield"></i>
+            <i class="fas fa-user-shield" />
           </div>
           <div class="admin-staff__stat-info">
             <h3>{{ adminStaff }}</h3>
@@ -64,29 +68,41 @@
               placeholder="名前またはメールアドレスで検索..."
               class="admin-staff__search-input"
               @input="handleSearch"
-            />
-            <i class="fas fa-search admin-staff__search-icon"></i>
-          </div>
-          
-          <div class="admin-staff__filter-group">
-            <select v-model="roleFilter" @change="handleFilter" class="admin-staff__select">
-              <option value="">すべての役割</option>
-              <option value="admin">管理者</option>
-              <option value="user">一般ユーザー</option>
-            </select>
-            
-            <select v-model="verifiedFilter" @change="handleFilter" class="admin-staff__select">
-              <option value="">すべての状態</option>
-              <option value="true">認証済み</option>
-              <option value="false">未認証</option>
-            </select>
-            
-            <button 
-              @click="clearFilters" 
-              class="admin-staff__btn admin-staff__btn--secondary"
-              v-if="searchQuery || roleFilter || verifiedFilter"
             >
-              <i class="fas fa-times"></i>
+            <i class="fas fa-search admin-staff__search-icon" />
+          </div>
+
+          <div class="admin-staff__filter-group">
+            <select v-model="roleFilter" class="admin-staff__select" @change="handleFilter">
+              <option value="">
+                すべての役割
+              </option>
+              <option value="admin">
+                管理者
+              </option>
+              <option value="user">
+                一般ユーザー
+              </option>
+            </select>
+
+            <select v-model="verifiedFilter" class="admin-staff__select" @change="handleFilter">
+              <option value="">
+                すべての状態
+              </option>
+              <option value="true">
+                認証済み
+              </option>
+              <option value="false">
+                未認証
+              </option>
+            </select>
+
+            <button
+              v-if="searchQuery || roleFilter || verifiedFilter"
+              class="admin-staff__btn admin-staff__btn--secondary"
+              @click="clearFilters"
+            >
+              <i class="fas fa-times" />
               フィルターをクリア
             </button>
           </div>
@@ -112,11 +128,15 @@
               <tr v-for="staff in staffList" :key="staff.id" class="admin-staff__row">
                 <td class="admin-staff__staff-info">
                   <div class="admin-staff__avatar">
-                    <i class="fas fa-user"></i>
+                    <i class="fas fa-user" />
                   </div>
                   <div>
-                    <div class="admin-staff__name">{{ staff.name }}</div>
-                    <div class="admin-staff__id">ID: {{ staff.id }}</div>
+                    <div class="admin-staff__name">
+                      {{ staff.name }}
+                    </div>
+                    <div class="admin-staff__id">
+                      ID: {{ staff.id }}
+                    </div>
                   </div>
                 </td>
                 <td>{{ staff.email }}</td>
@@ -133,29 +153,29 @@
                   <button
                     type="button"
                     class="admin-staff__action-btn admin-staff__action-btn--detail"
-                    @click="viewStaffDetail(staff)"
                     :aria-label="`詳細 ${staff.name}`"
                     title="詳細"
+                    @click="viewStaffDetail(staff)"
                   >
-                    <i class="fas fa-eye"></i>
+                    <i class="fas fa-eye" />
                     <span>詳細</span>
                   </button>
                   <button
                     type="button"
                     class="admin-staff__action-btn admin-staff__action-btn--delete"
-                    @click="deleteStaff(staff)"
                     :disabled="staff.role === 'admin' && staff.id === currentUser.id"
                     :aria-label="`削除 ${staff.name}`"
                     title="削除"
+                    @click="deleteStaff(staff)"
                   >
-                    <i class="fas fa-trash"></i>
+                    <i class="fas fa-trash" />
                     <span>削除</span>
                   </button>
                 </td>
               </tr>
             </tbody>
           </table>
-          
+
           <!-- ページネーション情報 -->
           <div class="admin-staff__pagination-info">
             <span class="admin-staff__record-count">
@@ -176,7 +196,7 @@ export default {
   name: 'AdminStaff',
   middleware: ['auth', 'verified', 'admin'],
 
-  data() {
+  data () {
     return {
       staffList: [],
       paginationInfo: {
@@ -200,32 +220,32 @@ export default {
   },
 
   computed: {
-    currentUser() {
+    currentUser () {
       return this.$store.getters['auth/user']
     },
 
-    totalStaff() {
+    totalStaff () {
       return this.statistics.total
     },
 
-    verifiedStaff() {
+    verifiedStaff () {
       return this.statistics.verified
     },
 
-    unverifiedStaff() {
+    unverifiedStaff () {
       return this.statistics.unverified
     },
 
-    adminStaff() {
+    adminStaff () {
       return this.statistics.admin
     },
 
-    userStaff() {
+    userStaff () {
       return this.statistics.user
     }
   },
 
-  async mounted() {
+  async mounted () {
     await Promise.all([
       this.fetchStaffList(),
       this.fetchStatistics()
@@ -233,19 +253,19 @@ export default {
   },
 
   methods: {
-    async fetchStaffList() {
+    async fetchStaffList () {
       try {
         this.isLoading = true
-        
+
         // フィルターパラメータを構築
         const params = new URLSearchParams()
-        if (this.searchQuery) params.append('search', this.searchQuery)
-        if (this.roleFilter) params.append('role', this.roleFilter)
-        if (this.verifiedFilter) params.append('verified', this.verifiedFilter)
-        
+        if (this.searchQuery) { params.append('search', this.searchQuery) }
+        if (this.roleFilter) { params.append('role', this.roleFilter) }
+        if (this.verifiedFilter) { params.append('verified', this.verifiedFilter) }
+
         const queryString = params.toString()
         const url = queryString ? `/api/staff?${queryString}` : '/api/staff'
-        
+
         const response = await this.$axios.get(url, {
           headers: {
             Authorization: `Bearer ${this.$store.getters['auth/token']}`
@@ -275,7 +295,7 @@ export default {
       }
     },
 
-    async fetchStatistics() {
+    async fetchStatistics () {
       try {
         const response = await this.$axios.get('/api/staff/statistics', {
           headers: {
@@ -294,7 +314,7 @@ export default {
       }
     },
 
-    handleSearch() {
+    handleSearch () {
       // デバウンス処理：入力から500ms後に検索実行
       clearTimeout(this.searchTimeout)
       this.searchTimeout = setTimeout(() => {
@@ -302,35 +322,35 @@ export default {
       }, 500)
     },
 
-    handleFilter() {
+    handleFilter () {
       // フィルター変更時は即座に実行
       this.fetchStaffList()
     },
 
-    clearFilters() {
+    clearFilters () {
       this.searchQuery = ''
       this.roleFilter = ''
       this.verifiedFilter = ''
       this.fetchStaffList()
     },
 
-    getRoleClass(role) {
+    getRoleClass (role) {
       return {
         'admin-staff__role-badge--admin': role === 'admin',
         'admin-staff__role-badge--user': role === 'user'
       }
     },
 
-    formatDate(dateString) {
-      if (!dateString) return '未設定'
+    formatDate (dateString) {
+      if (!dateString) { return '未設定' }
       return new Date(dateString).toLocaleDateString('ja-JP')
     },
 
-    viewStaffDetail(staff) {
+    viewStaffDetail (staff) {
       this.$router.push(`/admin/staff-attendance/${staff.id}`)
     },
 
-    async deleteStaff(staff) {
+    async deleteStaff (staff) {
       if (staff.role === 'admin' && staff.id === this.currentUser.id) {
         if (this.$toast) {
           this.$toast.error('自分自身は削除できません')

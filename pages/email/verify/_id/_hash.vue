@@ -2,10 +2,14 @@
   <div class="verify-email__container">
     <div class="verify-email__content">
       <LoadingSpinner v-if="isVerifying" message="メールアドレスを認証しています..." />
-      
+
       <div v-else-if="verificationSuccess" class="verify-email__success">
-        <div class="verify-email__icon verify-email__icon--success">✓</div>
-        <h2 class="auth__title">メール認証完了</h2>
+        <div class="verify-email__icon verify-email__icon--success">
+          ✓
+        </div>
+        <h2 class="auth__title">
+          メール認証完了
+        </h2>
         <p class="auth__subtitle">
           メールアドレスの認証が完了しました
         </p>
@@ -15,12 +19,18 @@
       </div>
 
       <div v-else class="verify-email__error">
-        <div class="verify-email__icon verify-email__icon--error">✗</div>
-        <h2 class="auth__title">認証に失敗しました</h2>
-        <p class="auth__subtitle">{{ errorMessage }}</p>
+        <div class="verify-email__icon verify-email__icon--error">
+          ✗
+        </div>
+        <h2 class="auth__title">
+          認証に失敗しました
+        </h2>
+        <p class="auth__subtitle">
+          {{ errorMessage }}
+        </p>
         <button
-          @click="$router.push('/verify-email')"
           class="auth__btn auth__btn--primary"
+          @click="$router.push('/verify-email')"
         >
           メール認証画面へ戻る
         </button>
@@ -34,7 +44,7 @@ export default {
   name: 'EmailVerifyPage',
   layout: 'auth',
 
-  data() {
+  data () {
     return {
       isVerifying: true,
       verificationSuccess: false,
@@ -42,12 +52,12 @@ export default {
     }
   },
 
-  async mounted() {
+  async mounted () {
     await this.verifyEmail()
   },
 
   methods: {
-    async verifyEmail() {
+    async verifyEmail () {
       try {
         const { id, hash } = this.$route.params
         const { expires, signature } = this.$route.query
@@ -57,18 +67,18 @@ export default {
         })
 
         this.verificationSuccess = true
-        
+
         // 少し待ってからユーザー情報を再取得（DBの更新が反映されるまで）
         await new Promise(resolve => setTimeout(resolve, 500))
-        
+
         const updatedUser = await this.$store.dispatch('auth/fetchUser')
-        
+
         // localStorageを確実に更新
         if (updatedUser) {
           localStorage.setItem('auth-user', JSON.stringify(updatedUser))
           this.$store.commit('auth/SET_USER', updatedUser)
         }
-        
+
         // 1.5秒後にホームへリダイレクト
         setTimeout(() => {
           this.$router.push('/')
@@ -76,7 +86,7 @@ export default {
       } catch (error) {
         console.error('Email verification error:', error)
         this.verificationSuccess = false
-        
+
         if (error.response?.data?.message) {
           this.errorMessage = error.response.data.message
         } else {

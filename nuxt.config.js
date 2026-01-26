@@ -41,14 +41,14 @@ export default {
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/tailwindcss
-    '@nuxtjs/tailwindcss',
+    '@nuxtjs/tailwindcss'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
-    '@nuxtjs/proxy',
+    '@nuxtjs/proxy'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -57,7 +57,7 @@ export default {
     proxy: true,
     timeout: 10000,
     retry: { retries: 0 },
-    credentials: true,
+    credentials: true
   },
 
   // プロキシ設定
@@ -65,7 +65,7 @@ export default {
     '/api/': {
       target: 'http://localhost:8000',
       pathRewrite: { '^/api/': '/api/' },
-      changeOrigin: false,
+      changeOrigin: false
     }
   },
 
