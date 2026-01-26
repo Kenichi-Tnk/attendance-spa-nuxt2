@@ -145,10 +145,18 @@
   color: white;
 }
 
-.staff-attendance__stat-icon--days { background: #3b82f6; }
-.staff-attendance__stat-icon--hours { background: #10b981; }
-.staff-attendance__stat-icon--late { background: #f59e0b; }
-.staff-attendance__stat-icon--absence { background: #ef4444; }
+.staff-attendance__stat-icon--days {
+  background: #3b82f6;
+}
+.staff-attendance__stat-icon--hours {
+  background: #10b981;
+}
+.staff-attendance__stat-icon--late {
+  background: #f59e0b;
+}
+.staff-attendance__stat-icon--absence {
+  background: #ef4444;
+}
 
 .staff-attendance__stat-info h3 {
   font-size: 2rem;
@@ -187,6 +195,7 @@
 .staff-attendance__btn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
   border: none;
@@ -543,6 +552,9 @@
 
 .btn-cancel,
 .btn-save {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 0.375rem;
@@ -607,4 +619,3 @@
   border-radius: 0.375rem;
   color: #374151;
 }
-

@@ -63,10 +63,18 @@
   color: white;
 }
 
-.admin-staff__stat-icon--total { background: #3b82f6; }
-.admin-staff__stat-icon--verified { background: #10b981; }
-.admin-staff__stat-icon--unverified { background: #f59e0b; }
-.admin-staff__stat-icon--admin { background: #8b5cf6; }
+.admin-staff__stat-icon--total {
+  background: #3b82f6;
+}
+.admin-staff__stat-icon--verified {
+  background: #10b981;
+}
+.admin-staff__stat-icon--unverified {
+  background: #f59e0b;
+}
+.admin-staff__stat-icon--admin {
+  background: #8b5cf6;
+}
 
 .admin-staff__stat-info h3 {
   font-size: 2rem;
@@ -105,6 +113,7 @@
 .admin-staff__btn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
   border: none;

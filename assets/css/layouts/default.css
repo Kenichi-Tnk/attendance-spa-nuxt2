@@ -105,6 +105,9 @@
 }
 
 .default-layout__logout-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: #dc2626;
   font-size: 0.875rem;
   font-weight: 500;
