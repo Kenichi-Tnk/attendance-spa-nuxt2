@@ -17,17 +17,13 @@ class CorsMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        $allowedOrigins = ['http://localhost:3000', 'http://127.0.0.1:3000'];
+        $frontendUrl = config('app.frontend_url');
+        $allowedOrigins = [$frontendUrl];
         $origin = $request->header('Origin');
-        $allowOrigin = in_array($origin, $allowedOrigins) ? $origin : 'http://localhost:3000';
-
-        error_log('CORS Middleware - Method: ' . $request->getMethod());
-        error_log('CORS Middleware - Origin: ' . $origin);
-        error_log('CORS Middleware - Path: ' . $request->path());
+        $allowOrigin = in_array($origin, $allowedOrigins) ? $origin : $frontendUrl;
 
         // Handle preflight requests
         if ($request->getMethod() === 'OPTIONS') {
-            error_log('CORS Middleware - Handling OPTIONS request');
             return response('', 200)
                 ->header('Access-Control-Allow-Origin', $allowOrigin)
                 ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
@@ -38,16 +34,11 @@ class CorsMiddleware
 
         $response = $next($request);
 
-        error_log('CORS Middleware - Adding headers to response');
-        error_log('CORS Middleware - Response status: ' . $response->getStatusCode());
-
         // Add CORS headers using headers->set() for better compatibility with php artisan serve
         $response->headers->set('Access-Control-Allow-Origin', $allowOrigin);
         $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
         $response->headers->set('Access-Control-Allow-Headers', 'Accept, Authorization, Content-Type, X-Requested-With, X-CSRF-TOKEN');
         $response->headers->set('Access-Control-Allow-Credentials', 'true');
-
-        error_log('CORS Middleware - CORS headers set: ' . $allowOrigin);
 
         return $response;
     }

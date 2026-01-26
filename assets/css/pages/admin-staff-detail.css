@@ -174,6 +174,7 @@
 .staff-detail__btn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   padding: 0.875rem 1.5rem;
   border: none;
@@ -245,9 +246,15 @@
   flex-shrink: 0;
 }
 
-.staff-detail__stat-icon--days { background: #3b82f6; }
-.staff-detail__stat-icon--hours { background: #10b981; }
-.staff-detail__stat-icon--late { background: #f59e0b; }
+.staff-detail__stat-icon--days {
+  background: #3b82f6;
+}
+.staff-detail__stat-icon--hours {
+  background: #10b981;
+}
+.staff-detail__stat-icon--late {
+  background: #f59e0b;
+}
 
 .staff-detail__stat-info h4 {
   margin: 0 0 0.25rem 0;

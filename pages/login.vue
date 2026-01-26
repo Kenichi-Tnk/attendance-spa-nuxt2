@@ -105,34 +105,23 @@ export default {
   methods: {
     async handleLogin() {
       this.errorMessage = ''
-      console.log('Login form data:', this.form)
       
       try {
         const result = await this.$store.dispatch('auth/login', this.form)
-        console.log('Login result:', result)
         
         if (result.success) {
-          console.log('Login successful, auth state:', {
-            token: this.$store.state.auth.token,
-            user: this.$store.state.auth.user,
-            isAuthenticated: this.$store.state.auth.isAuthenticated
-          })
-          
           // 認証状態が完全にセットされるまで待つ
           await this.$nextTick()
           
           // リダイレクト先の取得
           const redirectTo = this.$route.query.redirect || '/'
-          console.log('Redirecting to:', redirectTo)
           
           // $router.pushでリダイレクト
           this.$router.push(redirectTo)
         } else {
           this.errorMessage = result.error
-          console.error('Login failed:', result.error)
         }
       } catch (error) {
-        console.error('Login exception:', error)
         this.errorMessage = 'ログインに失敗しました'
       }
     }

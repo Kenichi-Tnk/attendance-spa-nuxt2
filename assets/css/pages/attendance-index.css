@@ -36,7 +36,8 @@
 .attendance-index__filter-section {
   background-color: #ffffff;
   border-radius: 0.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   padding: 1.5rem;
   margin-bottom: 1.5rem;
 }
@@ -66,6 +67,9 @@
 }
 
 .attendance-index__search-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background-color: #2563eb;
   color: #ffffff;
   padding: 0.5rem 1rem;
@@ -92,6 +96,7 @@
 .attendance-index__action-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
   cursor: pointer;
   font-size: 0.875rem;
@@ -112,4 +117,18 @@
   color: #92400e;
   background-color: #fef3c7;
   border-color: #fcd34d;
+}
+
+/* =======================
+   Date Cell Styles
+   ======================= */
+.attendance-index__date-primary {
+  color: #111827;
+  font-weight: 500;
+}
+
+.attendance-index__date-secondary {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.125rem;
 }

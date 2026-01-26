@@ -159,10 +159,18 @@
   color: white;
 }
 
-.admin-daily-attendance__stat-icon--total { background: #3b82f6; }
-.admin-daily-attendance__stat-icon--present { background: #10b981; }
-.admin-daily-attendance__stat-icon--completed { background: #8b5cf6; }
-.admin-daily-attendance__stat-icon--absent { background: #ef4444; }
+.admin-daily-attendance__stat-icon--total {
+  background: #3b82f6;
+}
+.admin-daily-attendance__stat-icon--present {
+  background: #10b981;
+}
+.admin-daily-attendance__stat-icon--completed {
+  background: #8b5cf6;
+}
+.admin-daily-attendance__stat-icon--absent {
+  background: #ef4444;
+}
 
 .admin-daily-attendance__stat-info h3 {
   font-size: 2rem;
@@ -201,6 +209,7 @@
 .admin-daily-attendance__btn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
   border: none;
@@ -609,6 +618,9 @@
 }
 
 .btn-cancel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0.625rem 1.25rem;
   background: white;
   color: #374151;
@@ -628,6 +640,7 @@
 .btn-save {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   padding: 0.625rem 1.25rem;
   background: #3b82f6;
